@@ -10,38 +10,38 @@ import 'package:tourstravels/tabbar.dart';
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tourstravels/UserDashboard_Screens/newDashboard.dart';
-
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 
-import 'My_AprtmetsVC.dart';
+import '../My_AprtmetsVC.dart';
+import 'MyvehicleVC.dart';
 
 
 
 
 
 
-class AptmentEdit extends StatefulWidget {
+
+class VehicleEdit extends StatefulWidget {
 
   @override
   _LoginState createState() => _LoginState();
 }
 
-class _LoginState extends State<AptmentEdit> {
-
+class _LoginState extends State<VehicleEdit> {
   String RetrivedBearertoekn = '';
   String RetrivedName = '';
   String RetrivedAddress = '';
   String RetrivedCity = '';
   String RetrivedCountry = '';
-  int RetrivedGuest = 0;
+  int YearValue = 0;
   int RetrivedBedroom = 0;
   int RetrivedBathroom = 0;
-  int RetrivedPrice = 0;
-  int ApartmentID = 0;
+   int RetrivedPrice = 0;
+  int VehicleID = 0;
   _retrieveValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -50,17 +50,23 @@ class _LoginState extends State<AptmentEdit> {
       addressController.text = prefs.getString('addresskey') ?? "";
       cityController.text = prefs.getString('citykey') ?? "";
       countryController.text = prefs.getString('countrykey') ?? "";
-      RetrivedGuest = prefs.getInt('guestkey') ?? 0;
-      RetrivedBedroom = prefs.getInt('bedroomkey') ?? 0;
-      RetrivedBathroom = prefs.getInt('bathroomkey') ?? 0;
+      makeController.text = prefs.getString('makekey') ?? "";
+      modelController.text = prefs.getString('modelkey') ?? "";
+      YearValue = prefs.getInt('yearkey') ?? 0;
+      yearController.text = YearValue.toString();
+      engine_sizeController.text = prefs.getString('engine_sizekey') ?? "";
+      fuel_typeController.text = prefs.getString('fuel_typekey') ?? "";
+      weightController.text = prefs.getString('weightkey') ?? "";
+      colorController.text = prefs.getString('colorkey') ?? "";
+
+      transmissionController.text = prefs.getString('transmissionkey') ?? "";
+
+
       RetrivedPrice = prefs.getInt('pricekey') ?? 0;
-      ApartmentID = prefs.getInt('userbookingId') ?? 0;
+      VehicleID = prefs.getInt('userbookingId') ?? 0;
       print('price...');
       print(RetrivedPrice);
-      print(ApartmentID);
-      guestController.text = RetrivedGuest.toString();
-      bedroomController.text = RetrivedBedroom.toString();
-      bathroomController.text = RetrivedBathroom.toString();
+      print(VehicleID);
       priceController.text = RetrivedPrice.toString();
       // guestController.text = prefs.getInt(''guestkey'') ?? 0.toString();
       //ApartmentId = prefs.getInt('userbookingId') ?? 0;
@@ -77,9 +83,14 @@ class _LoginState extends State<AptmentEdit> {
   TextEditingController addressController = TextEditingController();
   TextEditingController cityController = TextEditingController();
   TextEditingController countryController = TextEditingController();
-  TextEditingController guestController = TextEditingController();
-  TextEditingController bedroomController = TextEditingController();
-  TextEditingController bathroomController = TextEditingController();
+  TextEditingController makeController = TextEditingController();
+  TextEditingController modelController = TextEditingController();
+  TextEditingController yearController = TextEditingController();
+  TextEditingController engine_sizeController = TextEditingController();
+  TextEditingController fuel_typeController = TextEditingController();
+  TextEditingController weightController = TextEditingController();
+  TextEditingController colorController = TextEditingController();
+  TextEditingController transmissionController = TextEditingController();
   TextEditingController priceController = TextEditingController();
   // nameController.text = RetrivedName;
   // String tokenvalue = '';
@@ -107,26 +118,34 @@ class _LoginState extends State<AptmentEdit> {
   @override
   //Update API Request
   Future<String> Update() async {
+    String url = baseDioSingleton.AbisiniyaBaseurl + 'vehicle/update/$VehicleID';
+    print('url...');
+    print(url);
     final response = await http.put(
-      // Uri.parse('https://staging.abisiniya.com/api/v1/apartment/update/$ApartmentID'),
-      Uri.parse(baseDioSingleton.AbisiniyaBaseurl + 'apartment/update/$ApartmentID'),
-
+      Uri.parse(baseDioSingleton.AbisiniyaBaseurl + 'vehicle/update/$VehicleID'),
       // NB: you don't need to fill headers field
       // headers: {
       //   'Content-Type': 'application/json' // 'application/x-www-form-urlencoded' or whatever you need
       // },
 
       headers: {
-    "Authorization":"Bearer $RetrivedBearertoekn"
-    },
+        "Authorization":"Bearer $RetrivedBearertoekn",
+    //     "Accept": "application/json",
+    // "Content-Type": "application/json"
+      },
       body: {
         'name': nameController.text,
         'address': addressController.text,
         'city': cityController.text,
         'country': countryController.text,
-        'guest': guestController.text.toString(),
-        'bedroom': bedroomController.text.toString(),
-        'bathroom': bathroomController.text.toString(),
+        'make': makeController.text,
+        'model': modelController.text,
+        'year': yearController.text,
+        'engine_size': engine_sizeController.text,
+        'fuel_type': fuel_typeController.text,
+        'weight': weightController.text,
+        'color': colorController.text,
+        'transmission': transmissionController.text,
         'price': priceController.text.toString(),
         'status': dropdownvalue,
       },
@@ -137,7 +156,7 @@ class _LoginState extends State<AptmentEdit> {
     if (response.statusCode == 200) {
       print('succesfully Edited');
       Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-        builder: (_) => MyApartmentScreen(),
+        builder: (_) => MyVehicleScreen(),
       ),);
       return response.body;
     } else {
@@ -176,7 +195,7 @@ class _LoginState extends State<AptmentEdit> {
                           child: Column(
                             children: [
                               Container(
-                                  height: 700.0,
+                                  height: 950.0,
                                   width: 325.0,
                                   decoration: const BoxDecoration(
                                     //color: Color(0xFFffffff),
@@ -209,7 +228,7 @@ class _LoginState extends State<AptmentEdit> {
                                           )
                                       ),
                                       Text(
-                                        "Create Apartment",
+                                        "Create Vehicle",
                                         textAlign: TextAlign.center ,
                                         style: TextStyle(
                                             color: Colors.black,fontWeight: FontWeight.bold,fontSize: 26),),
@@ -307,13 +326,13 @@ class _LoginState extends State<AptmentEdit> {
                                         width: 300.0,
                                         height: 40.0,
                                         child: TextField(
-                                            controller: guestController,
+                                            controller: makeController,
                                             textAlign: TextAlign.left,
                                             autocorrect: false,
                                             decoration:
                                             //disable single line border below the text field
                                             new InputDecoration.collapsed(
-                                                hintText: 'Guest')),
+                                                hintText: 'Make')),
                                       ),        SizedBox(height: 10,),
                                       Container(
                                         margin: const EdgeInsets.all(00.0),
@@ -325,13 +344,13 @@ class _LoginState extends State<AptmentEdit> {
                                         width: 300.0,
                                         height: 40.0,
                                         child: TextField(
-                                            controller: bedroomController,
+                                            controller: modelController,
                                             textAlign: TextAlign.left,
                                             autocorrect: false,
                                             decoration:
                                             //disable single line border below the text field
                                             new InputDecoration.collapsed(
-                                                hintText: 'Bedroom')),
+                                                hintText: 'Model')),
                                       ),
                                       SizedBox(height: 10,),
                                       Container(
@@ -344,13 +363,108 @@ class _LoginState extends State<AptmentEdit> {
                                         width: 300.0,
                                         height: 40.0,
                                         child: TextField(
-                                            controller: bathroomController,
+                                            controller: yearController,
                                             textAlign: TextAlign.left,
                                             autocorrect: false,
                                             decoration:
                                             //disable single line border below the text field
                                             new InputDecoration.collapsed(
-                                                hintText: 'Bathroom')),
+                                                hintText: 'Year')),
+                                      ),
+                                      SizedBox(height: 10,),
+                                      Container(
+                                        margin: const EdgeInsets.all(00.0),
+                                        padding: EdgeInsets.only(top: 05.0,
+                                            left: 15.0,
+                                            right: 05.0),
+                                        //color: Colors.white30,
+                                        color: Colors.white,
+                                        width: 300.0,
+                                        height: 40.0,
+                                        child: TextField(
+                                            controller: engine_sizeController,
+                                            textAlign: TextAlign.left,
+                                            autocorrect: false,
+                                            decoration:
+                                            //disable single line border below the text field
+                                            new InputDecoration.collapsed(
+                                                hintText: 'Engine Size')),
+                                      ),
+                                      SizedBox(height: 10,),
+                                      Container(
+                                        margin: const EdgeInsets.all(00.0),
+                                        padding: EdgeInsets.only(top: 05.0,
+                                            left: 15.0,
+                                            right: 05.0),
+                                        //color: Colors.white30,
+                                        color: Colors.white,
+                                        width: 300.0,
+                                        height: 40.0,
+                                        child: TextField(
+                                            controller: fuel_typeController,
+                                            textAlign: TextAlign.left,
+                                            autocorrect: false,
+                                            decoration:
+                                            //disable single line border below the text field
+                                            new InputDecoration.collapsed(
+                                                hintText: 'Fuel Type')),
+                                      ),
+                                      SizedBox(height: 10,),
+                                      Container(
+                                        margin: const EdgeInsets.all(00.0),
+                                        padding: EdgeInsets.only(top: 05.0,
+                                            left: 15.0,
+                                            right: 05.0),
+                                        //color: Colors.white30,
+                                        color: Colors.white,
+                                        width: 300.0,
+                                        height: 40.0,
+                                        child: TextField(
+                                            controller: weightController,
+                                            textAlign: TextAlign.left,
+                                            autocorrect: false,
+                                            decoration:
+                                            //disable single line border below the text field
+                                            new InputDecoration.collapsed(
+                                                hintText: 'Weight')),
+                                      ),
+                                      SizedBox(height: 10,),
+                                      Container(
+                                        margin: const EdgeInsets.all(00.0),
+                                        padding: EdgeInsets.only(top: 05.0,
+                                            left: 15.0,
+                                            right: 05.0),
+                                        //color: Colors.white30,
+                                        color: Colors.white,
+                                        width: 300.0,
+                                        height: 40.0,
+                                        child: TextField(
+                                            controller: colorController,
+                                            textAlign: TextAlign.left,
+                                            autocorrect: false,
+                                            decoration:
+                                            //disable single line border below the text field
+                                            new InputDecoration.collapsed(
+                                                hintText: 'Color')),
+                                      ),
+                                      SizedBox(height: 10,),
+                                      Container(
+                                        margin: const EdgeInsets.all(00.0),
+                                        padding: EdgeInsets.only(top: 05.0,
+                                            left: 15.0,
+                                            right: 05.0),
+                                        //color: Colors.white30,
+                                        color: Colors.white,
+                                        width: 300.0,
+                                        height: 40.0,
+                                        child: TextField(
+                                            controller: transmissionController,
+                                            textAlign: TextAlign.left,
+                                            autocorrect: false,
+                                            decoration:
+                                            //disable single line border below the text field
+                                            new InputDecoration.collapsed(
+                                                hintText: 'Transmission')),
                                       ),
                                       SizedBox(height: 10,),
                                       Container(
@@ -437,7 +551,7 @@ class _LoginState extends State<AptmentEdit> {
 
                                           onPressed: () async {
                                             setState(() => isLoading = true);
-                                          Update();
+                                            Update();
                                             SharedPreferences prefs = await SharedPreferences.getInstance();
                                             // print('booking id...');
                                             // print(snapshot.data['data'][index]['id']);

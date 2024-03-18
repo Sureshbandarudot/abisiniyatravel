@@ -4,6 +4,8 @@ import 'package:http/http.dart';
 import 'package:tourstravels/Auth/Login.dart';
 import 'package:tourstravels/tabbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 String _email='';
 
 
@@ -14,6 +16,8 @@ class OTPVerified extends StatefulWidget {
 }
 
 class _OTPVerifiedState extends State<OTPVerified> {
+
+  final baseDioSingleton = BaseSingleton();
   bool isLoading = false;
   String? emaildata;
   final globalKey = GlobalKey<ScaffoldState>();
@@ -27,7 +31,9 @@ class _OTPVerifiedState extends State<OTPVerified> {
     try{
 
       Response response = await post(
-          Uri.parse('https://staging.abisiniya.com/api/v1/otpverify'),
+          //Uri.parse('https://staging.abisiniya.com/api/v1/otpverify'),
+          Uri.parse(baseDioSingleton.AbisiniyaBaseurl + 'otpverify'),
+
           body: {
             'email' : emailController.text.toString(),
             'otp' : otpController.text.toString(),

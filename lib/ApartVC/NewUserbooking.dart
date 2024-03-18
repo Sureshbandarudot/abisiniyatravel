@@ -9,6 +9,8 @@ import 'package:intl/intl.dart';
 import 'package:tourstravels/userDashboardvc.dart';
 import 'package:tourstravels/UserDashboard_Screens/newDashboard.dart';
 
+import 'Apartment.dart';
+
 
 
 
@@ -38,6 +40,7 @@ class HomeState extends State<UserBooking> {
   //Future? listUsers;;
 
   String RetrivedBearertoekn = '';
+  String newBookingUser = '';
   bool isLoading = false;
   int Bookable_iD = 0;
   String Bookable_type = '';
@@ -74,7 +77,11 @@ class HomeState extends State<UserBooking> {
       RetrivedBedroom = prefs.getString('bedroomkey') ?? "";
       RetrivedPrice = prefs.getString('pricekey') ?? "";
       Bookable_iD = prefs.getInt('imgkeyId') ?? 0;
+      print('book...');
+      print(Bookable_iD);
       Bookable_type = prefs.getString('Property_type') ?? "";
+      print(Bookable_type);
+
       RetrivedBearertoekn = prefs.getString('tokenkey') ?? "";
 
 
@@ -88,6 +95,10 @@ class HomeState extends State<UserBooking> {
       print(apiUrl);
       print('bearer token');
       print(RetrivedBearertoekn);
+      print('book...');
+      print(Bookable_iD);
+     // Bookable_type = prefs.getString('Property_type') ?? "";
+      print(Bookable_type);
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: <String, String>{
@@ -111,18 +122,23 @@ class HomeState extends State<UserBooking> {
         }),
       );
 
+      print('status code...');
+      print(response.statusCode);
       if (response.statusCode == 200) {
         // Successful POST request, handle the response here
         final responseData = jsonDecode(response.body);
         print('Apartment fresh user data successfully posted');
         print(responseData);
         var data = jsonDecode(response.body.toString());
+        print('message......k');
         print(data['message']);
-        RetrivedBearertoekn = data['data']['token'];
-        print('token generated...');
-        print(RetrivedBearertoekn);
-
-
+        // RetrivedBearertoekn = data['data']['token'];
+        // print('token generated...');
+        // print(RetrivedBearertoekn);
+        // // String datestr = '';
+        // // datestr = data['message'].toString();
+        // print('date status...');
+       // print(datestr);
 
         if (data['message'] == 'Thank you for booking request')
           {
@@ -131,28 +147,86 @@ class HomeState extends State<UserBooking> {
               content: Text(data['message']),
             );
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            // print('calling....');
-            // Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-            //   builder: (_) => newuserDashboard(),
-            // ),);
-          } else {
-          print('calling....');
+          } else if (data['message'] == 'Start date should be greater or equal to booking day'){
+          print('Start date should be greater or equal to booking day.......');
+          final snackBar = SnackBar(
+            content: Text('Start date should be greater or equal to booking day'),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+        else {
           Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
             builder: (_) => newuserDashboard(),
           ),);
           print('calling token....');
           print(RetrivedBearertoekn);
+          RetrivedBearertoekn = data['data']['token'];
+          print('token generated...');
+          print(RetrivedBearertoekn);
+          newBookingUser = 'NewBookingUser';
           SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setString('tokenkey', RetrivedBearertoekn);
+          prefs.setString('newBookingUserkey', newBookingUser);
 
         }
+    }
+      if (response.statusCode == 422) {
+        print('already entered existing data1...');
+        var data = jsonDecode(response.body);
+        print('email...');
+        print(data['message']['email']);
+        //String emailstr = (data['message']['email']);
+        //print(emailstr);
+        print(data['message']['phone']);
+        print(data['message']['end_date']);
+        if ((data['message']['phone']) != null && (data['message']['email']) != null) {
+          final snackBar = SnackBar(
+                content: Text('The email and phone has already been taken.'),
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);        }
+        else if ((data['message']['phone']) != null) {
+          final snackBar = SnackBar(
+            content: Text('The phone has already been taken.'),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-
-        //}
-        setState(() {
-          //result = 'ID: ${responseData['id']}\nName: ${responseData['name']}\nEmail: ${responseData['email']}';
-        });
-      } else {
+        } else if ((data['message']['email']) != null) {
+          final snackBar = SnackBar(
+            content: Text('The  email has already been taken.'),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        } else if ((data['message']['end_date']) != null) {
+          print('date....');
+          final snackBar = SnackBar(
+            content: Text('The end date must be a date after start date.'),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        } else {
+          print('nullll.....');
+        }
+        // if ((data['message']['email']) != '[The email has already been taken.]' && (data['message']['phone']) != '[The phone has already been taken.]'){
+        //   final snackBar = SnackBar(
+        //     content: Text('The email and phone has already been taken.'),
+        //   );
+        //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        //
+        // }  else if ((data['message']['email']) != '[The email has already been taken.]') {
+        //   final snackBar = SnackBar(
+        //     content: Text('The email  has already been taken.'),
+        //   );
+        //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        // } else if ((data['message']['phone']) != '[The phone has already been taken.]'){
+        //   final snackBar = SnackBar(
+        //     content: Text('The  phone has already been taken.'),
+        //   );
+        //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        // } else if ((data['message']['end_date']) != '[The end date must be a date after start date.]') {
+        //   final snackBar = SnackBar(
+        //     content: Text('The end date must be a date after start date.'),
+        //   );
+        //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        // }
+      }  else {
         // If the server returns an error response, throw an exception
         throw Exception('Failed to post data');
       }
@@ -170,11 +244,34 @@ class HomeState extends State<UserBooking> {
     _retrieveValues();
     listUsers = fetchUsers();
     pics = fetchpics();
-    _postData();
+    // _postData();
   }
-  String url = 'https://staging.abisiniya.com/api/v1/apartment/list';
+  //String url = 'https://staging.abisiniya.com/api/v1/apartment/list';
+  // String url = baseDioSingleton.AbisiniyaBaseurl+ 'apartment/list';
+
   Future<List<Apart>> fetchUsers() async {
-    final response = await http.get(Uri.parse(url));
+
+    //String url = baseDioSingleton.AbisiniyaBaseurl+ 'apartment/show/57';
+    //String url = 'https://staging.abisiniya.com/api/v1/apartment/show/57';
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    RetrivedId = prefs.getInt('imgkeyId') ?? 0;
+    RetrivedBearertoekn = prefs.getString('tokenkey') ?? "";
+    String url = (baseDioSingleton.AbisiniyaBaseurl + 'apartment/show/$RetrivedId');
+    print('api url...');
+    print(url);
+
+
+    print('tokenva.....1');
+    print(RetrivedBearertoekn);
+
+    //final response = await http.get(Uri.parse(url));
+    var response = await http.get(
+      Uri.parse(
+          url),
+      headers: {
+        "Authorization": "Bearer $RetrivedBearertoekn",
+      },
+    );
     if (response.statusCode == 200) {
       final data1 = jsonDecode(response.body);
       var getUsersData = data1['data'] as List;
@@ -203,7 +300,28 @@ class HomeState extends State<UserBooking> {
   }
 
   Future<List<Picture>> fetchpics() async {
-    final response = await http.get(Uri.parse(url));
+    //String url = baseDioSingleton.AbisiniyaBaseurl+ 'apartment/show/57';
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    RetrivedId = prefs.getInt('imgkeyId') ?? 0;
+    RetrivedBearertoekn = prefs.getString('tokenkey') ?? "";
+    String url = (baseDioSingleton.AbisiniyaBaseurl + 'apartment/show/$RetrivedId');
+    print('api url...1');
+    print(url);
+
+
+    //String url = 'https://staging.abisiniya.com/api/v1/apartment/show/57';
+
+    print('tokenva..');
+    print(RetrivedBearertoekn);
+
+    //final response = await http.get(Uri.parse(url));
+    var response = await http.get(
+      Uri.parse(
+          url),
+      headers: {
+        "Authorization": "Bearer $RetrivedBearertoekn",
+      },
+    );
     if (response.statusCode == 200) {
       final data1 = jsonDecode(response.body);
       var getpicsData = [];
@@ -236,6 +354,33 @@ class HomeState extends State<UserBooking> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.lightGreen,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: <Color>[Colors.white, Colors.green]),
+          ),
+        ),
+        centerTitle: true,
+        leading: BackButton(
+          onPressed: () async{
+            // print("back Pressed");
+            // SharedPreferences prefs = await SharedPreferences.getInstance();
+            // prefs.setString('logoutkey', ('LogoutDashboard'));
+            // prefs.setString('Property_type', ('Apartment'));
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => Apartmentscreen()),
+            );
+          },
+        ),
+        title: Text('APARTMENT',textAlign: TextAlign.center,
+            style: TextStyle(color:Colors.white,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
+      ),
       body: FutureBuilder(
           future: pics,
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -264,432 +409,887 @@ class HomeState extends State<UserBooking> {
                             builder: (context, constraint) {
                               return SingleChildScrollView(
                                 //scrollDirection: Axis.horizontal,
-                                child: Container(
-                                  constraints:
-                                  BoxConstraints(minHeight: constraint.maxHeight),
-                                  child: IntrinsicHeight(
-                                    child: Column(
-                                      children: [
-                                        // SizedBox(
-                                        //   height: 10,
-                                        // ),
-                                        Column(
+                                physics: ScrollPhysics(),
+
+                              child: Column(
+                                children: [
+
+                                  ListView.separated(
+                                    //scrollDirection:Axis.horizontal,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: (snapshot.data as List<Picture>).length,
+                                    separatorBuilder: (BuildContext context, int index) => const Divider(),
+                                    itemBuilder: (BuildContext context, int index) {
+                                      var abisiniyapic = (snapshot.data as List<Picture>)[index];
+                                      return Container(
+                                        height: 220,
+                                        width: 300,
+                                        color: Colors.white,
+                                        child: InkWell(
+                                          child: Column(
                                             children: [
+                                              Container(
+                                                height: 200,
+                                                decoration: BoxDecoration(
+                                                    image: DecorationImage(image: NetworkImage(abisiniyapic.imageUrl),
+                                                        fit: BoxFit.cover)
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          onTap: ()
+                                          {
+                                            print('calling.......');
+                                            print([index]);
+                                          },
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  Column(
+                                    children: [
+
+                                      Container(
+                                        constraints:
+                                        BoxConstraints(minHeight: constraint.maxHeight),
+                                        child: IntrinsicHeight(
+                                          child: Column(
+                                            children: [
+                                              // SizedBox(
+                                              //   height: 10,
+                                              // ),
                                               Column(
                                                   children: [
-                                                    Padding(
-                                                      padding: const EdgeInsets.all(8.0),
-                                                      child: Container(
-                                                        height: 250,
-
-                                                        child:ListView.separated(
-                                                          //scrollDirection:Axis.horizontal,
-
-                                                          itemCount: (snapshot.data as List<Picture>).length,
-                                                          separatorBuilder: (BuildContext context, int index) => const Divider(),
-                                                          itemBuilder: (BuildContext context, int index) {
-                                                            var abisiniyapic = (snapshot.data as List<Picture>)[index];
-                                                            return Container(
-                                                              height: 220,
-                                                              width: 300,
-                                                              color: Colors.white,
-                                                              child: InkWell(
-                                                                child: Column(
-                                                                  children: [
-                                                                    Container(
-                                                                      height: 200,
-                                                                      decoration: BoxDecoration(
-                                                                          image: DecorationImage(image: NetworkImage(abisiniyapic.imageUrl),
-                                                                              fit: BoxFit.cover)
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                onTap: ()
-                                                                {
-                                                                  print('calling.......');
-                                                                  print([index]);
-                                                                },
-                                                              ),
-                                                            );
-                                                          },
-                                                        ),
-
-                                                      ),
+                                                    Column(
+                                                        children: [
+                                                          Container(
+                                                            height: 40,
+                                                            width: 340,
+                                                            alignment: Alignment.topLeft,
+                                                            color: Colors.white,
+                                                            child: Text('Information',style: (TextStyle(fontSize: 22,fontWeight: FontWeight.w900,color: Colors.black)),),
+                                                          )
+                                                          // Container(
+                                                          //   height: 50,
+                                                          //   width: 280,
+                                                          //   color: Colors.orange,
+                                                          //   // child:Text(snapshot.data['data'][10]['address'],textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w900,fontSize: 22,color: Colors.green)),),
+                                                          // ),
+                                                        ]
                                                     ),
-                                                    Container(
-                                                      height: 40,
-                                                      width: 340,
-                                                      alignment: Alignment.topLeft,
-                                                      color: Colors.white,
-                                                      child: Text('Information',style: (TextStyle(fontSize: 22,fontWeight: FontWeight.w900,color: Colors.black)),),
-                                                    )
-                                                    // Container(
-                                                    //   height: 50,
-                                                    //   width: 280,
-                                                    //   color: Colors.orange,
-                                                    //   // child:Text(snapshot.data['data'][10]['address'],textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w900,fontSize: 22,color: Colors.green)),),
-                                                    // ),
                                                   ]
                                               ),
-                                            ]
-                                        ),
-                                        // middle widget goes here
+                                              // middle widget goes here
 
-                                        Align(
-                                          alignment: Alignment.topCenter,
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              // SizedBox(
-                                              //   height: 5,
-                                              // ),
-                                              // Container(
-                                              //   height: 400,
-                                              //   width: 340,
-                                              //   alignment: Alignment.topLeft,
-                                              //   color: Colors.red,
-                                              //   child: Text('Information',style: (TextStyle(fontSize: 22,fontWeight: FontWeight.w900,color: Colors.black)),),
-                                              // ),
-                                              Row(
-                                                children: [
-                                                  SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Container(
-                                                    height: 40,
-                                                    width: 150,
-                                                    color: Colors.white,
-                                                    child: Text('Category:',style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w900,color: Colors.black)),),
-                                                  ),
-                                                  Container(
-                                                    height: 40,
-                                                    width: 175,
-                                                    color: Colors.white,
-                                                    child: Text('Accommodation',style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.black)),),
-
-                                                  )
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Container(
-                                                    height: 60,
-                                                    width: 150,
-                                                    color: Colors.white,
-                                                    child: Text('Address:',style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w900,color: Colors.black)),),
-                                                  ),
-                                                  Container(
-                                                    height: 60,
-                                                    width: 175,
-                                                    color: Colors.white,
-                                                    child: Text(RetrivedAdress,style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.black)),),
-
-                                                  )
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Container(
-                                                    height: 40,
-                                                    width: 150,
-                                                    color: Colors.white,
-                                                    child: Text('Location:',style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w900,color: Colors.black)),),
-                                                  ),
-                                                  Container(
-                                                    height: 40,
-                                                    width: 175,
-                                                    color: Colors.white,
-                                                    child: Text(Retrivedcityvalue,style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.black)),),
-
-                                                  )
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Container(
-                                                    height: 40,
-                                                    width: 150,
-                                                    color: Colors.white,
-                                                    child: Text('Price:',style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w900,color: Colors.black)),),
-                                                  ),
-                                                  Container(
-                                                    height: 40,
-                                                    width: 175,
-                                                    color: Colors.white,
-                                                    child: Text('${(RetrivedPrice)} /night',style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.black)),),
-
-                                                  )
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Container(
-                                                    height: 60,
-                                                    width: 150,
-                                                    color: Colors.white,
-                                                    child: Text('Specs & Utilities:',style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w900,color: Colors.black)),),
-                                                  ),
-                                                  Container(
-                                                    height: 60,
-                                                    width: 175,
-                                                    color: Colors.white,
-                                                    child: Text('${(RetrivedBathromm)} Bath, ${(RetrivedBedroom)} BedRoom',style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.black)),),
-
-                                                  )
-                                                ],
-                                              ),
-
-                                              SizedBox(
-                                                height: 20,
-                                              ),
-                                              Column(
-                                                children: [
-                                                  Container(
-                                                    height: 100,
-                                                    width: 340,
-                                                    color: Colors.white,
-                                                    child: Text(NewUsertxt,style: TextStyle(color: Colors.black,fontWeight: FontWeight.w600,fontSize: 20),) ,
-                                                  ),
-
-                                                  SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  Container(
-                                                    height: 45,
-                                                    width: 340,
-                                                    child: TextField(
-
-                              decoration: InputDecoration(
-                                    border:OutlineInputBorder(),
-                                    labelText: 'Firstname',
-                                    hintText: 'Firstname'
-                                ), controller: namecontroller,),),
-
-                                                  SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  Container(
-                                                    height: 45,
-                                                    width: 340,
-                                                    child: TextField(
-                                                      decoration: InputDecoration(
-                                                          border:OutlineInputBorder(),
-                                                          labelText: 'surname',
-                                                          hintText: 'surname'
-                                                      ),controller: surnamecontroller,),),
-
-                                                  SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  Container(
-                                                    height: 45,
-                                                    width: 340,
-                                                    child: TextField(
-                                                      decoration: InputDecoration(
-                                                          border:OutlineInputBorder(),
-                                                          labelText: 'Phone',
-                                                          hintText: 'Phone'
-                                                      ),controller: phonecontroller,),),
-                                                  SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  Container(
-                                                    height: 45,
-                                                    width: 340,
-                                                    child: TextField(
-                                                      decoration: InputDecoration(
-                                                          border:OutlineInputBorder(),
-                                                          labelText: 'Email',
-                                                          hintText: 'Email'
-                                                      ),controller: emailcontroller,),),
-                                                  SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  Container(
-                                                    height: 45,
-                                                    width: 340,
-                                                    child: TextField(
-                                                      decoration: InputDecoration(
-                                                          border:OutlineInputBorder(),
-                                                          labelText: 'Password',
-                                                          hintText: 'Password'
-                                                      ),controller: passwordcontroller,),),
-
-                                                  SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  Container(
-                                                    height: 45,
-                                                    width: 340,
-                                                    child: TextField(
-                                                      decoration: InputDecoration(
-                                                          border:OutlineInputBorder(),
-                                                          labelText: 'Confirm Password ',
-                                                          hintText: 'Confirm Password'
-                                                      ),controller: pwd_confirmcontroller,),),
-                                                  SizedBox(
-                                                    height: 20,
-                                                  ),
-                                                  Container(
-                                                    height: 45,
-                                                    width: 340,
-                                                    child: Text('Booking Details',style: TextStyle(color: Colors.teal,fontWeight: FontWeight.w800,fontSize: 22),
-                                                      ),),
-                                                  SizedBox(height: 10,),
-                                                  Container(
-                                                    height: 45,
-                                                    width: 340,
-                              child: TextField(
-                              decoration: const InputDecoration(
-                                suffixIcon: Icon(Icons.calendar_month),
-                                hintText: 'From Date',
-                              border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.blue, width: 1)),
-                              focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.blue, width: 1)),
-                              enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.blue, width: 1)),
-                              ),
-                                  controller: FromdateInputController,
-                                  readOnly: true,
-                                  onTap: () async {
-
-                                    DateTime? pickedDate = await showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime(1950),
-                                        lastDate: DateTime(2050));
-                                    if (pickedDate != null) {
-                                     // FromdateInputController.text =pickedDate.toString();
-                                      fromDatestr = DateFormat('yyyy-MM-dd').format(pickedDate); // format date in required form here we use yyyy-MM-dd that means time is removed
-
-                                      FromdateInputController.text = fromDatestr;
-                                    }
-
-                                  }
-
-                              ),),
-                              SizedBox(
-                                height: 10,
-                              ),
-                                                  Container(
-                                                    height: 45,
-                                                    width: 340,
-                                                    child: TextField(
-                                                        decoration: const InputDecoration(
-                                                          suffixIcon: Icon(Icons.calendar_month),
-                                                          hintText: 'To Date',
-                                                          border: OutlineInputBorder(
-                                                              borderSide: BorderSide(color: Colors.blue, width: 1)),
-                                                          focusedBorder: OutlineInputBorder(
-                                                              borderSide: BorderSide(color: Colors.blue, width: 1)),
-                                                          enabledBorder: OutlineInputBorder(
-                                                              borderSide: BorderSide(color: Colors.blue, width: 1)),
+                                              Align(
+                                                alignment: Alignment.topCenter,
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    // SizedBox(
+                                                    //   height: 5,
+                                                    // ),
+                                                    // Container(
+                                                    //   height: 400,
+                                                    //   width: 340,
+                                                    //   alignment: Alignment.topLeft,
+                                                    //   color: Colors.red,
+                                                    //   child: Text('Information',style: (TextStyle(fontSize: 22,fontWeight: FontWeight.w900,color: Colors.black)),),
+                                                    // ),
+                                                    Row(
+                                                      children: [
+                                                        SizedBox(
+                                                          width: 10,
                                                         ),
-                                                        controller: TodateInputController,
-                                                        readOnly: true,
-                                                        onTap: () async {
+                                                        Container(
+                                                          height: 40,
+                                                          width: 150,
+                                                          color: Colors.white,
+                                                          child: Text('Category:',style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w900,color: Colors.black)),),
+                                                        ),
+                                                        Container(
+                                                          height: 40,
+                                                          width: 175,
+                                                          color: Colors.white,
+                                                          child: Text('Accommodation',style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.black)),),
 
-                                                          DateTime? pickedDate = await showDatePicker(
-                                                              context: context,
-                                                              initialDate: DateTime.now(),
-                                                              firstDate: DateTime(1950),
-                                                              lastDate: DateTime(2050));
-                                                          if (pickedDate != null) {
-                                                            //TodateInputController.text =pickedDate.toString();
-                                                            toDatestr = DateFormat('yyyy-MM-dd').format(pickedDate); // format date in required form here we use yyyy-MM-dd that means time is removed
-
-                                                            TodateInputController.text = toDatestr;
-                                                          }
-
-                                                        }
-
-                                                    ),),
-                              SizedBox(
-                                                    height: 20,
-                                                  ),
-                                                  Container(
-                                                    child:isLoading
-                                                        ? Center(child: CircularProgressIndicator())
-                                                        : TextButton(
-                                                      style: TextButton.styleFrom(
-                                                          fixedSize: const Size(340, 50),
-                                                          foregroundColor: Colors.white,
-                                                          backgroundColor: Colors.blue,
-                                                          shape: RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(00),
-                                                          ),
-                                                          textStyle: const TextStyle(fontSize: 20,fontWeight: FontWeight.w600)),
-                                                      child: Text('Book Now'),
-                                                      onPressed: () async {
-                                                        setState(() => isLoading = true);
-                                                        _postData();
-                                                        print('new booking calling token1....');
-                                                        print(RetrivedBearertoekn);
-                                                        SharedPreferences prefs = await SharedPreferences.getInstance();
-                                                        prefs.setString('tokenkey', RetrivedBearertoekn);
-
-                                                        await Future.delayed(Duration(seconds: 3), () => () {});
-                                                        setState(() => isLoading = false);
-                                                      },
+                                                        )
+                                                      ],
                                                     ),
-                                                  )
+                                                    Row(
+                                                      children: [
+                                                        SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Container(
+                                                          height: 60,
+                                                          width: 150,
+                                                          color: Colors.white,
+                                                          child: Text('Address:',style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w900,color: Colors.black)),),
+                                                        ),
+                                                        Container(
+                                                          height: 60,
+                                                          width: 175,
+                                                          color: Colors.white,
+                                                          child: Text(RetrivedAdress,style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.black)),),
 
-                                                  // Container(
-                                                  //     child: TextButton(
-                                                  //       style: TextButton.styleFrom(
-                                                  //           fixedSize: const Size(340, 50),
-                                                  //           foregroundColor: Colors.white,
-                                                  //           backgroundColor: Colors.blue,
-                                                  //           shape: RoundedRectangleBorder(
-                                                  //             borderRadius: BorderRadius.circular(00),
-                                                  //           ),
-                                                  //           textStyle: const TextStyle(fontSize: 20,fontWeight: FontWeight.w600)),
-                                                  //       onPressed: () {
-                                                  //         // Navigator.push(
-                                                  //         //   context,
-                                                  //         //   MaterialPageRoute(
-                                                  //         //       builder: (context) => ForgotpwdOTPVerified()
-                                                  //         //   ),
-                                                  //         // );
-                                                  //       },
-                                                  //       child: const Text('Book Now'),
-                                                  //     )
-                                                  // ),
-                                                  // TextField (
-                                                  //   //readOnly: true,
-                                                  //   //controller: emailController,
-                                                  //   decoration: InputDecoration(
-                                                  //       border:OutlineInputBorder(),
-                                                  //       labelText: 'Email',
-                                                  //       hintText: 'Email'
-                                                  //   ),
-                                                  // ),
-                                                  //Text(NewUsertxt,style: TextStyle(color: Colors.black,fontWeight: FontWeight.w600,fontSize: 20),)
-                                                ],
+                                                        )
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Container(
+                                                          height: 40,
+                                                          width: 150,
+                                                          color: Colors.white,
+                                                          child: Text('Location:',style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w900,color: Colors.black)),),
+                                                        ),
+                                                        Container(
+                                                          height: 40,
+                                                          width: 175,
+                                                          color: Colors.white,
+                                                          child: Text(Retrivedcityvalue,style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.black)),),
+
+                                                        )
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Container(
+                                                          height: 40,
+                                                          width: 150,
+                                                          color: Colors.white,
+                                                          child: Text('Price:',style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w900,color: Colors.black)),),
+                                                        ),
+                                                        Container(
+                                                          height: 40,
+                                                          width: 175,
+                                                          color: Colors.white,
+                                                          child: Text('${(RetrivedPrice)} /night',style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.black)),),
+
+                                                        )
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Container(
+                                                          height: 60,
+                                                          width: 150,
+                                                          color: Colors.white,
+                                                          child: Text('Specs & Utilities:',style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w900,color: Colors.black)),),
+                                                        ),
+                                                        Container(
+                                                          height: 60,
+                                                          width: 175,
+                                                          color: Colors.white,
+                                                          child: Text('${(RetrivedBathromm)} Bath, ${(RetrivedBedroom)} BedRoom',style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.black)),),
+
+                                                        )
+                                                      ],
+                                                    ),
+
+                                                    SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    Column(
+                                                      children: [
+                                                        Container(
+                                                          height: 100,
+                                                          width: 340,
+                                                          color: Colors.white,
+                                                          child: Text(NewUsertxt,style: TextStyle(color: Colors.black,fontWeight: FontWeight.w600,fontSize: 20),) ,
+                                                        ),
+
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Container(
+                                                          height: 45,
+                                                          width: 340,
+                                                          child: TextField(
+
+                                                            decoration: InputDecoration(
+                                                                border:OutlineInputBorder(),
+                                                                labelText: 'Firstname',
+                                                                hintText: 'Firstname'
+                                                            ), controller: namecontroller,),),
+
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Container(
+                                                          height: 45,
+                                                          width: 340,
+                                                          child: TextField(
+                                                            decoration: InputDecoration(
+                                                                border:OutlineInputBorder(),
+                                                                labelText: 'surname',
+                                                                hintText: 'surname'
+                                                            ),controller: surnamecontroller,),),
+
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Container(
+                                                          height: 45,
+                                                          width: 340,
+                                                          child: TextField(
+                                                              keyboardType:TextInputType.number,
+                                                            decoration: InputDecoration(
+                                                                border:OutlineInputBorder(),
+                                                                labelText: 'Phone',
+                                                                hintText: 'Phone'
+                                                            ),controller: phonecontroller,),),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Container(
+                                                          height: 70,
+                                                          width: 340,
+                                                          child: TextField(
+                                                            maxLines: 1,
+                                                            maxLength: 35,
+                                                            //autofocus: true,
+                                                            //textInputAction: TextInputAction.done,
+                                                            keyboardType: TextInputType.text,
+
+                                                            decoration: InputDecoration(
+                                                                border:OutlineInputBorder(),
+                                                                labelText: 'Email',
+                                                                hintText: 'Email',
+                                                              counterStyle: TextStyle(height: double.minPositive,),
+
+                                                          ),controller: emailcontroller,)
+
+
+
+                                                          ,),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Container(
+                                                          height: 45,
+                                                          width: 340,
+                                                          child: TextField(
+                                                            obscureText: true,
+                                                            decoration: InputDecoration(
+                                                                border:OutlineInputBorder(),
+                                                                labelText: 'Password',
+                                                                hintText: 'Password'
+                                                            ),controller: passwordcontroller,),),
+
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Container(
+                                                          height: 45,
+                                                          width: 340,
+                                                          child: TextField(
+                                                            obscureText: true,
+                                                            decoration: InputDecoration(
+                                                                border:OutlineInputBorder(),
+                                                                labelText: 'Confirm Password ',
+                                                                hintText: 'Confirm Password'
+                                                            ),controller: pwd_confirmcontroller,),),
+                                                        SizedBox(
+                                                          height: 20,
+                                                        ),
+                                                        Container(
+                                                          height: 45,
+                                                          width: 340,
+                                                          child: Text('Booking Details',style: TextStyle(color: Colors.teal,fontWeight: FontWeight.w800,fontSize: 22),
+                                                          ),),
+                                                        SizedBox(height: 10,),
+                                                        Container(
+                                                          height: 45,
+                                                          width: 340,
+                                                          child: TextField(
+                                                              decoration: const InputDecoration(
+                                                                suffixIcon: Icon(Icons.calendar_month),
+                                                                hintText: 'From Date',
+                                                                border: OutlineInputBorder(
+                                                                    borderSide: BorderSide(color: Colors.blue, width: 1)),
+                                                                focusedBorder: OutlineInputBorder(
+                                                                    borderSide: BorderSide(color: Colors.blue, width: 1)),
+                                                                enabledBorder: OutlineInputBorder(
+                                                                    borderSide: BorderSide(color: Colors.blue, width: 1)),
+                                                              ),
+                                                              controller: FromdateInputController,
+                                                              readOnly: true,
+                                                              onTap: () async {
+
+                                                                DateTime? pickedDate = await showDatePicker(
+                                                                    context: context,
+                                                                    initialDate: DateTime.now(),
+                                                                    firstDate: DateTime(1950),
+                                                                    lastDate: DateTime(2050));
+                                                                if (pickedDate != null) {
+                                                                  // FromdateInputController.text =pickedDate.toString();
+                                                                  fromDatestr = DateFormat('yyyy-MM-dd').format(pickedDate); // format date in required form here we use yyyy-MM-dd that means time is removed
+
+                                                                  FromdateInputController.text = fromDatestr;
+                                                                }
+
+                                                              }
+
+                                                          ),),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Container(
+                                                          height: 45,
+                                                          width: 340,
+                                                          child: TextField(
+                                                              decoration: const InputDecoration(
+                                                                suffixIcon: Icon(Icons.calendar_month),
+                                                                hintText: 'To Date',
+                                                                border: OutlineInputBorder(
+                                                                    borderSide: BorderSide(color: Colors.blue, width: 1)),
+                                                                focusedBorder: OutlineInputBorder(
+                                                                    borderSide: BorderSide(color: Colors.blue, width: 1)),
+                                                                enabledBorder: OutlineInputBorder(
+                                                                    borderSide: BorderSide(color: Colors.blue, width: 1)),
+                                                              ),
+                                                              controller: TodateInputController,
+                                                              readOnly: true,
+                                                              onTap: () async {
+
+                                                                DateTime? pickedDate = await showDatePicker(
+                                                                    context: context,
+                                                                    initialDate: DateTime.now(),
+                                                                    firstDate: DateTime(1950),
+                                                                    lastDate: DateTime(2050));
+                                                                if (pickedDate != null) {
+                                                                  //TodateInputController.text =pickedDate.toString();
+                                                                  toDatestr = DateFormat('yyyy-MM-dd').format(pickedDate); // format date in required form here we use yyyy-MM-dd that means time is removed
+
+                                                                  TodateInputController.text = toDatestr;
+                                                                }
+
+                                                              }
+
+                                                          ),),
+                                                        SizedBox(
+                                                          height: 20,
+                                                        ),
+                                                        Container(
+                                                          child:isLoading
+                                                              ? Center(child: CircularProgressIndicator())
+                                                              : TextButton(
+                                                            style: TextButton.styleFrom(
+                                                                fixedSize: const Size(340, 50),
+                                                                foregroundColor: Colors.white,
+                                                                backgroundColor: Colors.blue,
+                                                                shape: RoundedRectangleBorder(
+                                                                  borderRadius: BorderRadius.circular(00),
+                                                                ),
+                                                                textStyle: const TextStyle(fontSize: 20,fontWeight: FontWeight.w600)),
+                                                            child: Text('Book Now'),
+                                                            onPressed: () async {
+                                                              setState(() => isLoading = true);
+                                                              _postData();
+                                                              print('new booking calling token1....');
+                                                              print(RetrivedBearertoekn);
+                                                              SharedPreferences prefs = await SharedPreferences.getInstance();
+                                                              prefs.setString('tokenkey', RetrivedBearertoekn);
+
+                                                              await Future.delayed(Duration(seconds: 3), () => () {});
+                                                              setState(() => isLoading = false);
+                                                            },
+                                                          ),
+                                                        )
+
+                                                        // Container(
+                                                        //     child: TextButton(
+                                                        //       style: TextButton.styleFrom(
+                                                        //           fixedSize: const Size(340, 50),
+                                                        //           foregroundColor: Colors.white,
+                                                        //           backgroundColor: Colors.blue,
+                                                        //           shape: RoundedRectangleBorder(
+                                                        //             borderRadius: BorderRadius.circular(00),
+                                                        //           ),
+                                                        //           textStyle: const TextStyle(fontSize: 20,fontWeight: FontWeight.w600)),
+                                                        //       onPressed: () {
+                                                        //         // Navigator.push(
+                                                        //         //   context,
+                                                        //         //   MaterialPageRoute(
+                                                        //         //       builder: (context) => ForgotpwdOTPVerified()
+                                                        //         //   ),
+                                                        //         // );
+                                                        //       },
+                                                        //       child: const Text('Book Now'),
+                                                        //     )
+                                                        // ),
+                                                        // TextField (
+                                                        //   //readOnly: true,
+                                                        //   //controller: emailController,
+                                                        //   decoration: InputDecoration(
+                                                        //       border:OutlineInputBorder(),
+                                                        //       labelText: 'Email',
+                                                        //       hintText: 'Email'
+                                                        //   ),
+                                                        // ),
+                                                        //Text(NewUsertxt,style: TextStyle(color: Colors.black,fontWeight: FontWeight.w600,fontSize: 20),)
+                                                      ],
+                                                    ),
+
+
+                                                  ],
+                                                ),
                                               ),
-
-
                                             ],
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
+                                      ),
+                                    ],
+
+
+                                  )
+
+                                ],
+                              ),
+
+
+
+
+
+                              //   child: Container(
+                              //     constraints:
+                              //     BoxConstraints(minHeight: constraint.maxHeight),
+                              //     child: IntrinsicHeight(
+                              //       child: Column(
+                              //         children: [
+                              //           // SizedBox(
+                              //           //   height: 10,
+                              //           // ),
+                              //           Column(
+                              //               children: [
+                              //                 Column(
+                              //                     children: [
+                              //                       Padding(
+                              //                         padding: const EdgeInsets.all(8.0),
+                              //                         child: Container(
+                              //                           height: 250,
+                              //
+                              //                           child:ListView.separated(
+                              //                             //scrollDirection:Axis.horizontal,
+                              //
+                              //                             itemCount: (snapshot.data as List<Picture>).length,
+                              //                             separatorBuilder: (BuildContext context, int index) => const Divider(),
+                              //                             itemBuilder: (BuildContext context, int index) {
+                              //                               var abisiniyapic = (snapshot.data as List<Picture>)[index];
+                              //                               return Container(
+                              //                                 height: 220,
+                              //                                 width: 300,
+                              //                                 color: Colors.white,
+                              //                                 child: InkWell(
+                              //                                   child: Column(
+                              //                                     children: [
+                              //                                       Container(
+                              //                                         height: 200,
+                              //                                         decoration: BoxDecoration(
+                              //                                             image: DecorationImage(image: NetworkImage(abisiniyapic.imageUrl),
+                              //                                                 fit: BoxFit.cover)
+                              //                                         ),
+                              //                                       ),
+                              //                                     ],
+                              //                                   ),
+                              //                                   onTap: ()
+                              //                                   {
+                              //                                     print('calling.......');
+                              //                                     print([index]);
+                              //                                   },
+                              //                                 ),
+                              //                               );
+                              //                             },
+                              //                           ),
+                              //
+                              //
+                              //                         ),
+                              //                       ),
+                              //                       Container(
+                              //                         height: 40,
+                              //                         width: 340,
+                              //                         alignment: Alignment.topLeft,
+                              //                         color: Colors.white,
+                              //                         child: Text('Information',style: (TextStyle(fontSize: 22,fontWeight: FontWeight.w900,color: Colors.black)),),
+                              //                       )
+                              //                       // Container(
+                              //                       //   height: 50,
+                              //                       //   width: 280,
+                              //                       //   color: Colors.orange,
+                              //                       //   // child:Text(snapshot.data['data'][10]['address'],textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w900,fontSize: 22,color: Colors.green)),),
+                              //                       // ),
+                              //                     ]
+                              //                 ),
+                              //               ]
+                              //           ),
+                              //           // middle widget goes here
+                              //
+                              //           Align(
+                              //             alignment: Alignment.topCenter,
+                              //             child: Column(
+                              //               mainAxisAlignment: MainAxisAlignment.start,
+                              //               children: <Widget>[
+                              //                 // SizedBox(
+                              //                 //   height: 5,
+                              //                 // ),
+                              //                 // Container(
+                              //                 //   height: 400,
+                              //                 //   width: 340,
+                              //                 //   alignment: Alignment.topLeft,
+                              //                 //   color: Colors.red,
+                              //                 //   child: Text('Information',style: (TextStyle(fontSize: 22,fontWeight: FontWeight.w900,color: Colors.black)),),
+                              //                 // ),
+                              //                 Row(
+                              //                   children: [
+                              //                     SizedBox(
+                              //                       width: 10,
+                              //                     ),
+                              //                     Container(
+                              //                       height: 40,
+                              //                       width: 150,
+                              //                       color: Colors.white,
+                              //                       child: Text('Category:',style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w900,color: Colors.black)),),
+                              //                     ),
+                              //                     Container(
+                              //                       height: 40,
+                              //                       width: 175,
+                              //                       color: Colors.white,
+                              //                       child: Text('Accommodation',style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.black)),),
+                              //
+                              //                     )
+                              //                   ],
+                              //                 ),
+                              //                 Row(
+                              //                   children: [
+                              //                     SizedBox(
+                              //                       width: 10,
+                              //                     ),
+                              //                     Container(
+                              //                       height: 60,
+                              //                       width: 150,
+                              //                       color: Colors.white,
+                              //                       child: Text('Address:',style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w900,color: Colors.black)),),
+                              //                     ),
+                              //                     Container(
+                              //                       height: 60,
+                              //                       width: 175,
+                              //                       color: Colors.white,
+                              //                       child: Text(RetrivedAdress,style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.black)),),
+                              //
+                              //                     )
+                              //                   ],
+                              //                 ),
+                              //                 Row(
+                              //                   children: [
+                              //                     SizedBox(
+                              //                       width: 10,
+                              //                     ),
+                              //                     Container(
+                              //                       height: 40,
+                              //                       width: 150,
+                              //                       color: Colors.white,
+                              //                       child: Text('Location:',style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w900,color: Colors.black)),),
+                              //                     ),
+                              //                     Container(
+                              //                       height: 40,
+                              //                       width: 175,
+                              //                       color: Colors.white,
+                              //                       child: Text(Retrivedcityvalue,style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.black)),),
+                              //
+                              //                     )
+                              //                   ],
+                              //                 ),
+                              //                 Row(
+                              //                   children: [
+                              //                     SizedBox(
+                              //                       width: 10,
+                              //                     ),
+                              //                     Container(
+                              //                       height: 40,
+                              //                       width: 150,
+                              //                       color: Colors.white,
+                              //                       child: Text('Price:',style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w900,color: Colors.black)),),
+                              //                     ),
+                              //                     Container(
+                              //                       height: 40,
+                              //                       width: 175,
+                              //                       color: Colors.white,
+                              //                       child: Text('${(RetrivedPrice)} /night',style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.black)),),
+                              //
+                              //                     )
+                              //                   ],
+                              //                 ),
+                              //                 Row(
+                              //                   children: [
+                              //                     SizedBox(
+                              //                       width: 10,
+                              //                     ),
+                              //                     Container(
+                              //                       height: 60,
+                              //                       width: 150,
+                              //                       color: Colors.white,
+                              //                       child: Text('Specs & Utilities:',style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w900,color: Colors.black)),),
+                              //                     ),
+                              //                     Container(
+                              //                       height: 60,
+                              //                       width: 175,
+                              //                       color: Colors.white,
+                              //                       child: Text('${(RetrivedBathromm)} Bath, ${(RetrivedBedroom)} BedRoom',style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.black)),),
+                              //
+                              //                     )
+                              //                   ],
+                              //                 ),
+                              //
+                              //                 SizedBox(
+                              //                   height: 20,
+                              //                 ),
+                              //                 Column(
+                              //                   children: [
+                              //                     Container(
+                              //                       height: 100,
+                              //                       width: 340,
+                              //                       color: Colors.white,
+                              //                       child: Text(NewUsertxt,style: TextStyle(color: Colors.black,fontWeight: FontWeight.w600,fontSize: 20),) ,
+                              //                     ),
+                              //
+                              //                     SizedBox(
+                              //                       height: 10,
+                              //                     ),
+                              //                     Container(
+                              //                       height: 45,
+                              //                       width: 340,
+                              //                       child: TextField(
+                              //
+                              // decoration: InputDecoration(
+                              //       border:OutlineInputBorder(),
+                              //       labelText: 'Firstname',
+                              //       hintText: 'Firstname'
+                              //   ), controller: namecontroller,),),
+                              //
+                              //                     SizedBox(
+                              //                       height: 10,
+                              //                     ),
+                              //                     Container(
+                              //                       height: 45,
+                              //                       width: 340,
+                              //                       child: TextField(
+                              //                         decoration: InputDecoration(
+                              //                             border:OutlineInputBorder(),
+                              //                             labelText: 'surname',
+                              //                             hintText: 'surname'
+                              //                         ),controller: surnamecontroller,),),
+                              //
+                              //                     SizedBox(
+                              //                       height: 10,
+                              //                     ),
+                              //                     Container(
+                              //                       height: 45,
+                              //                       width: 340,
+                              //                       child: TextField(
+                              //                         decoration: InputDecoration(
+                              //                             border:OutlineInputBorder(),
+                              //                             labelText: 'Phone',
+                              //                             hintText: 'Phone'
+                              //                         ),controller: phonecontroller,),),
+                              //                     SizedBox(
+                              //                       height: 10,
+                              //                     ),
+                              //                     Container(
+                              //                       height: 45,
+                              //                       width: 340,
+                              //                       child: TextField(
+                              //                         decoration: InputDecoration(
+                              //                             border:OutlineInputBorder(),
+                              //                             labelText: 'Email',
+                              //                             hintText: 'Email'
+                              //                         ),controller: emailcontroller,),),
+                              //                     SizedBox(
+                              //                       height: 10,
+                              //                     ),
+                              //                     Container(
+                              //                       height: 45,
+                              //                       width: 340,
+                              //                       child: TextField(
+                              //                         decoration: InputDecoration(
+                              //                             border:OutlineInputBorder(),
+                              //                             labelText: 'Password',
+                              //                             hintText: 'Password'
+                              //                         ),controller: passwordcontroller,),),
+                              //
+                              //                     SizedBox(
+                              //                       height: 10,
+                              //                     ),
+                              //                     Container(
+                              //                       height: 45,
+                              //                       width: 340,
+                              //                       child: TextField(
+                              //                         decoration: InputDecoration(
+                              //                             border:OutlineInputBorder(),
+                              //                             labelText: 'Confirm Password ',
+                              //                             hintText: 'Confirm Password'
+                              //                         ),controller: pwd_confirmcontroller,),),
+                              //                     SizedBox(
+                              //                       height: 20,
+                              //                     ),
+                              //                     Container(
+                              //                       height: 45,
+                              //                       width: 340,
+                              //                       child: Text('Booking Details',style: TextStyle(color: Colors.teal,fontWeight: FontWeight.w800,fontSize: 22),
+                              //                         ),),
+                              //                     SizedBox(height: 10,),
+                              //                     Container(
+                              //                       height: 45,
+                              //                       width: 340,
+                              // child: TextField(
+                              // decoration: const InputDecoration(
+                              //   suffixIcon: Icon(Icons.calendar_month),
+                              //   hintText: 'From Date',
+                              // border: OutlineInputBorder(
+                              // borderSide: BorderSide(color: Colors.blue, width: 1)),
+                              // focusedBorder: OutlineInputBorder(
+                              // borderSide: BorderSide(color: Colors.blue, width: 1)),
+                              // enabledBorder: OutlineInputBorder(
+                              // borderSide: BorderSide(color: Colors.blue, width: 1)),
+                              // ),
+                              //     controller: FromdateInputController,
+                              //     readOnly: true,
+                              //     onTap: () async {
+                              //
+                              //       DateTime? pickedDate = await showDatePicker(
+                              //           context: context,
+                              //           initialDate: DateTime.now(),
+                              //           firstDate: DateTime(1950),
+                              //           lastDate: DateTime(2050));
+                              //       if (pickedDate != null) {
+                              //        // FromdateInputController.text =pickedDate.toString();
+                              //         fromDatestr = DateFormat('yyyy-MM-dd').format(pickedDate); // format date in required form here we use yyyy-MM-dd that means time is removed
+                              //
+                              //         FromdateInputController.text = fromDatestr;
+                              //       }
+                              //
+                              //     }
+                              //
+                              // ),),
+                              // SizedBox(
+                              //   height: 10,
+                              // ),
+                              //                     Container(
+                              //                       height: 45,
+                              //                       width: 340,
+                              //                       child: TextField(
+                              //                           decoration: const InputDecoration(
+                              //                             suffixIcon: Icon(Icons.calendar_month),
+                              //                             hintText: 'To Date',
+                              //                             border: OutlineInputBorder(
+                              //                                 borderSide: BorderSide(color: Colors.blue, width: 1)),
+                              //                             focusedBorder: OutlineInputBorder(
+                              //                                 borderSide: BorderSide(color: Colors.blue, width: 1)),
+                              //                             enabledBorder: OutlineInputBorder(
+                              //                                 borderSide: BorderSide(color: Colors.blue, width: 1)),
+                              //                           ),
+                              //                           controller: TodateInputController,
+                              //                           readOnly: true,
+                              //                           onTap: () async {
+                              //
+                              //                             DateTime? pickedDate = await showDatePicker(
+                              //                                 context: context,
+                              //                                 initialDate: DateTime.now(),
+                              //                                 firstDate: DateTime(1950),
+                              //                                 lastDate: DateTime(2050));
+                              //                             if (pickedDate != null) {
+                              //                               //TodateInputController.text =pickedDate.toString();
+                              //                               toDatestr = DateFormat('yyyy-MM-dd').format(pickedDate); // format date in required form here we use yyyy-MM-dd that means time is removed
+                              //
+                              //                               TodateInputController.text = toDatestr;
+                              //                             }
+                              //
+                              //                           }
+                              //
+                              //                       ),),
+                              // SizedBox(
+                              //                       height: 20,
+                              //                     ),
+                              //                     Container(
+                              //                       child:isLoading
+                              //                           ? Center(child: CircularProgressIndicator())
+                              //                           : TextButton(
+                              //                         style: TextButton.styleFrom(
+                              //                             fixedSize: const Size(340, 50),
+                              //                             foregroundColor: Colors.white,
+                              //                             backgroundColor: Colors.blue,
+                              //                             shape: RoundedRectangleBorder(
+                              //                               borderRadius: BorderRadius.circular(00),
+                              //                             ),
+                              //                             textStyle: const TextStyle(fontSize: 20,fontWeight: FontWeight.w600)),
+                              //                         child: Text('Book Now'),
+                              //                         onPressed: () async {
+                              //                           setState(() => isLoading = true);
+                              //                           _postData();
+                              //                           print('new booking calling token1....');
+                              //                           print(RetrivedBearertoekn);
+                              //                           SharedPreferences prefs = await SharedPreferences.getInstance();
+                              //                           prefs.setString('tokenkey', RetrivedBearertoekn);
+                              //
+                              //                           await Future.delayed(Duration(seconds: 3), () => () {});
+                              //                           setState(() => isLoading = false);
+                              //                         },
+                              //                       ),
+                              //                     )
+                              //
+                              //                     // Container(
+                              //                     //     child: TextButton(
+                              //                     //       style: TextButton.styleFrom(
+                              //                     //           fixedSize: const Size(340, 50),
+                              //                     //           foregroundColor: Colors.white,
+                              //                     //           backgroundColor: Colors.blue,
+                              //                     //           shape: RoundedRectangleBorder(
+                              //                     //             borderRadius: BorderRadius.circular(00),
+                              //                     //           ),
+                              //                     //           textStyle: const TextStyle(fontSize: 20,fontWeight: FontWeight.w600)),
+                              //                     //       onPressed: () {
+                              //                     //         // Navigator.push(
+                              //                     //         //   context,
+                              //                     //         //   MaterialPageRoute(
+                              //                     //         //       builder: (context) => ForgotpwdOTPVerified()
+                              //                     //         //   ),
+                              //                     //         // );
+                              //                     //       },
+                              //                     //       child: const Text('Book Now'),
+                              //                     //     )
+                              //                     // ),
+                              //                     // TextField (
+                              //                     //   //readOnly: true,
+                              //                     //   //controller: emailController,
+                              //                     //   decoration: InputDecoration(
+                              //                     //       border:OutlineInputBorder(),
+                              //                     //       labelText: 'Email',
+                              //                     //       hintText: 'Email'
+                              //                     //   ),
+                              //                     // ),
+                              //                     //Text(NewUsertxt,style: TextStyle(color: Colors.black,fontWeight: FontWeight.w600,fontSize: 20),)
+                              //                   ],
+                              //                 ),
+                              //
+                              //
+                              //               ],
+                              //             ),
+                              //           ),
+                              //         ],
+                              //       ),
+                              //     ),
+                              //   ),
                               );
                             },
                           ),

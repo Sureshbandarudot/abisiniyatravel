@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:tourstravels/tabbar.dart';
 
+import 'ServiceDasboardVC.dart';
+
 // void main() {
 //   runApp(HabitApp());
 // }
@@ -43,7 +45,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   void _onIntroEnd(context) {
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const tabbar()),
+      MaterialPageRoute(builder: (_) =>  ServiceDashboardScreen()),
     );
   }
 

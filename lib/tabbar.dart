@@ -39,7 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
     {"screen":  Dashboard(), "title": "Screen A Title"},
     {"screen": const ScreenB(), "title": "Screen B Title"},
     {"screen":  Apartmentscreen(), "title": "Apartment C Title"},
-    {"screen": const Vehiclescreen(), "title": "Flights D Title"}
+    {"screen": Vehiclescreen(), "title": "Flights D Title"}
   ];
   void _selectScreen(int index) {
     setState(() {

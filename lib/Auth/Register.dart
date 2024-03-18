@@ -8,6 +8,7 @@ import 'package:tourstravels/Auth/OtpEmailverified.dart';
 import 'package:tourstravels/Auth/Login.dart';
 import 'package:tourstravels/Auth/forgotpwdemailVerify.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 
 
 import 'package:tourstravels/tabbar.dart';
@@ -24,6 +25,8 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
+
+  final baseDioSingleton = BaseSingleton();
   bool isLoading = false;
 
   String _email = '';
@@ -55,7 +58,7 @@ class _RegisterState extends State<Register> {
   void RegisterAPI(String name , surname , email , password , password_confirmation , phone) async {
     try{
       Response response = await post(
-          Uri.parse('https://staging.abisiniya.com/api/v1/myregister'),
+          Uri.parse(baseDioSingleton.AbisiniyaBaseurl + 'myregister'),
           body: {
             'name' : nameController.text.toString(),
             'surname' : surnameController.text.toString(),

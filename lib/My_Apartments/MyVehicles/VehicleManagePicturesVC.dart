@@ -10,29 +10,35 @@ import 'package:tourstravels/tabbar.dart';
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tourstravels/UserDashboard_Screens/newDashboard.dart';
+
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 
-import 'My_AprtmetsVC.dart';
-import 'ViewAddPicVC.dart';
-class ViewManagePictures extends StatefulWidget {
+import 'MyvehicleVC.dart';
+import 'VehicleAddimgVC.dart';
 
-  const ViewManagePictures({super.key});
+// import 'My_AprtmetsVC.dart';
+// import 'ViewAddPicVC.dart';
+class VehicleViewManagePictures extends StatefulWidget {
+
+  const VehicleViewManagePictures({super.key});
 
   @override
-  State<ViewManagePictures> createState() => _userDashboardState();
+  State<VehicleViewManagePictures> createState() => _userDashboardState();
 }
 
-class _userDashboardState extends State<ViewManagePictures> {
+class _userDashboardState extends State<VehicleViewManagePictures> {
+
 
   final baseDioSingleton = BaseSingleton();
+
   String RetrivedPwd = '';
   String RetrivedEmail = '';
   String RetrivedBearertoekn = '';
-  int ApartmentId = 0;
+  int VehicleId = 0;
   int Picture_Id = 0;
 
   String image = '';
@@ -45,11 +51,11 @@ class _userDashboardState extends State<ViewManagePictures> {
       RetrivedEmail = prefs.getString('emailkey') ?? "";
       RetrivedPwd = prefs.getString('passwordkey') ?? "";
       RetrivedBearertoekn = prefs.getString('tokenkey') ?? "";
-      ApartmentId = prefs.getInt('userbookingId') ?? 0;
+      VehicleId = prefs.getInt('userbookingId') ?? 0;
       Picture_Id = prefs.getInt('Picturekey') ?? 0;
 
       print('Retrived Ids....');
-      print(ApartmentId);
+      print(VehicleId);
       print(Picture_Id);
 
       print('view Apartment... ');
@@ -68,13 +74,16 @@ class _userDashboardState extends State<ViewManagePictures> {
   File? galleryFile;
   final picker = ImagePicker();
 
-  Future<void> _deleteData(int ApartmentId, int Picture_Id) async {
+  Future<void> _deleteData(int VehicleId, int Picture_Id) async {
     try {
 
       print('delete url...');
+      print('ids...');
+      print(VehicleId);
+      print(Picture_Id);
       var url = '';
-      url = (baseDioSingleton.AbisiniyaBaseurl + 'apartment/pictures/$ApartmentId/$Picture_Id');
-
+       url = baseDioSingleton.AbisiniyaBaseurl + 'vehicle/pictures/$VehicleId/$Picture_Id';
+      //url = 'https://staging.abisiniya.com/api/v1/vehicle/pictures/$VehicleId/$Picture_Id';
       print(url);
       final response = await http
           .delete(Uri.parse(url),
@@ -87,11 +96,11 @@ class _userDashboardState extends State<ViewManagePictures> {
       );
 
       if (response.statusCode == 200) {
-        print('Deleted successfully');
+        print('manage ....Deleted successfully');
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => MyApartmentScreen()
+              builder: (context) => MyVehicleScreen()
           ),
         );
       } else {
@@ -104,10 +113,11 @@ class _userDashboardState extends State<ViewManagePictures> {
 
 
   Future<dynamic> getData() async {
-    print('Apartmentid.....');
-    print(ApartmentId);
-    // String url = 'https://staging.abisiniya.com/api/v1/apartment/auth/show/' + ApartmentId.toString();
-    String url = baseDioSingleton.AbisiniyaBaseurl + 'apartment/auth/show/' + ApartmentId.toString();
+    //String url = 'https://staging.abisiniya.com/api/v1/apartment/list';
+    print('manage VehicleId.....');
+    print(VehicleId);
+    // String url = 'https://staging.abisiniya.com/api/v1/vehicle/auth/show/' + VehicleId.toString();
+    String url = baseDioSingleton.AbisiniyaBaseurl + 'vehicle/auth/show/' + VehicleId.toString();
 
     print('url...');
     print(url);
@@ -242,7 +252,7 @@ class _userDashboardState extends State<ViewManagePictures> {
                                         separatorBuilder: (BuildContext context, int index) => const Divider(),
                                         itemBuilder: (BuildContext context, int index) {
                                           return Container(
-                                            height: 250,
+                                            height: 400,
                                             width: 100,
                                             alignment: Alignment.center,
                                             color: Colors.black12,
@@ -251,7 +261,7 @@ class _userDashboardState extends State<ViewManagePictures> {
                                               child: Column(
                                                 children: [
                                                   Container(
-                                                    height: 250,
+                                                    height: 400,
                                                     width: 340,
                                                     color: Colors.black12,
                                                     child: Column(
@@ -330,14 +340,14 @@ class _userDashboardState extends State<ViewManagePictures> {
                                                               height: 30,
                                                               width: 140,
                                                               color: Colors.white70,
-                                                              child: Text('No Guests:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                              child: Text('Make:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
                                                             ),
                                                             Container(
                                                               height: 30,
                                                               width: 200,
                                                               color: Colors.white70,
                                                               child:Text(snapshot.data?['data'].isEmpty ? 'Empty name'
-                                                                  : snapshot.data?["data"][index]?['guest']?.toString() ?? 'empty'),
+                                                                  : snapshot.data?["data"][index]?['make']?.toString() ?? 'empty'),
                                                             )
                                                           ],
                                                         ),
@@ -347,14 +357,14 @@ class _userDashboardState extends State<ViewManagePictures> {
                                                               height: 30,
                                                               width: 140,
                                                               color: Colors.white,
-                                                              child: Text('Bedroom:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                              child: Text('Model:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
                                                             ),
                                                             Container(
                                                               height: 30,
                                                               width: 200,
                                                               color: Colors.white,
                                                               child:Text(snapshot.data?['data'].isEmpty ? 'Empty name'
-                                                                  : snapshot.data?["data"][index]?['bedroom']?.toString() ?? 'empty'),
+                                                                  : snapshot.data?["data"][index]?['model']?.toString() ?? 'empty'),
                                                             )
                                                           ],
                                                         ),
@@ -364,14 +374,14 @@ class _userDashboardState extends State<ViewManagePictures> {
                                                               height: 30,
                                                               width: 140,
                                                               color: Colors.white70,
-                                                              child: Text('Bathroom:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                              child: Text('Year:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
                                                             ),
                                                             Container(
                                                               height: 30,
                                                               width: 200,
                                                               color: Colors.white70,
                                                               child:Text(snapshot.data?['data'].isEmpty ? 'Empty name'
-                                                                  : snapshot.data?["data"][index]?['bathroom']?.toString() ?? 'empty'),
+                                                                  : snapshot.data?["data"][index]?['year']?.toString() ?? 'empty'),
                                                             )
                                                           ],
                                                         ),
@@ -381,18 +391,102 @@ class _userDashboardState extends State<ViewManagePictures> {
                                                               height: 30,
                                                               width: 140,
                                                               color: Colors.white,
+                                                              child: Text('Engine Size:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                            ),
+                                                            Container(
+                                                              height: 30,
+                                                              width: 200,
+                                                              color: Colors.white,
+                                                              child:Text(snapshot.data?['data'].isEmpty ? 'Empty name'
+                                                                  : snapshot.data?["data"][index]?['engine_size']?.toString() ?? 'empty'),
+                                                            )
+                                                          ],
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Container(
+                                                              height: 30,
+                                                              width: 140,
+                                                              color: Colors.white70,
+                                                              child: Text('Fuel Type:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                            ),
+                                                            Container(
+                                                              height: 30,
+                                                              width: 200,
+                                                              color: Colors.white70,
+                                                              child:Text(snapshot.data?['data'].isEmpty ? 'Empty name'
+                                                                  : snapshot.data?["data"][index]?['fuel_type']?.toString() ?? 'empty'),
+                                                            )
+                                                          ],
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Container(
+                                                              height: 30,
+                                                              width: 140,
+                                                              color: Colors.white,
+                                                              child: Text('Weight:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                            ),
+                                                            Container(
+                                                              height: 30,
+                                                              width: 200,
+                                                              color: Colors.white,
+                                                              child:Text(snapshot.data?['data'].isEmpty ? 'Empty name'
+                                                                  : snapshot.data?["data"][index]?['weight']?.toString() ?? 'empty'),
+                                                            )
+                                                          ],
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Container(
+                                                              height: 30,
+                                                              width: 140,
+                                                              color: Colors.white70,
+                                                              child: Text('Color:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                            ),
+                                                            Container(
+                                                              height: 30,
+                                                              width: 200,
+                                                              color: Colors.white70,
+                                                              child:Text(snapshot.data?['data'].isEmpty ? 'Empty name'
+                                                                  : snapshot.data?["data"][index]?['color']?.toString() ?? 'empty'),
+                                                            )
+                                                          ],
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Container(
+                                                              height: 30,
+                                                              width: 140,
+                                                              color: Colors.white,
+                                                              child: Text('Transmission:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                            ),
+                                                            Container(
+                                                              height: 30,
+                                                              width: 200,
+                                                              color: Colors.white,
+                                                              child:Text(snapshot.data?['data'].isEmpty ? 'Empty name'
+                                                                  : snapshot.data?["data"][index]?['transmission']?.toString() ?? 'empty'),
+                                                            )
+                                                          ],
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Container(
+                                                              height: 30,
+                                                              width: 140,
+                                                              color: Colors.white70,
                                                               child: Text('Price:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
                                                             ),
                                                             Container(
                                                               height: 30,
                                                               width: 200,
-                                                              color: Colors.white,
+                                                              color: Colors.white70,
                                                               child:Text(snapshot.data?['data'].isEmpty ? 'Empty name'
                                                                   : snapshot.data?["data"][index]?['price']?.toString() ?? 'empty'),
                                                             )
                                                           ],
                                                         ),
-
                                                       ],
                                                     ),
                                                   ),
@@ -445,10 +539,10 @@ class _userDashboardState extends State<ViewManagePictures> {
                                                       ),                                                              ),
                                                     onTap: () {
 
-                                                      _deleteData(ApartmentId,Picture_Id);
-                                                      // Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-                                                      //   builder: (_) => ViewApartmnt(),
-                                                      // ),);
+                                                      _deleteData(VehicleId,Picture_Id);
+                                                      Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+                                                        builder: (_) => MyVehicleScreen(),
+                                                      ),);
                                                       print("value of your text");},
                                                   ),
 
@@ -480,10 +574,10 @@ class _userDashboardState extends State<ViewManagePictures> {
                                             ),                                                              ),
                                           onTap: () async{
                                             Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-                                              builder: (_) => AddpicScreen(),
+                                              builder: (_) => VehicleAddpicScreen(),
                                             ),);
                                             SharedPreferences prefs = await SharedPreferences.getInstance();
-                                            prefs.setInt('userbookingId', ApartmentId);
+                                            prefs.setInt('userbookingId', VehicleId);
                                             prefs.setString('tokenkey', RetrivedBearertoekn);
                                             print("value of your text");},
                                         ),

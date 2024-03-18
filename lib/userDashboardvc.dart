@@ -8,6 +8,8 @@ import 'package:tourstravels/Auth/Login.dart';
 import 'dart:convert';
 import 'package:tourstravels/ApartVC/Addaprtment.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
+
 
 //import 'NewUserbooking.dart';
 
@@ -19,6 +21,8 @@ class userDashboard extends StatefulWidget {
 }
 
 class _userDashboardState extends State<userDashboard> {
+  final baseDioSingleton = BaseSingleton();
+
 
   int _counter = 0;
   int selectedIndex = 0;
@@ -44,7 +48,9 @@ class _userDashboardState extends State<userDashboard> {
     try{
 
       Response response = await post(
-          Uri.parse('https://staging.abisiniya.com/api/v1/login'),
+          // Uri.parse('https://staging.abisiniya.com/api/v1/login'),
+          Uri.parse(baseDioSingleton.AbisiniyaBaseurl + 'login'),
+
           body: {
             'email' : RetrivedEmail,
             'password' : RetrivedPwd

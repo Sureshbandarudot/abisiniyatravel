@@ -17,53 +17,28 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 
-import 'My_AprtmetsVC.dart';
+import 'MyvehicleVC.dart';
+
+//import 'My_AprtmetsVC.dart';
 
 
 
 
 
 
-class AptmentEdit extends StatefulWidget {
+class CreateVehice extends StatefulWidget {
 
   @override
   _LoginState createState() => _LoginState();
 }
 
-class _LoginState extends State<AptmentEdit> {
-
+class _LoginState extends State<CreateVehice> {
   String RetrivedBearertoekn = '';
-  String RetrivedName = '';
-  String RetrivedAddress = '';
-  String RetrivedCity = '';
-  String RetrivedCountry = '';
-  int RetrivedGuest = 0;
-  int RetrivedBedroom = 0;
-  int RetrivedBathroom = 0;
-  int RetrivedPrice = 0;
-  int ApartmentID = 0;
   _retrieveValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      // prefs.setInt('userbookingId', snapshot.data['data'][index]['id']);
-      nameController.text = prefs.getString('namekey') ?? "";
-      addressController.text = prefs.getString('addresskey') ?? "";
-      cityController.text = prefs.getString('citykey') ?? "";
-      countryController.text = prefs.getString('countrykey') ?? "";
-      RetrivedGuest = prefs.getInt('guestkey') ?? 0;
-      RetrivedBedroom = prefs.getInt('bedroomkey') ?? 0;
-      RetrivedBathroom = prefs.getInt('bathroomkey') ?? 0;
-      RetrivedPrice = prefs.getInt('pricekey') ?? 0;
-      ApartmentID = prefs.getInt('userbookingId') ?? 0;
-      print('price...');
-      print(RetrivedPrice);
-      print(ApartmentID);
-      guestController.text = RetrivedGuest.toString();
-      bedroomController.text = RetrivedBedroom.toString();
-      bathroomController.text = RetrivedBathroom.toString();
-      priceController.text = RetrivedPrice.toString();
-      // guestController.text = prefs.getInt(''guestkey'') ?? 0.toString();
-      //ApartmentId = prefs.getInt('userbookingId') ?? 0;
+      // RetrivedEmail = prefs.getString('emailkey') ?? "";
+      // RetrivedPwd = prefs.getString('passwordkey') ?? "";
       RetrivedBearertoekn = prefs.getString('tokenkey') ?? "";
       print('create Apartment token');
       print(RetrivedBearertoekn);
@@ -77,24 +52,21 @@ class _LoginState extends State<AptmentEdit> {
   TextEditingController addressController = TextEditingController();
   TextEditingController cityController = TextEditingController();
   TextEditingController countryController = TextEditingController();
-  TextEditingController guestController = TextEditingController();
-  TextEditingController bedroomController = TextEditingController();
-  TextEditingController bathroomController = TextEditingController();
+  TextEditingController makeController = TextEditingController();
+  TextEditingController modelController = TextEditingController();
+  TextEditingController yearController = TextEditingController();
+  TextEditingController enginesizeController = TextEditingController();
+  TextEditingController fuelsizeController = TextEditingController();
+  TextEditingController weightController = TextEditingController();
+  TextEditingController colorController = TextEditingController();
+  TextEditingController transmisionController = TextEditingController();
   TextEditingController priceController = TextEditingController();
-  // nameController.text = RetrivedName;
-  // String tokenvalue = '';
-
-  String dropdownvalue = 'Active';
-
-// List of items in our dropdown menu
-  var items = [
-    'Select Status',
-    'Active',
-    'Inactive',
-    'Pending',
-  ];
 
 
+
+
+
+  String tokenvalue = '';
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -105,46 +77,75 @@ class _LoginState extends State<AptmentEdit> {
   File? galleryFile;
   final picker = ImagePicker();
   @override
-  //Update API Request
-  Future<String> Update() async {
-    final response = await http.put(
-      // Uri.parse('https://staging.abisiniya.com/api/v1/apartment/update/$ApartmentID'),
-      Uri.parse(baseDioSingleton.AbisiniyaBaseurl + 'apartment/update/$ApartmentID'),
+  Future addProduct() async{
+    print('entered.....');
+    //var token = '238|ykUFIyUUUX0xsykL24ckNe5XfYJGganQogKCf3ic';
+    var header = {
+      "Authorization":"Bearer $RetrivedBearertoekn",
+    "Accept": "application/json",
+    "Content-Type": "application/json"
+    };
+    final request = await http.MultipartRequest(
+      'POST',
+      // Uri.parse('https://staging.abisiniya.com/api/v1/vehicle/add'),
+      Uri.parse(baseDioSingleton.AbisiniyaBaseurl + 'vehicle/add'),
 
-      // NB: you don't need to fill headers field
-      // headers: {
-      //   'Content-Type': 'application/json' // 'application/x-www-form-urlencoded' or whatever you need
-      // },
-
-      headers: {
-    "Authorization":"Bearer $RetrivedBearertoekn"
-    },
-      body: {
-        'name': nameController.text,
-        'address': addressController.text,
-        'city': cityController.text,
-        'country': countryController.text,
-        'guest': guestController.text.toString(),
-        'bedroom': bedroomController.text.toString(),
-        'bathroom': bathroomController.text.toString(),
-        'price': priceController.text.toString(),
-        'status': dropdownvalue,
-      },
     );
+    request.headers.addAll(header);
+    request.fields['name'] = nameController.text;
+    request.fields['address'] = addressController.text;
+    request.fields['city'] = cityController.text;
+    request.fields['country'] = countryController.text;
+    request.fields['make'] = makeController.text.toString();
+    request.fields['model'] = modelController.text.toString();
+    request.fields['year'] = yearController.text.toString();
+    request.fields['engine_size'] = enginesizeController.text.toString();
+    request.fields['fuel_type'] = fuelsizeController.text.toString();
+    request.fields['weight'] = weightController.text;
+    request.fields['color'] = colorController.text.toString();
+    request.fields['transmission'] = transmisionController.text.toString();
+    request.fields['price'] = priceController.text.toString();
+    request.fields['pictures[]'] = '[]';
+    var takenPicture = await http.MultipartFile.fromPath("pictures[]",galleryFile!.path);
+    print(takenPicture);
+    request.files.add(takenPicture);
+    var response = await request.send();
+    print(response);
+    if(response.statusCode == 200) {
+      print('Vehicles........');
+      var responseData = await response.stream.toBytes();
+      var responseToString = String.fromCharCodes(responseData);
+      // final List parsedList = json.decode(responseToString);
+      // final snackBar = SnackBar(
+      //   content: Text('Apartment created successfully'),
+      // );
+      // // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MyVehicleScreen()
+        ),
+      );
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //       builder: (context) => MyApartmentScreen()
+      //   ),
+      // );
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('tokenkey', RetrivedBearertoekn);
 
-    print('status code...');
-    print(response.statusCode);
-    if (response.statusCode == 200) {
-      print('succesfully Edited');
-      Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-        builder: (_) => MyApartmentScreen(),
-      ),);
-      return response.body;
+      var jsonBody = jsonDecode(responseToString);
+      setState(() {
+        print(jsonBody);
+      });
     } else {
-      return "Error ${response.statusCode}: ${response.body}";
+      final snackBar = SnackBar(
+        content: Text('Please fill all fields'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -176,7 +177,7 @@ class _LoginState extends State<AptmentEdit> {
                           child: Column(
                             children: [
                               Container(
-                                  height: 700.0,
+                                  height: 1150.0,
                                   width: 325.0,
                                   decoration: const BoxDecoration(
                                     //color: Color(0xFFffffff),
@@ -209,7 +210,7 @@ class _LoginState extends State<AptmentEdit> {
                                           )
                                       ),
                                       Text(
-                                        "Create Apartment",
+                                        "Create Vehicle",
                                         textAlign: TextAlign.center ,
                                         style: TextStyle(
                                             color: Colors.black,fontWeight: FontWeight.bold,fontSize: 26),),
@@ -307,13 +308,13 @@ class _LoginState extends State<AptmentEdit> {
                                         width: 300.0,
                                         height: 40.0,
                                         child: TextField(
-                                            controller: guestController,
+                                            controller: makeController,
                                             textAlign: TextAlign.left,
                                             autocorrect: false,
                                             decoration:
                                             //disable single line border below the text field
                                             new InputDecoration.collapsed(
-                                                hintText: 'Guest')),
+                                                hintText: 'Make')),
                                       ),        SizedBox(height: 10,),
                                       Container(
                                         margin: const EdgeInsets.all(00.0),
@@ -325,13 +326,13 @@ class _LoginState extends State<AptmentEdit> {
                                         width: 300.0,
                                         height: 40.0,
                                         child: TextField(
-                                            controller: bedroomController,
+                                            controller: modelController,
                                             textAlign: TextAlign.left,
                                             autocorrect: false,
                                             decoration:
                                             //disable single line border below the text field
                                             new InputDecoration.collapsed(
-                                                hintText: 'Bedroom')),
+                                                hintText: 'Model')),
                                       ),
                                       SizedBox(height: 10,),
                                       Container(
@@ -344,14 +345,112 @@ class _LoginState extends State<AptmentEdit> {
                                         width: 300.0,
                                         height: 40.0,
                                         child: TextField(
-                                            controller: bathroomController,
+                                            controller: yearController,
                                             textAlign: TextAlign.left,
                                             autocorrect: false,
                                             decoration:
                                             //disable single line border below the text field
                                             new InputDecoration.collapsed(
-                                                hintText: 'Bathroom')),
+                                                hintText: 'Year')),
                                       ),
+                                      SizedBox(height: 10,),
+                                      Container(
+                                        margin: const EdgeInsets.all(00.0),
+                                        padding: EdgeInsets.only(top: 05.0,
+                                            left: 15.0,
+                                            right: 05.0),
+                                        //color: Colors.white30,
+                                        color: Colors.white,
+                                        width: 300.0,
+                                        height: 40.0,
+                                        child: TextField(
+                                            controller: enginesizeController,
+                                            textAlign: TextAlign.left,
+                                            autocorrect: false,
+                                            decoration:
+                                            //disable single line border below the text field
+                                            new InputDecoration.collapsed(
+                                                hintText: 'Engine Size')),
+                                      ),
+                                      SizedBox(height: 10,),
+                                      Container(
+                                        margin: const EdgeInsets.all(00.0),
+                                        padding: EdgeInsets.only(top: 05.0,
+                                            left: 15.0,
+                                            right: 05.0),
+                                        //color: Colors.white30,
+                                        color: Colors.white,
+                                        width: 300.0,
+                                        height: 40.0,
+                                        child: TextField(
+                                            controller: fuelsizeController,
+                                            textAlign: TextAlign.left,
+                                            autocorrect: false,
+                                            decoration:
+                                            //disable single line border below the text field
+                                            new InputDecoration.collapsed(
+                                                hintText: 'Fuel Type')),
+                                      ),
+
+                                      SizedBox(height: 10,),
+                                      Container(
+                                        margin: const EdgeInsets.all(00.0),
+                                        padding: EdgeInsets.only(top: 05.0,
+                                            left: 15.0,
+                                            right: 05.0),
+                                        //color: Colors.white30,
+                                        color: Colors.white,
+                                        width: 300.0,
+                                        height: 40.0,
+                                        child: TextField(
+                                            controller: weightController,
+                                            textAlign: TextAlign.left,
+                                            autocorrect: false,
+                                            decoration:
+                                            //disable single line border below the text field
+                                            new InputDecoration.collapsed(
+                                                hintText: 'Weight')),
+                                      ),
+
+                                      SizedBox(height: 10,),
+                                      Container(
+                                        margin: const EdgeInsets.all(00.0),
+                                        padding: EdgeInsets.only(top: 05.0,
+                                            left: 15.0,
+                                            right: 05.0),
+                                        //color: Colors.white30,
+                                        color: Colors.white,
+                                        width: 300.0,
+                                        height: 40.0,
+                                        child: TextField(
+                                            controller: colorController,
+                                            textAlign: TextAlign.left,
+                                            autocorrect: false,
+                                            decoration:
+                                            //disable single line border below the text field
+                                            new InputDecoration.collapsed(
+                                                hintText: 'Color')),
+                                      ),
+                                      SizedBox(height: 10,),
+                                      Container(
+                                        margin: const EdgeInsets.all(00.0),
+                                        padding: EdgeInsets.only(top: 05.0,
+                                            left: 15.0,
+                                            right: 05.0),
+                                        //color: Colors.white30,
+                                        color: Colors.white,
+                                        width: 300.0,
+                                        height: 40.0,
+                                        child: TextField(
+                                            controller: transmisionController,
+                                            textAlign: TextAlign.left,
+                                            autocorrect: false,
+                                            decoration:
+                                            //disable single line border below the text field
+                                            new InputDecoration.collapsed(
+                                                hintText: 'Transmission')),
+                                      ),
+
                                       SizedBox(height: 10,),
                                       Container(
                                         margin: const EdgeInsets.all(00.0),
@@ -375,50 +474,21 @@ class _LoginState extends State<AptmentEdit> {
                                       SizedBox(
                                         height: 15,
                                       ),
-
-
-                                      Container(
-                                        height: 50,
-                                        width: 300,
-                                        color: Colors.white,
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            DropdownButton(
-
-                                              isExpanded: true,
-
-                                              // Initial Value
-                                              value: dropdownvalue,
-
-                                              // Down Arrow Icon
-                                              icon: const Icon(Icons.keyboard_arrow_down),
-
-                                              // Array list of items
-                                              items: items.map((String items) {
-                                                return DropdownMenuItem(
-                                                  value: items,
-                                                  child: Text(items),
-                                                );
-                                              }).toList(),
-                                              // After selecting the desired option,it will
-                                              // change button value to selected value
-                                              onChanged: (String? newValue) {
-                                                setState(() {
-                                                  dropdownvalue = newValue!;
-                                                });
-                                              },
-                                            ),
-                                          ],
-
-                                        ),
-
+                                      ElevatedButton(
+                                        style: ButtonStyle(
+                                            backgroundColor: MaterialStateProperty.all(Colors.green)),
+                                        child: const Text('Select Image from Gallery and Camera',style: TextStyle(color: Colors.white),),
+                                        onPressed: () {
+                                          _showPicker(context: context);
+                                        },
                                       ),
                                       SizedBox(
-                                        height: 10,
+                                        height: 200.0,
+                                        width: 300.0,
+                                        child: galleryFile == null
+                                            ? const Center(child: Text('Sorry nothing selected!!',style: TextStyle(color: Colors.red),))
+                                            : Center(child: Image.file(galleryFile!)),
                                       ),
-
-
                                       Container(
                                         child:isLoading
                                             ? Center(child: CircularProgressIndicator())
@@ -433,11 +503,14 @@ class _LoginState extends State<AptmentEdit> {
                                               textStyle: const TextStyle(fontSize: 20)),
                                           // child: Text('Book Now'),
 
-                                          child: const Text('Update',style: TextStyle(color:Colors.white,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
+                                          child: const Text('Send',style: TextStyle(color:Colors.white,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
 
                                           onPressed: () async {
                                             setState(() => isLoading = true);
-                                          Update();
+                                            addProduct();
+                                            // _postData();
+                                            //login(emailController.text.toString(), passwordController.text.toString());
+
                                             SharedPreferences prefs = await SharedPreferences.getInstance();
                                             // print('booking id...');
                                             // print(snapshot.data['data'][index]['id']);
@@ -448,8 +521,8 @@ class _LoginState extends State<AptmentEdit> {
 
 
                                             print('token value....');
-                                            // print(tokenvalue);
-                                            // prefs.setString('tokenkey', tokenvalue);
+                                            print(tokenvalue);
+                                            prefs.setString('tokenkey', tokenvalue);
                                             await Future.delayed(Duration(seconds: 2), () => () {});
                                             setState(() => isLoading = false);
                                           },

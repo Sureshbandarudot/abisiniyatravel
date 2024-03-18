@@ -10,6 +10,7 @@ import 'package:tourstravels/tabbar.dart';
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tourstravels/UserDashboard_Screens/newDashboard.dart';
+import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
@@ -29,6 +30,8 @@ class CreateApartment extends StatefulWidget {
 }
 
 class _LoginState extends State<CreateApartment> {
+
+  final baseDioSingleton = BaseSingleton();
   String RetrivedBearertoekn = '';
   _retrieveValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -41,7 +44,6 @@ class _LoginState extends State<CreateApartment> {
     });
   }
 
-  final baseDioSingleton = BaseSingleton();
   bool isLoading = false;
   final globalKey = GlobalKey<ScaffoldState>();
   TextEditingController nameController = TextEditingController();
@@ -71,7 +73,9 @@ class _LoginState extends State<CreateApartment> {
     };
     final request = await http.MultipartRequest(
       'POST',
-      Uri.parse('https://staging.abisiniya.com/api/v1/apartment/add'),
+      // Uri.parse('https://staging.abisiniya.com/api/v1/apartment/add'),
+      Uri.parse(baseDioSingleton.AbisiniyaBaseurl + 'apartment/add'),
+
     );
     request.headers.addAll(header);
     request.fields['name'] = nameController.text;

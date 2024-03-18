@@ -13,8 +13,9 @@ import 'package:tourstravels/UserDashboard_Screens/PivoteVC.dart';
 import 'package:tourstravels/tabbar.dart';
 import 'package:tourstravels/My_Apartments/My_AprtmetsVC.dart';
 import 'package:tourstravels/My_Apartments/ViewApartmentVC.dart';
-
+import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 import 'ViewBookingsVC.dart';
+import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 
 
 //import 'NewUserbooking.dart';
@@ -26,6 +27,7 @@ class MyBookingScreen extends StatefulWidget {
 }
 
 class _userDashboardState extends State<MyBookingScreen> {
+  final baseDioSingleton = BaseSingleton();
   int bookingID = 0;
 
   String RetrivedBearertoekn = '';
@@ -54,8 +56,9 @@ class _userDashboardState extends State<MyBookingScreen> {
   }
 
   Future<dynamic> getData() async {
-    //String url = 'https://staging.abisiniya.com/api/v1/apartment/list';
-    String url = 'https://staging.abisiniya.com/api/v1/booking/apartment/mybookings';
+    // String url = 'https://staging.abisiniya.com/api/v1/booking/apartment/mybookings';
+    String url = baseDioSingleton.AbisiniyaBaseurl + 'booking/apartment/mybookings';
+
     var response = await http.get(
       Uri.parse(
           url),
@@ -334,7 +337,7 @@ class _userDashboardState extends State<MyBookingScreen> {
                                                               width: 200,
                                                               color: Colors.transparent,
                                                               //child: Text('suresh',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
-                                                              child:Text(snapshot.data['data'][index]['date'],textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w500,fontSize: 18,color: Colors.green)),),
+                                                              child:Text(snapshot.data['data'][index]['date'],textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w500,fontSize: 18,color: Colors.black)),),
                                                             )
                                                           ],
                                                         ),
@@ -350,7 +353,7 @@ class _userDashboardState extends State<MyBookingScreen> {
                                                               height: 30,
                                                               width: 200,
                                                               color: Colors.transparent,
-                                                              child:Text(snapshot.data['data'][index]['type'].toString(),textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w500,fontSize: 18,color: Colors.green)),),
+                                                              child:Text(snapshot.data['data'][index]['type'].toString(),textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w500,fontSize: 18,color: Colors.black)),),
 
                                                               // child: Text('suresh',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
                                                             )
@@ -371,7 +374,7 @@ class _userDashboardState extends State<MyBookingScreen> {
                                                               width: 200,
                                                               color: Colors.transparent,
                                                               //child: Text('suresh',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
-                                                              child:Text(snapshot.data['data'][index]['checkIn'].toString(),textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w500,fontSize: 18,color: Colors.green)),),
+                                                              child:Text(snapshot.data['data'][index]['checkIn'].toString(),textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w500,fontSize: 18,color: Colors.black)),),
                                                             )
                                                           ],
                                                         ),
@@ -389,7 +392,7 @@ class _userDashboardState extends State<MyBookingScreen> {
                                                               width: 200,
                                                               color: Colors.transparent,
                                                               //child: Text('suresh',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
-                                                              child:Text(snapshot.data['data'][index]['checkOut'].toString(),textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w500,fontSize: 18,color: Colors.green)),),
+                                                              child:Text(snapshot.data['data'][index]['checkOut'].toString(),textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w500,fontSize: 18,color: Colors.black)),),
                                                             )
                                                           ],
                                                         ),
@@ -408,7 +411,7 @@ class _userDashboardState extends State<MyBookingScreen> {
                                                               width: 200,
                                                               color: Colors.transparent,
                                                               //child: Text('suresh',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
-                                                              child:Text(snapshot.data['data'][index]['reference'].toString(),textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w500,fontSize: 18,color: Colors.green)),),
+                                                              child:Text(snapshot.data['data'][index]['reference'].toString(),textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w500,fontSize: 18,color: Colors.black)),),
                                                             )
                                                           ],
                                                         ),
@@ -426,7 +429,7 @@ class _userDashboardState extends State<MyBookingScreen> {
                                                               width: 200,
                                                               color: Colors.transparent,
                                                               //child: Text('suresh',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
-                                                              child:Text(snapshot.data['data'][index]['paymentStatus'].toString(),textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w500,fontSize: 18,color: Colors.green)),),
+                                                              child:Text(snapshot.data['data'][index]['paymentStatus'].toString(),textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w500,fontSize: 18,color: Colors.black)),),
                                                             )
                                                           ],
                                                         ),

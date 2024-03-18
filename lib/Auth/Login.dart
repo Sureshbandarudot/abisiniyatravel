@@ -11,6 +11,9 @@ import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tourstravels/UserDashboard_Screens/newDashboard.dart';
 
+import '../ApartVC/Apartment.dart';
+import '../ServiceDasboardVC.dart';
+
 
 
 class Login extends StatefulWidget {
@@ -82,8 +85,13 @@ class _LoginState extends State<Login> {
       // isLoading = true;
       // var response = await http.get(url);
       // isLoading = false;
+      print('login url...');
+      print(baseDioSingleton.AbisiniyaBaseurl +'login');
       Response response = await post(
-          Uri.parse('https://staging.abisiniya.com/api/v1/login'),
+          //Uri.parse('https://staging.abisiniya.com/api/v1/login'),
+          Uri.parse(baseDioSingleton.AbisiniyaBaseurl +'login'),
+
+
 
           body: {
             'email' : emailController.text.toString(),
@@ -161,6 +169,25 @@ class _LoginState extends State<Login> {
         // ),
 
         appBar: AppBar(
+          actions: <Widget>[
+            // TextButton(
+            //   onPressed: () async {
+            //
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //           builder: (context) => ServiceDashboardScreen()
+            //       ),
+            //     );
+            //     SharedPreferences prefs = await SharedPreferences.getInstance();
+            //     // prefs.setString('logoutkey', ('LogoutDashboard'));
+            //     //prefs.setString('Property_type', ('Apartment'));
+            //     prefs.setString('NewuserBookingkey', 'NewuserBooking');
+            //
+            //   },
+            //   child: Text('New Booking',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w800,color: Colors.green),),
+            // ),
+          ],
           centerTitle: true,
           iconTheme: IconThemeData(
               color: Colors.green
@@ -301,7 +328,9 @@ class _LoginState extends State<Login> {
                                                 prefs.setString('emailkey', emailController.text);
                                                 prefs.setString('passwordkey', passwordController.text);
 
-                                                print('token value....');
+
+
+                                          print('token value....');
                                                 print(tokenvalue);
                                                 prefs.setString('tokenkey', tokenvalue);
 

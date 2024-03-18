@@ -5,6 +5,8 @@ import 'package:http/http.dart';
 import 'package:tourstravels/Auth/ForgotPassword.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
+
 
 class ForgotpwdOTPVerified extends StatefulWidget {
   @override
@@ -12,6 +14,7 @@ class ForgotpwdOTPVerified extends StatefulWidget {
 }
 
 class _ForgotpwdOTPVerifiedState extends State<ForgotpwdOTPVerified> {
+  final baseDioSingleton = BaseSingleton();
   bool isLoading = false;
   final globalKey = GlobalKey<ScaffoldState>();
   TextEditingController emailController = TextEditingController();
@@ -21,8 +24,9 @@ class _ForgotpwdOTPVerifiedState extends State<ForgotpwdOTPVerified> {
     try{
 
       Response response = await post(
-          //https://staging.abisiniya.com/api/v1/forgotpass/emailverify
-          Uri.parse('https://staging.abisiniya.com/api/v1/forgotpass/emailverify'),
+          // Uri.parse('https://staging.abisiniya.com/api/v1/forgotpass/emailverify'),
+          Uri.parse(baseDioSingleton.AbisiniyaBaseurl + 'forgotpass/emailverify'),
+
           body: {
             'email' : emailController.text.toString(),
           }

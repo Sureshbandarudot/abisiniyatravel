@@ -10,32 +10,27 @@ import 'package:tourstravels/tabbar.dart';
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tourstravels/UserDashboard_Screens/newDashboard.dart';
-
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
-
-import 'My_AprtmetsVC.dart';
-import 'ViewApartmentVC.dart';
-
-
-
-
-
-
-class AddpicScreen extends StatefulWidget {
+import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
+import 'MybookingVC.dart';
+class AddReplyscreen extends StatefulWidget {
 
   @override
   _LoginState createState() => _LoginState();
 }
 
-class _LoginState extends State<AddpicScreen> {
+class _LoginState extends State<AddReplyscreen> {
 
   final baseDioSingleton = BaseSingleton();
   String RetrivedBearertoekn = '';
-  int ApartmentId = 0;
+  int bookingID = 0;
+
+  TextEditingController ReplyController = TextEditingController();
+
 
   _retrieveValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -43,15 +38,11 @@ class _LoginState extends State<AddpicScreen> {
       // RetrivedEmail = prefs.getString('emailkey') ?? "";
       // RetrivedPwd = prefs.getString('passwordkey') ?? "";
       RetrivedBearertoekn = prefs.getString('tokenkey') ?? "";
-      ApartmentId = prefs.getInt('userbookingId') ?? 0;
-      print('pic view Apartment... ');
-      print(ApartmentId);
-      print(RetrivedBearertoekn);
-
+      bookingID = prefs.getInt('userbookingId') ?? 0;
     });
   }
 
-  //final baseDioSingleton = BaseSingleton();
+  // final baseDioSingleton = BaseSingleton();
   bool isLoading = false;
   final globalKey = GlobalKey<ScaffoldState>();
   String tokenvalue = '';
@@ -71,19 +62,24 @@ class _LoginState extends State<AddpicScreen> {
     var header = {
       "Authorization":"Bearer $RetrivedBearertoekn"
     };
-        final request = await http.MultipartRequest(
+    final request = await http.MultipartRequest(
       'POST',
-      Uri.parse(baseDioSingleton.AbisiniyaBaseurl +'apartment/pictures'),
+      Uri.parse(baseDioSingleton.AbisiniyaBaseurl + 'booking/apartment/sendreply'),
     );
     request.headers.addAll(header);
-     request.fields['apartment_id'] = ApartmentId.toString();
-    request.fields['pictures[]'] = '[]';
-    var takenPicture = await http.MultipartFile.fromPath("pictures[]",galleryFile!.path);
+    request.fields['reply'] = ReplyController.text;
+
+    request.fields['booking_id'] = bookingID.toString();
+    request.fields['image'] = '';
+    var takenPicture = await http.MultipartFile.fromPath("image",galleryFile!.path);
     print(takenPicture);
     request.files.add(takenPicture);
     var response = await request.send();
     print(response);
-    if(response.statusCode == 201) {
+    print('stscode...');
+    print(response.statusCode);
+    if(response.statusCode == 200) {
+      print('success Add reply');
       var responseData = await response.stream.toBytes();
       var responseToString = String.fromCharCodes(responseData);
       // final List parsedList = json.decode(responseToString);
@@ -100,7 +96,7 @@ class _LoginState extends State<AddpicScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => ViewApartmnt()
+            builder: (context) => MyBookingScreen()
         ),
       );
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -149,7 +145,7 @@ class _LoginState extends State<AddpicScreen> {
                           child: Column(
                             children: [
                               Container(
-                                  height: 400.0,
+                                  height: 450.0,
                                   width: 325.0,
                                   decoration: const BoxDecoration(
                                     //color: Color(0xFFffffff),
@@ -169,7 +165,7 @@ class _LoginState extends State<AddpicScreen> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        "Add Picture",
+                                        "Add a Reply",
                                         textAlign: TextAlign.center ,
                                         style: TextStyle(
                                             color: Colors.black,fontWeight: FontWeight.bold,fontSize: 26),),
@@ -193,6 +189,31 @@ class _LoginState extends State<AddpicScreen> {
                                       ),
 
 
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Container(
+                                        margin: const EdgeInsets.all(00.0),
+                                        padding: EdgeInsets.only(top: 15.0,
+                                            left: 15.0,
+                                            right: 05.0),
+                                        //color: Colors.white30,
+                                        color: Colors.white,
+                                        width: 300.0,
+                                        height: 60.0,
+                                        child: TextField(
+                                            controller: ReplyController,
+                                            textAlign: TextAlign.left,
+                                            autocorrect: false,
+                                            decoration:
+                                            //disable single line border below the text field
+                                            new InputDecoration.collapsed(
+                                                hintText: 'Reply')),
+                                      ),
+
+                                      SizedBox(
+                                        height: 20,
+                                      ),
                                       Container(
                                         child:isLoading
                                             ? Center(child: CircularProgressIndicator())
@@ -200,18 +221,18 @@ class _LoginState extends State<AddpicScreen> {
                                           style: TextButton.styleFrom(
                                               fixedSize: const Size(300, 45),
                                               foregroundColor: Colors.white,
-                                              backgroundColor: Colors.green,
+                                              backgroundColor: Colors.deepPurple,
                                               shape: RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.circular(00),
                                               ),
                                               textStyle: const TextStyle(fontSize: 20)),
                                           // child: Text('Book Now'),
 
-                                          child: const Text('Save',style: TextStyle(color:Colors.white,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
+                                          child: const Text('Send Reply',style: TextStyle(color:Colors.white,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
 
                                           onPressed: () async {
                                             setState(() => isLoading = true);
-                                           // addProduct();
+                                            // addProduct();
                                             addProduct();
                                             // _postData();
                                             //login(emailController.text.toString(), passwordController.text.toString());

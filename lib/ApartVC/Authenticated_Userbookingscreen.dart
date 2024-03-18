@@ -10,10 +10,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 
 import '../ServiceDasboardVC.dart';
+import 'Authenticated_filterAptmentVC.dart';
 import 'FilterApartmentVC.dart';
 import 'NewUserbooking.dart';
 //void main() => runApp(Apartmentscreen());
-class Apartmentscreen extends StatelessWidget {
+class AuthenticatedUserScreen extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -33,9 +34,9 @@ class MyHomePage extends StatefulWidget {
 }
 class _MyHomePageState extends State<MyHomePage> {
   TextEditingController searchController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
+  String LoggedInUser = 'LoggedUser';
 
-
+  String Aptsstr = '';
   final baseDioSingleton = BaseSingleton();
   final borderRadius = BorderRadius.circular(20); // Image border
   int _counter = 0;
@@ -45,6 +46,8 @@ class _MyHomePageState extends State<MyHomePage> {
   String RetrivedPwd = '';
   String RetrivedEmail = '';
   String Logoutstr = '';
+  String RetrivedBearertoekn = '';
+
   _retrieveValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -52,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
       RetrivedPwd = prefs.getString('passwordkey') ?? "";
       Logoutstr = prefs.getString('logoutkey') ?? "";
       var propertytype = prefs.getString('Property_type') ?? "";
-print(propertytype);
+      print(propertytype);
       print('logout....');
       print(Logoutstr);
     });
@@ -61,7 +64,7 @@ print(propertytype);
   void login(String email , password) async {
     try{
       Response response = await post(
-          //Uri.parse('https://staging.abisiniya.com/api/v1/login'),
+        //Uri.parse('https://staging.abisiniya.com/api/v1/login'),
           Uri.parse(baseDioSingleton.AbisiniyaBaseurl + 'login'),
           body: {
             'email' : RetrivedEmail,
@@ -94,22 +97,65 @@ print(propertytype);
       print(e.toString());
     }
   }
-@override
-void initState() {
-  // TODO: implement initState
-  super.initState();
-  _retrieveValues();
-  getData();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _retrieveValues();
+    getData();
 
-}
+  }
   Future<dynamic> getData() async {
     //String url = 'https://staging.abisiniya.com/api/v1/apartment/list';
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //RetrivedId = prefs.getInt('imgkeyId') ?? 0;
+    RetrivedBearertoekn = prefs.getString('tokenkey') ?? "";
+    //String url = (baseDioSingleton.AbisiniyaBaseurl + 'apartment/show/$RetrivedId');
+    print('token value for authenticated user....');
+    print(RetrivedBearertoekn);
+//apartment/list
+//     String url = baseDioSingleton.AbisiniyaBaseurl + 'apartment/auth/list';
     String url = baseDioSingleton.AbisiniyaBaseurl + 'apartment/list';
-    final response = await http.get(Uri.parse(url));
+
+    //final response = await http.get(Uri.parse(url));
+
+    var response = await http.get(
+      Uri.parse(
+          url),
+      headers: {
+        "Authorization": "Bearer $RetrivedBearertoekn",
+      },
+    );
     if (response.statusCode == 200) {
       print('success.....');
       final data1 = jsonDecode(response.body);
       print(data1);
+      print(data1['data']);
+      print(data1);
+      print(data1['data']);
+      //items['Items'] = [];
+      var listA = [];
+      listA.add(data1['data']);
+      print('length...');
+      //print(listA);
+      print(listA.length);
+      if (data1['data'] == null){
+        Aptsstr = 'Not available';
+        print(' empty...');
+
+
+        print(Aptsstr);
+      } else{
+        Aptsstr = 'Not available';
+      }
+
+      //print(data1[['data'].isEmpty)]);
+
+
+
+      //  print('apt empty....');
+      // print((snapshot.data?['data'].isEmpty));
+
       return json.decode(response.body);
     } else {
       // If that call was not successful, throw an error.
@@ -133,15 +179,18 @@ void initState() {
           centerTitle: true,
           leading: BackButton(
             onPressed: () async{
-              // print("back Pressed");
-              // SharedPreferences prefs = await SharedPreferences.getInstance();
-              // prefs.setString('logoutkey', ('LogoutDashboard'));
-              // prefs.setString('Property_type', ('Apartment'));
+              print("back Pressed");
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              //.setString('logoutkey', ('LogoutDashboard'));
+              prefs.setString('Property_type', ('Apartment'));
+
               Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => ServiceDashboardScreen()),
               );
+              prefs.setString('LoggedinUserkey', LoggedInUser);
+
             },
           ),
           title: Text('APARTMENT',textAlign: TextAlign.center,
@@ -177,12 +226,13 @@ void initState() {
 
                                 child: LayoutBuilder(
                                     builder: (context, constraint) {
+
+
                                       return SingleChildScrollView(
                                         child: Column(
                                           // mainAxisSize: MainAxisSize.min,
                                           // crossAxisAlignment: CrossAxisAlignment.start,
                                           children: <Widget>[
-
                                             SizedBox(
                                               height: 20,
                                             ),
@@ -191,66 +241,77 @@ void initState() {
                                               width: 330,
                                               //color: Colors.lightGreen,
                                               decoration: const BoxDecoration(
-                                                gradient: LinearGradient(
-                                                    begin: Alignment.topCenter,
-                                                    end: Alignment.bottomCenter,
-                                                    colors: <Color>[Colors.blueGrey, Colors.green]),
+                                                  gradient: LinearGradient(
+                                                      begin: Alignment.topCenter,
+                                                      end: Alignment.bottomCenter,
+                                                      colors: <Color>[Colors.blueGrey, Colors.green]),
                                                   borderRadius: BorderRadius.all(Radius.circular(30))
 
                                               ),
+
                                               child: Row(
                                                 children: [
                                                   Container(
                                                       margin: const EdgeInsets.only(left: 20.0),
 
                                                       child: SizedBox(
-                                                      width: 220.0,
-                                                      height: 50,
-                                                      child: TextField(
-                                                        decoration: InputDecoration(
-                                                          //border: OutlineInputBorder(),
-                                                          border: InputBorder.none,
-                                                          hintText: 'Search',
+                                                        width: 220.0,
+                                                        height: 50,
+                                                        child: TextField(
+                                                          decoration: InputDecoration(
+                                                            //border: OutlineInputBorder(),
+                                                            border: InputBorder.none,
+                                                            hintText: 'Search',
+                                                          ),
+                                                          controller: searchController,
+                                                          style: TextStyle(fontSize: 18.0, height: 0.0, color: Colors.black),
                                                         ),
-                                                        controller: searchController,
-                                                        style: TextStyle(fontSize: 18.0, height: 0.0, color: Colors.black),
-                                                      ),
-                                                    )
+                                                      )
                                                   ),
                                                   Container(
                                                       margin: const EdgeInsets.only(left: 20.0),                                         child: IconButton(
-                                                        onPressed: () async{
-                                                          if (searchController.text == ''){
-                                                            print('empty....');
+                                                    onPressed: () async{
+    if (searchController.text == ''){
+    print('empty....');
 
-                                                            final snackBar = SnackBar(
+    final snackBar = SnackBar(
     content: Text('Please search with keyword'),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
     } else {
-                                                            print('search btn clicked...');
-                                                            Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                  builder: (context) => ApartmentSearchResultscreen()
-                                                              ),
-                                                            );
-                                                            final prefs = await SharedPreferences.getInstance();
-                                                            await prefs.setString('locationkey', searchController.text);
+      print('search btn clicked...');
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => AuthenticateFilterdUserScreen()
+        ),
+      );
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('locationkey', searchController.text);
+      RetrivedBearertoekn = prefs.getString('tokenkey') ?? "";
+      //String url = (baseDioSingleton.AbisiniyaBaseurl + 'apartment/show/$RetrivedId');
+      print('search token value for authenticated user....');
+      print(RetrivedBearertoekn);
 
-                                                          }
-                                                        },
-                                                        icon: const Icon(Icons.search),
-                                                      )
+    }
+                                                    },
+                                                    icon: const Icon(Icons.search),
+                                                  )
                                                   )
                                                 ],
-
                                               ),
+                                            ),
+                                            Container(
+                                             // child: Text((snapshot.data?['data'].isEmpty ? 'nnn')),
+                                             // Text(snapshot.data?['data'].isEmpty ? 'Empty name'
+                                                child:Text(snapshot.data?['data'].isEmpty ? 'Apartments not available' : ''),
+                                                   // : snapshot.data?["data"]?.toString() ?? 'empty',style: (TextStyle(fontWeight: FontWeight.w300,fontSize: 18,color: Colors.black)))
+                                            ),
 
-                                            ),
-                                            SizedBox(
-                                              height: 20,
-                                            ),
+                                            SizedBox(height: 20,),
+
+
+
                                             SizedBox(
                                                 height: 510, // <-- you should put some value here
                                                 child: ListView.separated(
@@ -261,6 +322,8 @@ void initState() {
                                                   separatorBuilder: (BuildContext context, int index) => const Divider(),
                                                   itemBuilder: (BuildContext context, int index) {
                                                     var picstrr = snapshot.data['data'];
+                                                    print('apt empty....');
+                                                    print((snapshot.data?['data'].isEmpty));
                                                     for (var record in picstrr) {
                                                       var pictures = record['pictures'];
                                                       print(pictures);
@@ -281,6 +344,7 @@ void initState() {
                                                     return Container(
                                                       height: 510,
                                                       width: 300,
+
                                                       //margin: EdgeInsets.all(Top:20),// add margin
                                                       //padding: EdgeInsets.all(20),
                                                       margin: EdgeInsets.only(top: 0, left: 20,right: 20),
@@ -291,7 +355,7 @@ void initState() {
                                                             width: 0.0,
                                                             style: BorderStyle.solid
                                                         ),
-                                                        borderRadius: BorderRadius.circular(5),
+                                                        borderRadius: BorderRadius.circular(20),
                                                         //color: Colors.yellowAccent,
                                                         color: Colors.white,
                                                       ),
@@ -321,6 +385,7 @@ void initState() {
                                                               ),
                                                               child: Column(
                                                                 children: [
+                                                                 // Text('Not available'),
                                                                   SizedBox(
                                                                     height: 10,
                                                                   ),
@@ -351,7 +416,11 @@ void initState() {
                                                                           width: 280,
                                                                           height: 40,
                                                                           color: Colors.white,
-                                                                          child:Text(snapshot.data['data'][index]['city'],textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w900,fontSize: 22,color: Colors.green)),),
+                                                                         // child:Text(snapshot.data['data'][index]['city'],textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w900,fontSize: 22,color: Colors.green)),),
+
+                                                                          child:Text(snapshot.data?['data'].isEmpty ? 'Empty'
+                                                                              : snapshot.data?["data"][index]?['city'].toString() ?? 'empty'),
+                                                                          //child: Text(
                                                                         ),
                                                                         SizedBox(
                                                                           width: 5,
@@ -392,6 +461,7 @@ void initState() {
                                                                                   style: TextButton.styleFrom(backgroundColor:Colors.green),
                                                                                   onPressed: () async {
 
+                                                                                    print('pressed...');
                                                                                     SharedPreferences prefs = await SharedPreferences.getInstance();
                                                                                     prefs.setString('citykey', snapshot.data['data'][index]['city']);
                                                                                     prefs.setInt('imgkeyId', snapshot.data['data'][index]['id']);
@@ -400,6 +470,8 @@ void initState() {
                                                                                     prefs.setString('bedroomkey', (snapshot.data['data'][index]['bedroom'].toString()));
                                                                                     prefs.setString('pricekey', (snapshot.data['data'][index]['price'].toString()));
                                                                                     prefs.setString('Property_type', ('Apartment'));
+                                                                                    RetrivedBearertoekn = prefs.getString('tokenkey') ?? "";
+
                                                                                     prefs.setString('emailkey', (RetrivedEmail));
                                                                                     prefs.setString('passwordkey', (RetrivedPwd));
                                                                                     print('email....');
@@ -411,13 +483,29 @@ void initState() {
                                                                                     Navigator.push(
                                                                                       context,
                                                                                       MaterialPageRoute(
-                                                                                          builder: (context) => UserBooking()
+                                                                                          builder: (context) => AddApartment()
                                                                                       ),
                                                                                     );
-                                                                                  },
-                                                                                  //child: const Text('BookNow'),
-                                                                                  child: const Text('BookNow',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600,color: Colors.white),),
 
+                                                                                    // if(Logoutstr == 'LogoutDashboard') {
+                                                                                    //   print('fail dash...');
+                                                                                    //   Navigator.push(
+                                                                                    //     context,
+                                                                                    //     MaterialPageRoute(
+                                                                                    //         builder: (context) => AddApartment()
+                                                                                    //     ),
+                                                                                    //   );
+                                                                                    // } else{
+                                                                                    //   Navigator.push(
+                                                                                    //     context,
+                                                                                    //     MaterialPageRoute(
+                                                                                    //         builder: (context) => UserBooking()
+                                                                                    //     ),
+                                                                                    //   );
+                                                                                    //   // login(RetrivedEmail, RetrivedPwd);
+                                                                                    // }
+                                                                                  },
+                                                                                  child: const Text('BookNow',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600,color: Colors.white),),
                                                                                 ),
                                                                               )
                                                                             ],
@@ -471,11 +559,45 @@ void initState() {
                                                         ),
                                                         //onTap: ()
                                                         onTap: ()async{
+                                                          SharedPreferences prefs = await SharedPreferences.getInstance();
+                                                          prefs.setString('citykey', snapshot.data['data'][index]['city']);
+                                                          prefs.setInt('imgkeyId', snapshot.data['data'][index]['id']);
+                                                          prefs.setString('addresskey', snapshot.data['data'][index]['address']);
+                                                          prefs.setString('bathroomkey', (snapshot.data['data'][index]['bathroom'].toString()));
+                                                          prefs.setString('bedroomkey', (snapshot.data['data'][index]['bedroom'].toString()));
+                                                          prefs.setString('pricekey', (snapshot.data['data'][index]['price'].toString()));
+                                                          prefs.setString('Property_type', ('Apartment'));
+                                                          prefs.setString('emailkey', (RetrivedEmail));
+                                                          prefs.setString('passwordkey', (RetrivedPwd));
+                                                          print('email....');
+                                                          print(RetrivedEmail);
+                                                          print('pwd...');
+                                                          print(RetrivedPwd);
+                                                          print('logout......');
+                                                          print(Logoutstr);
+                                                          // if(Logoutstr == 'LogoutDashboard') {
+                                                          //   print('fail dash...');
+                                                          //   Navigator.push(
+                                                          //     context,
+                                                          //     MaterialPageRoute(
+                                                          //         builder: (context) => AddApartment()
+                                                          //     ),
+                                                          //   );
+                                                          // } else{
+                                                          //   Navigator.push(
+                                                          //     context,
+                                                          //     MaterialPageRoute(
+                                                          //         builder: (context) => UserBooking()
+                                                          //     ),
+                                                          //   );
+                                                          //   // login(RetrivedEmail, RetrivedPwd);
+                                                          // }
                                                           print([index]);
                                                         },
                                                       ),
                                                     );},
                                                 )
+
                                             ),
                                             Column(
                                               children: [
@@ -493,7 +615,9 @@ void initState() {
                   }
                 }
             )
+
         )
+
     );
   }
 }

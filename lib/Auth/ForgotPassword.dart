@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:tourstravels/Auth/Login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 
 
 class Forgot extends StatefulWidget {
@@ -11,6 +12,7 @@ class Forgot extends StatefulWidget {
 }
 
 class _ForgotState extends State<Forgot> {
+  final baseDioSingleton = BaseSingleton();
   bool isLoading = false;
   final globalKey = GlobalKey<ScaffoldState>();
   TextEditingController emailController = TextEditingController();
@@ -24,8 +26,9 @@ class _ForgotState extends State<Forgot> {
     try{
 
       Response response = await post(
-        //https://staging.abisiniya.com/api/v1/forgotpass/resetpassword
-          Uri.parse('https://staging.abisiniya.com/api/v1/forgotpass/resetpassword'),
+          //Uri.parse('https://staging.abisiniya.com/api/v1/forgotpass/resetpassword'),
+
+          Uri.parse(baseDioSingleton.AbisiniyaBaseurl + 'forgotpass/resetpassword'),
           body: {
             'email' : emailController.text.toString(),
             'otp' : otpController.text.toString(),

@@ -13,6 +13,8 @@ import 'package:tourstravels/UserDashboard_Screens/PivoteVC.dart';
 import 'package:tourstravels/tabbar.dart';
 import 'package:tourstravels/My_Apartments/My_AprtmetsVC.dart';
 import 'package:tourstravels/My_Apartments/ViewApartmentVC.dart';
+import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
+import 'MyBooking_AddReplyImage.dart';
 
 
 //import 'NewUserbooking.dart';
@@ -24,6 +26,7 @@ class ViewBookingscreen extends StatefulWidget {
 }
 
 class _userDashboardState extends State<ViewBookingscreen> {
+  final baseDioSingleton = BaseSingleton();
   int bookingID = 0;
   String Referencestr = '';
 
@@ -54,8 +57,9 @@ class _userDashboardState extends State<ViewBookingscreen> {
   }
 
   Future<dynamic> getData() async {
-    //String url = 'https://staging.abisiniya.com/api/v1/apartment/list';
-    String url = 'https://staging.abisiniya.com/api/v1/booking/apartment/mybookingdetail/$bookingID';
+    // String url = 'https://staging.abisiniya.com/api/v1/booking/apartment/mybookingdetail/$bookingID';
+    String url = baseDioSingleton.AbisiniyaBaseurl + 'booking/apartment/mybookingdetail/$bookingID';
+
     var response = await http.get(
       Uri.parse(
           url),
@@ -595,6 +599,19 @@ class _userDashboardState extends State<ViewBookingscreen> {
 
                                             ),                                                              ),
                                           onTap: () async {
+
+                                            Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+                                              builder: (_) => AddReplyscreen(),
+                                            ),);
+                                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                                            print('img in bokking....');
+                                            print(bookingID);
+                                            print(RetrivedBearertoekn);
+                                            prefs.setInt('userbookingId', bookingID);
+                                            prefs.setString('tokenkey', RetrivedBearertoekn);
+                                            // prefs.setInt('userbookingId', snapshot.data['data'][index]['id']);
+                                            // prefs.setString('tokenkey', RetrivedBearertoekn);
+
                                             },
                                         ),
 
@@ -610,7 +627,11 @@ class _userDashboardState extends State<ViewBookingscreen> {
                                             physics: NeverScrollableScrollPhysics(),
                                             shrinkWrap: true,
                                             itemCount: snapshot.data?["data"]['add_reply_responses'].length ?? '',
+
+
                                             separatorBuilder: (BuildContext context, int index) => const Divider(),
+
+
                                             itemBuilder: (BuildContext context, int index) {
 
                                               SizedBox(

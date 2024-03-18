@@ -13,32 +13,37 @@ import 'package:tourstravels/UserDashboard_Screens/PivoteVC.dart';
 import 'package:tourstravels/tabbar.dart';
 import 'package:tourstravels/My_Apartments/My_AprtmetsVC.dart';
 
-import 'ApartmentRatingscreen.dart';
-import 'ViewManagePicturesVC.dart';
-//import 'NewUserbooking.dart';
+import 'VehicleManagePicturesVC.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
+import 'VehicleReviewRatingVC.dart';
 
-class ViewApartmnt extends StatefulWidget {
-  const ViewApartmnt({super.key});
+import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
+
+
+//import 'ViewManagePicturesVC.dart';
+//import 'NewUserbooking.dart';
+class ViewVehicle extends StatefulWidget {
+  const ViewVehicle({super.key});
 
   @override
-  State<ViewApartmnt> createState() => _userDashboardState();
+  State<ViewVehicle> createState() => _userDashboardState();
 }
 
-class _userDashboardState extends State<ViewApartmnt> {
-
+class _userDashboardState extends State<ViewVehicle> {
   final baseDioSingleton = BaseSingleton();
-  int Rating_review = 0;
-
   String RetrivedPwd = '';
-   String RetrivedEmail = '';
-   String RetrivedBearertoekn = '';
-   int ApartmentId = 0;
+  String RetrivedEmail = '';
+  String RetrivedBearertoekn = '';
+  int VehicleId = 0;
+  int Rating_review = 0;
+  //num Rating_review = 0.0;
 
-   var ViewApartmentList = [];
-   var PicArrayList = [];
-   int Picture_Id = 0;
+
+
+  var ViewApartmentList = [];
+  var PicArrayList = [];
+  int Picture_Id = 0;
   var controller = ScrollController();
   int count = 15;
   _retrieveValues() async {
@@ -47,7 +52,7 @@ class _userDashboardState extends State<ViewApartmnt> {
       RetrivedEmail = prefs.getString('emailkey') ?? "";
       RetrivedPwd = prefs.getString('passwordkey') ?? "";
       RetrivedBearertoekn = prefs.getString('tokenkey') ?? "";
-      ApartmentId = prefs.getInt('userbookingId') ?? 0;
+      VehicleId = prefs.getInt('userbookingId') ?? 0;
       print('view Apartment... ');
       print(RetrivedBearertoekn);
     });
@@ -55,10 +60,8 @@ class _userDashboardState extends State<ViewApartmnt> {
 //@override
 
   Future<dynamic> Review() async {
-    print('Apartment.....');
-    print(ApartmentId);
-    // String url = 'https://staging.abisiniya.com/api/v1/rating/list/$ApartmentId';
-    String url = baseDioSingleton.AbisiniyaBaseurl + 'rating/list/$ApartmentId';
+    //String url = 'https://staging.abisiniya.com/api/v1/rating/list/$VehicleId';
+    String url = baseDioSingleton.AbisiniyaBaseurl + 'rating/list/$VehicleId';
 
     print('url...');
     print(url);
@@ -100,12 +103,11 @@ class _userDashboardState extends State<ViewApartmnt> {
       throw Exception('Failed to load post');
     }
   }
-
   Future<dynamic> getData() async {
-    print('Apartmentid.....');
-    print(ApartmentId);
-    // String url = 'https://staging.abisiniya.com/api/v1/apartment/auth/show/' + ApartmentId.toString();
-    String url = baseDioSingleton.AbisiniyaBaseurl + 'apartment/auth/show/' + ApartmentId.toString();
+    // String url = 'https://staging.abisiniya.com/api/v1/vehicle/auth/show/' + VehicleId.toString();
+    String url = baseDioSingleton.AbisiniyaBaseurl + 'vehicle/auth/show/' + VehicleId.toString();
+
+    print('url...');
     print(url);
     var response = await http.get(
       Uri.parse(
@@ -132,13 +134,13 @@ class _userDashboardState extends State<ViewApartmnt> {
           Picture_Id = picArray['id'];
           print('img....');
           print(img);
-           ViewApartmentList.add(img);
-           PicArrayList.add(Picture_Id);
+          ViewApartmentList.add(img);
+          PicArrayList.add(Picture_Id);
 
         }
       }
       print('View Apartment success....');
-     // print(ViewApartmentList);
+      // print(ViewApartmentList);
       return json.decode(response.body);
     } else {
       // If that call was not successful, throw an error.
@@ -157,17 +159,17 @@ class _userDashboardState extends State<ViewApartmnt> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          iconTheme: IconThemeData(
-              color: Colors.green
-          ),
-          title: Text('ABISINIYA',textAlign: TextAlign.center,
-              style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
-
+      appBar: AppBar(
+        centerTitle: true,
+        iconTheme: IconThemeData(
+            color: Colors.green
         ),
+        title: Text('ABISINIYA',textAlign: TextAlign.center,
+            style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
+
+      ),
       body: FutureBuilder<dynamic>(
-          //future: ViewgetData(),
+        //future: ViewgetData(),
           future: getData(),
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             switch (snapshot.connectionState) {
@@ -210,7 +212,7 @@ class _userDashboardState extends State<ViewApartmnt> {
                                           Align(
                                               alignment: Alignment.topLeft,
                                               child: Text(
-                                                "Apartment belonging to:",
+                                                "Vehicle belonging to:",
                                                 style: TextStyle(
                                                     color: Colors.black,fontSize: 20,fontWeight: FontWeight.w600),
                                               )
@@ -240,7 +242,7 @@ class _userDashboardState extends State<ViewApartmnt> {
                                     ),
 
                                     ListView.separated(
-                                        //scrollDirection:Axis.horizontal,
+                                      //scrollDirection:Axis.horizontal,
                                         physics: NeverScrollableScrollPhysics(),
                                         shrinkWrap: true,
                                         //itemCount:50,
@@ -249,16 +251,15 @@ class _userDashboardState extends State<ViewApartmnt> {
                                         separatorBuilder: (BuildContext context, int index) => const Divider(),
                                         itemBuilder: (BuildContext context, int index) {
                                           return Container(
-                                            height: 250,
+                                            height: 400,
                                             width: 100,
                                             alignment: Alignment.center,
                                             color: Colors.black12,
                                             child: InkWell(
-
                                               child: Column(
                                                 children: [
                                                   Container(
-                                                    height: 250,
+                                                    height: 400,
                                                     width: 340,
                                                     color: Colors.black12,
                                                     child: Column(
@@ -337,14 +338,14 @@ class _userDashboardState extends State<ViewApartmnt> {
                                                               height: 30,
                                                               width: 140,
                                                               color: Colors.white70,
-                                                              child: Text('No Guests:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                              child: Text('Make:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
                                                             ),
                                                             Container(
                                                               height: 30,
                                                               width: 200,
                                                               color: Colors.white70,
                                                               child:Text(snapshot.data?['data'].isEmpty ? 'Empty name'
-                                                                  : snapshot.data?["data"][index]?['guest']?.toString() ?? 'empty'),
+                                                                  : snapshot.data?["data"][index]?['make']?.toString() ?? 'empty'),
                                                             )
                                                           ],
                                                         ),
@@ -354,14 +355,14 @@ class _userDashboardState extends State<ViewApartmnt> {
                                                               height: 30,
                                                               width: 140,
                                                               color: Colors.white,
-                                                              child: Text('Bedroom:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                              child: Text('Model:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
                                                             ),
                                                             Container(
                                                               height: 30,
                                                               width: 200,
                                                               color: Colors.white,
                                                               child:Text(snapshot.data?['data'].isEmpty ? 'Empty name'
-                                                                  : snapshot.data?["data"][index]?['bedroom']?.toString() ?? 'empty'),
+                                                                  : snapshot.data?["data"][index]?['model']?.toString() ?? 'empty'),
                                                             )
                                                           ],
                                                         ),
@@ -371,14 +372,14 @@ class _userDashboardState extends State<ViewApartmnt> {
                                                               height: 30,
                                                               width: 140,
                                                               color: Colors.white70,
-                                                              child: Text('Bathroom:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                              child: Text('Year:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
                                                             ),
                                                             Container(
                                                               height: 30,
                                                               width: 200,
                                                               color: Colors.white70,
                                                               child:Text(snapshot.data?['data'].isEmpty ? 'Empty name'
-                                                                  : snapshot.data?["data"][index]?['bathroom']?.toString() ?? 'empty'),
+                                                                  : snapshot.data?["data"][index]?['year']?.toString() ?? 'empty'),
                                                             )
                                                           ],
                                                         ),
@@ -388,12 +389,97 @@ class _userDashboardState extends State<ViewApartmnt> {
                                                               height: 30,
                                                               width: 140,
                                                               color: Colors.white,
+                                                              child: Text('Engine Size:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                            ),
+                                                            Container(
+                                                              height: 30,
+                                                              width: 200,
+                                                              color: Colors.white,
+                                                              child:Text(snapshot.data?['data'].isEmpty ? 'Empty name'
+                                                                  : snapshot.data?["data"][index]?['engine_size']?.toString() ?? 'empty'),
+                                                            )
+                                                          ],
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Container(
+                                                              height: 30,
+                                                              width: 140,
+                                                              color: Colors.white70,
+                                                              child: Text('Fuel Type:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                            ),
+                                                            Container(
+                                                              height: 30,
+                                                              width: 200,
+                                                              color: Colors.white70,
+                                                              child:Text(snapshot.data?['data'].isEmpty ? 'Empty name'
+                                                                  : snapshot.data?["data"][index]?['fuel_type']?.toString() ?? 'empty'),
+                                                            )
+                                                          ],
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Container(
+                                                              height: 30,
+                                                              width: 140,
+                                                              color: Colors.white,
+                                                              child: Text('Weight:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                            ),
+                                                            Container(
+                                                              height: 30,
+                                                              width: 200,
+                                                              color: Colors.white,
+                                                              child:Text(snapshot.data?['data'].isEmpty ? 'Empty name'
+                                                                  : snapshot.data?["data"][index]?['weight']?.toString() ?? 'empty'),
+                                                            )
+                                                          ],
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Container(
+                                                              height: 30,
+                                                              width: 140,
+                                                              color: Colors.white70,
+                                                              child: Text('Color:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                            ),
+                                                            Container(
+                                                              height: 30,
+                                                              width: 200,
+                                                              color: Colors.white70,
+                                                              child:Text(snapshot.data?['data'].isEmpty ? 'Empty name'
+                                                                  : snapshot.data?["data"][index]?['color']?.toString() ?? 'empty'),
+                                                            )
+                                                          ],
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Container(
+                                                              height: 30,
+                                                              width: 140,
+                                                              color: Colors.white,
+                                                              child: Text('Transmission:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                            ),
+                                                            Container(
+                                                              height: 30,
+                                                              width: 200,
+                                                              color: Colors.white,
+                                                              child:Text(snapshot.data?['data'].isEmpty ? 'Empty name'
+                                                                  : snapshot.data?["data"][index]?['transmission']?.toString() ?? 'empty'),
+                                                            )
+                                                          ],
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Container(
+                                                              height: 30,
+                                                              width: 140,
+                                                              color: Colors.white70,
                                                               child: Text('Price:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
                                                             ),
                                                             Container(
                                                               height: 30,
                                                               width: 200,
-                                                              color: Colors.white,
+                                                              color: Colors.white70,
                                                               child:Text(snapshot.data?['data'].isEmpty ? 'Empty name'
                                                                   : snapshot.data?["data"][index]?['price']?.toString() ?? 'empty'),
                                                             )
@@ -415,14 +501,14 @@ class _userDashboardState extends State<ViewApartmnt> {
                                       children:<Widget>[
                                         Text('Property Images',style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w600,color: Colors.black54)),),
                                         ListView.builder(
-                                           physics: NeverScrollableScrollPhysics(),
+                                            physics: NeverScrollableScrollPhysics(),
                                             //scrollDirection: Axis.horizontal,
                                             shrinkWrap: true,
                                             //itemCount: snapshot.data?['data'].length ?? '',
                                             itemCount: ViewApartmentList.length,
 
                                             itemBuilder: (context,index){
-                                            Picture_Id = PicArrayList[index];
+                                              Picture_Id = PicArrayList[index];
                                               //return  Text(' Vehicles',style: TextStyle(fontSize: 22),);
                                               return Column(
                                                 children: [
@@ -441,9 +527,6 @@ class _userDashboardState extends State<ViewApartmnt> {
                                                       print(Picture_Id);
                                                     },
                                                   ),
-
-
-
                                                 ],
                                               ) ;
                                             }),
@@ -466,12 +549,12 @@ class _userDashboardState extends State<ViewApartmnt> {
                                           onTap: () async{
 
                                             Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-                                              builder: (_) => ViewManagePictures(),
+                                              builder: (_) => VehicleViewManagePictures(),
                                             ),);
 
                                             SharedPreferences prefs = await SharedPreferences.getInstance();
-                                            prefs.setInt('userbookingId', ApartmentId);
-                                           prefs.setInt('Picturekey', Picture_Id);
+                                            prefs.setInt('userbookingId', VehicleId);
+                                            prefs.setInt('Picturekey', Picture_Id);
                                             prefs.setString('tokenkey', RetrivedBearertoekn);
 
                                             print("value of your text");},
@@ -520,8 +603,8 @@ class _userDashboardState extends State<ViewApartmnt> {
                                                               //bookingID = snapshot.data['data'][index]['id'];
 
                                                               print('id....');
-                                                              Rating_review = snapshot.data['data'][index]['score'];
-                                                              print(Rating_review.toDouble());
+                                                             Rating_review = snapshot.data['data'][index]['score'];
+                                                             print(Rating_review.toDouble());
 //    itemBuilder: (context,index){
 
                                                               return Container(
@@ -538,14 +621,14 @@ class _userDashboardState extends State<ViewApartmnt> {
                                                                         color: Colors.black12,
                                                                         child: Column(
                                                                           children: [
-                                                                            RatingBarIndicator(
-                                                                                rating: Rating_review.toDouble(),
-                                                                                itemCount: 5,
-                                                                                itemSize: 40.0,
-                                                                                itemBuilder: (context, _) => const Icon(
-                                                                                  Icons.star,
-                                                                                  color: Colors.orange,
-                                                                                )),
+                                                                        RatingBarIndicator(
+                                                                                        rating: Rating_review.toDouble(),
+                                                                                        itemCount: 5,
+                                                                                        itemSize: 40.0,
+                                                                                        itemBuilder: (context, _) => const Icon(
+                                                                                          Icons.star,
+                                                                                          color: Colors.orange,
+                                                                                        )),
                                                                             Row(
                                                                               children: [
                                                                                 Container(
@@ -584,10 +667,6 @@ class _userDashboardState extends State<ViewApartmnt> {
                                                                             ),
                                                                           ],
                                                                         ),
-
-
-
-
                                                                       ),
                                                                       // Container(
                                                                       //   height: 50,
@@ -603,10 +682,6 @@ class _userDashboardState extends State<ViewApartmnt> {
                                                                       // ),
                                                                     ],
                                                                   ),
-
-
-
-
                                                                   onTap: () async{
 
                                                                     // Navigator.push(
@@ -636,62 +711,59 @@ class _userDashboardState extends State<ViewApartmnt> {
                                         )
                                       ],
                                     ),
-                                    Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        const Text(
-                                          'Leave Your Feedback',style: TextStyle(fontSize: 24,fontWeight: FontWeight.w800),
-                                        ),
 
-                                        InkWell(
-                                          onTap: () async {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) => ApartmentRatingScreen()),
-                                            );
-                                            SharedPreferences prefs = await SharedPreferences.getInstance();
-                                            print('Vehicle id...');
-                                            prefs.setInt('userbookingId', ApartmentId);
-                                            prefs.setString('tokenkey', RetrivedBearertoekn);
-                                          }, // Handle your onTap
-                                          child:Container(
-                                            height: 50,
-                                            width: 340,
-                                            color: Colors.green,
-                                            child: const Align(
-                                              alignment: Alignment.center,
-                                              child: Text('Review',
-                                                  style: TextStyle(color: Colors.white, fontSize: 20,fontWeight: FontWeight.w800
-                                                  ),
-                                                  textAlign: TextAlign.center),
+                                Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                              const Text(
+                              'Leave Your Feedback',style: TextStyle(fontSize: 24,fontWeight: FontWeight.w800),
+                              ),
+
+                                  InkWell(
+                                    onTap: () async {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => RatingScreen()),
+                                      );
+                                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                                      print('Vehicle id...');
+                                      prefs.setInt('userbookingId', VehicleId);
+                                      prefs.setString('tokenkey', RetrivedBearertoekn);
+                                    }, // Handle your onTap
+                                    child:Container(
+                                      height: 50,
+                                      width: 340,
+                                      color: Colors.green,
+                                      child: const Align(
+                                        alignment: Alignment.center,
+                                        child: Text('Review',
+                                            style: TextStyle(color: Colors.white, fontSize: 20,fontWeight: FontWeight.w800
                                             ),
-                                          ),
-
-                                        )
-
-                                        // Container(
-                                        //   height: 50,
-                                        //   width: 340,
-                                        //   color: Colors.green,
-                                        //   child: const Align(
-                                        //     alignment: Alignment.center,
-                                        //     child: Text('Review',
-                                        //         style: TextStyle(color: Colors.white, fontSize: 20,fontWeight: FontWeight.w800
-                                        //         ),
-                                        //         textAlign: TextAlign.center),
-                                        //   ),
-                                        // ),
-                                      ],
+                                            textAlign: TextAlign.center),
+                                      ),
                                     ),
+
+                                  )
+
+                                  // Container(
+                                  //   height: 50,
+                                  //   width: 340,
+                                  //   color: Colors.green,
+                                  //   child: const Align(
+                                  //     alignment: Alignment.center,
+                                  //     child: Text('Review',
+                                  //         style: TextStyle(color: Colors.white, fontSize: 20,fontWeight: FontWeight.w800
+                                  //         ),
+                                  //         textAlign: TextAlign.center),
+                                  //   ),
+                                  // ),
+                              ],
+                              ),
+
                                   ],
+
                                 ),
-
-
-
-
-
-
                               );
                             },
                           ),

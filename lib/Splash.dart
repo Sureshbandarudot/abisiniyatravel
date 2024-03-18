@@ -40,7 +40,8 @@ class _SplashscreenState extends State<Splashscreen> {
 
    // _navigateDashboard();
     _retrieveValues();
-    GotoDashboard();
+   // GotoDashboard();
+    _navigateDashboard();
   }
 
 
@@ -70,7 +71,7 @@ class _SplashscreenState extends State<Splashscreen> {
 
   _navigateDashboard() async {
     await Future.delayed(Duration(milliseconds: 10),() {});
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>newuserDashboard()));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>OnboardingScreen()));
   }
 
   Widget build(BuildContext context) {

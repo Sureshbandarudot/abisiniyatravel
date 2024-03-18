@@ -17,25 +17,25 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 
-import 'My_AprtmetsVC.dart';
-import 'ViewApartmentVC.dart';
+import 'MyvehicleVC.dart';
+
+// import 'My_AprtmetsVC.dart';
+// import 'ViewApartmentVC.dart';
+//
 
 
 
 
 
-
-class AddpicScreen extends StatefulWidget {
+class VehicleAddpicScreen extends StatefulWidget {
 
   @override
   _LoginState createState() => _LoginState();
 }
 
-class _LoginState extends State<AddpicScreen> {
-
-  final baseDioSingleton = BaseSingleton();
+class _LoginState extends State<VehicleAddpicScreen> {
   String RetrivedBearertoekn = '';
-  int ApartmentId = 0;
+  int VehicleId = 0;
 
   _retrieveValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -43,15 +43,15 @@ class _LoginState extends State<AddpicScreen> {
       // RetrivedEmail = prefs.getString('emailkey') ?? "";
       // RetrivedPwd = prefs.getString('passwordkey') ?? "";
       RetrivedBearertoekn = prefs.getString('tokenkey') ?? "";
-      ApartmentId = prefs.getInt('userbookingId') ?? 0;
-      print('pic view Apartment... ');
-      print(ApartmentId);
+      VehicleId = prefs.getInt('userbookingId') ?? 0;
+      print('pic view Vehicle... ');
+      print(VehicleId);
       print(RetrivedBearertoekn);
 
     });
   }
 
-  //final baseDioSingleton = BaseSingleton();
+  final baseDioSingleton = BaseSingleton();
   bool isLoading = false;
   final globalKey = GlobalKey<ScaffoldState>();
   String tokenvalue = '';
@@ -71,12 +71,15 @@ class _LoginState extends State<AddpicScreen> {
     var header = {
       "Authorization":"Bearer $RetrivedBearertoekn"
     };
-        final request = await http.MultipartRequest(
+
+    final request = await http.MultipartRequest(
       'POST',
-      Uri.parse(baseDioSingleton.AbisiniyaBaseurl +'apartment/pictures'),
+      // Uri.parse('https://staging.abisiniya.com/api/v1/vehicle/pictures/add'),
+      Uri.parse(baseDioSingleton.AbisiniyaBaseurl + 'vehicle/pictures/add'),
+
     );
     request.headers.addAll(header);
-     request.fields['apartment_id'] = ApartmentId.toString();
+    request.fields['vehicle_id'] = VehicleId.toString();
     request.fields['pictures[]'] = '[]';
     var takenPicture = await http.MultipartFile.fromPath("pictures[]",galleryFile!.path);
     print(takenPicture);
@@ -84,6 +87,7 @@ class _LoginState extends State<AddpicScreen> {
     var response = await request.send();
     print(response);
     if(response.statusCode == 201) {
+      print('img added successfuly in vehicle...');
       var responseData = await response.stream.toBytes();
       var responseToString = String.fromCharCodes(responseData);
       // final List parsedList = json.decode(responseToString);
@@ -100,7 +104,7 @@ class _LoginState extends State<AddpicScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => ViewApartmnt()
+            builder: (context) => MyVehicleScreen()
         ),
       );
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -211,7 +215,7 @@ class _LoginState extends State<AddpicScreen> {
 
                                           onPressed: () async {
                                             setState(() => isLoading = true);
-                                           // addProduct();
+                                            // addProduct();
                                             addProduct();
                                             // _postData();
                                             //login(emailController.text.toString(), passwordController.text.toString());

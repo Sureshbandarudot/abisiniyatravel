@@ -10,10 +10,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 
 import '../ServiceDasboardVC.dart';
-import 'FilterApartmentVC.dart';
 import 'NewUserbooking.dart';
 //void main() => runApp(Apartmentscreen());
-class Apartmentscreen extends StatelessWidget {
+class ApartmentSearchResultscreen extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -45,23 +44,76 @@ class _MyHomePageState extends State<MyHomePage> {
   String RetrivedPwd = '';
   String RetrivedEmail = '';
   String Logoutstr = '';
+  String RetrivedCitylocation = '';
   _retrieveValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
+      RetrivedCitylocation = prefs.getString('locationkey') ?? "";
+      print('Retrived city loc....');
+      print(RetrivedCitylocation);
       RetrivedEmail = prefs.getString('emailkey') ?? "";
       RetrivedPwd = prefs.getString('passwordkey') ?? "";
       Logoutstr = prefs.getString('logoutkey') ?? "";
       var propertytype = prefs.getString('Property_type') ?? "";
-print(propertytype);
+      print(propertytype);
       print('logout....');
       print(Logoutstr);
     });
   }
+
+
+  //void SendRequesertSearch(String type , keyword) async {
+    Future<dynamic> SendRequesertSearch() async {
+      try{
+      print('search url...');
+      print(RetrivedCitylocation);
+      print(baseDioSingleton.AbisiniyaBaseurl +'common/search');
+      Response response = await post(
+        //Uri.parse('https://staging.abisiniya.com/api/v1/login'),
+          Uri.parse(baseDioSingleton.AbisiniyaBaseurl +'common/search'),
+          body: {
+            'type' : 'apartment',
+            'keyword' : RetrivedCitylocation
+          }
+
+      );
+      //isLoading = true;
+      if(response.statusCode == 200){
+        //isLoading = false;
+        print('success search api response');
+        // var data = jsonDecode(response.body.toString());
+        // var data1 = jsonDecode(response.body.toString());
+        // print(data1['data']);
+        print('success.....');
+        final data = jsonDecode(response.body);
+        print(data);
+        return json.decode(response.body);
+        // print(data1['data']['token']);
+        // tokenvalue = (data1['data']['token']);
+        // String namestr = (data1['data']['name']);
+        // print('token value....');
+        // print(tokenvalue);
+        // SharedPreferences prefs = await SharedPreferences.getInstance();
+        // prefs.setString('tokenkey', tokenvalue);
+
+      }else {
+        print('failed');
+        //final snackBar = SnackBar(
+        //   content: Text('Hi, Invalid login credentials'),
+        // );
+        // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+    }catch(e){
+      print(e.toString());
+    }
+  }
+
+
   //Login Authentication for Fresh or Existing user:
   void login(String email , password) async {
     try{
       Response response = await post(
-          //Uri.parse('https://staging.abisiniya.com/api/v1/login'),
+        //Uri.parse('https://staging.abisiniya.com/api/v1/login'),
           Uri.parse(baseDioSingleton.AbisiniyaBaseurl + 'login'),
           body: {
             'email' : RetrivedEmail,
@@ -94,14 +146,15 @@ print(propertytype);
       print(e.toString());
     }
   }
-@override
-void initState() {
-  // TODO: implement initState
-  super.initState();
-  _retrieveValues();
-  getData();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _retrieveValues();
+    SendRequesertSearch();
 
-}
+  }
+
   Future<dynamic> getData() async {
     //String url = 'https://staging.abisiniya.com/api/v1/apartment/list';
     String url = baseDioSingleton.AbisiniyaBaseurl + 'apartment/list';
@@ -133,7 +186,7 @@ void initState() {
           centerTitle: true,
           leading: BackButton(
             onPressed: () async{
-              // print("back Pressed");
+              print("back Pressed");
               // SharedPreferences prefs = await SharedPreferences.getInstance();
               // prefs.setString('logoutkey', ('LogoutDashboard'));
               // prefs.setString('Property_type', ('Apartment'));
@@ -144,7 +197,7 @@ void initState() {
               );
             },
           ),
-          title: Text('APARTMENT',textAlign: TextAlign.center,
+          title: Text('Search Result',textAlign: TextAlign.center,
               style: TextStyle(color:Colors.white,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
         ),
         body: Container(
@@ -155,7 +208,10 @@ void initState() {
                   colors: <Color>[Colors.white, Colors.green]),
             ),
             child: FutureBuilder(
-                future: getData(),
+                //future: SendRequesertSearch(),
+              future: SendRequesertSearch(),
+
+
                 builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                   switch (snapshot.connectionState) {
                     case ConnectionState.none:
@@ -186,68 +242,54 @@ void initState() {
                                             SizedBox(
                                               height: 20,
                                             ),
-                                            Container(
-                                              height: 50,
-                                              width: 330,
-                                              //color: Colors.lightGreen,
-                                              decoration: const BoxDecoration(
-                                                gradient: LinearGradient(
-                                                    begin: Alignment.topCenter,
-                                                    end: Alignment.bottomCenter,
-                                                    colors: <Color>[Colors.blueGrey, Colors.green]),
-                                                  borderRadius: BorderRadius.all(Radius.circular(30))
-
-                                              ),
-                                              child: Row(
-                                                children: [
-                                                  Container(
-                                                      margin: const EdgeInsets.only(left: 20.0),
-
-                                                      child: SizedBox(
-                                                      width: 220.0,
-                                                      height: 50,
-                                                      child: TextField(
-                                                        decoration: InputDecoration(
-                                                          //border: OutlineInputBorder(),
-                                                          border: InputBorder.none,
-                                                          hintText: 'Search',
-                                                        ),
-                                                        controller: searchController,
-                                                        style: TextStyle(fontSize: 18.0, height: 0.0, color: Colors.black),
-                                                      ),
-                                                    )
-                                                  ),
-                                                  Container(
-                                                      margin: const EdgeInsets.only(left: 20.0),                                         child: IconButton(
-                                                        onPressed: () async{
-                                                          if (searchController.text == ''){
-                                                            print('empty....');
-
-                                                            final snackBar = SnackBar(
-    content: Text('Please search with keyword'),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    } else {
-                                                            print('search btn clicked...');
-                                                            Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                  builder: (context) => ApartmentSearchResultscreen()
-                                                              ),
-                                                            );
-                                                            final prefs = await SharedPreferences.getInstance();
-                                                            await prefs.setString('locationkey', searchController.text);
-
-                                                          }
-                                                        },
-                                                        icon: const Icon(Icons.search),
-                                                      )
-                                                  )
-                                                ],
-
-                                              ),
-
-                                            ),
+                                            // Container(
+                                            //   height: 50,
+                                            //   width: 330,
+                                            //   //color: Colors.lightGreen,
+                                            //   decoration: const BoxDecoration(
+                                            //       gradient: LinearGradient(
+                                            //           begin: Alignment.topCenter,
+                                            //           end: Alignment.bottomCenter,
+                                            //           colors: <Color>[Colors.blueGrey, Colors.green]),
+                                            //       borderRadius: BorderRadius.all(Radius.circular(30))
+                                            //
+                                            //   ),
+                                            //   child: Row(
+                                            //     children: [
+                                            //       Container(
+                                            //           margin: const EdgeInsets.only(left: 20.0),
+                                            //
+                                            //           child: SizedBox(
+                                            //             width: 220.0,
+                                            //             height: 50,
+                                            //             child: TextField(
+                                            //               decoration: InputDecoration(
+                                            //                 //border: OutlineInputBorder(),
+                                            //                 border: InputBorder.none,
+                                            //                 hintText: 'Search',
+                                            //               ),
+                                            //               controller: searchController,
+                                            //               style: TextStyle(fontSize: 18.0, height: 0.0, color: Colors.black),
+                                            //             ),
+                                            //           )
+                                            //       ),
+                                            //       Container(
+                                            //           margin: const EdgeInsets.only(left: 20.0),                                         child: IconButton(
+                                            //         onPressed: () async{
+                                            //           print('search btn clicked...');
+                                            //           final prefs = await SharedPreferences.getInstance();
+                                            //           await prefs.setString('locationkey', searchController.text);
+                                            //
+                                            //
+                                            //         },
+                                            //         icon: const Icon(Icons.search),
+                                            //       )
+                                            //       )
+                                            //     ],
+                                            //
+                                            //   ),
+                                            //
+                                            // ),
                                             SizedBox(
                                               height: 20,
                                             ),
@@ -291,7 +333,7 @@ void initState() {
                                                             width: 0.0,
                                                             style: BorderStyle.solid
                                                         ),
-                                                        borderRadius: BorderRadius.circular(5),
+                                                        borderRadius: BorderRadius.circular(20),
                                                         //color: Colors.yellowAccent,
                                                         color: Colors.white,
                                                       ),
