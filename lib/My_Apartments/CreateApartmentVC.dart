@@ -289,6 +289,8 @@ class _LoginState extends State<CreateApartment> {
                                         height: 40.0,
                                         child: TextField(
                                             controller: guestController,
+                                            keyboardType: TextInputType.number,
+
                                             textAlign: TextAlign.left,
                                             autocorrect: false,
                                             decoration:
@@ -307,6 +309,8 @@ class _LoginState extends State<CreateApartment> {
                                         height: 40.0,
                                         child: TextField(
                                             controller: bedroomController,
+                                            keyboardType: TextInputType.number,
+
                                             textAlign: TextAlign.left,
                                             autocorrect: false,
                                             decoration:
@@ -326,6 +330,8 @@ class _LoginState extends State<CreateApartment> {
                                         height: 40.0,
                                         child: TextField(
                                             controller: bathroomController,
+                                            keyboardType: TextInputType.number,
+
                                             textAlign: TextAlign.left,
                                             autocorrect: false,
                                             decoration:
@@ -345,6 +351,8 @@ class _LoginState extends State<CreateApartment> {
                                         height: 40.0,
                                         child: TextField(
                                             controller: priceController,
+                                            keyboardType: TextInputType.number,
+
                                             textAlign: TextAlign.left,
                                             autocorrect: false,
                                             decoration:

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:tourstravels/settingsVC.dart';
+import 'package:tourstravels/supportVC.dart';
 
 import 'ApartVC/Apartment.dart';
 import 'ApartVC/Authenticated_Userbookingscreen.dart';
 import 'Auth/Login.dart';
 import 'Authenticated_Vehiclescreen.dart';
-import 'Flights.dart';
+import 'flyScreens/Auth_flightRequestVC.dart';
+import 'flyScreens/Flights.dart';
 import 'Vehicles.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
@@ -126,32 +129,11 @@ class _ServiceDashboardScreenState extends State<ServiceDashboardScreen> {
                     onTap: () async{
 
                        SharedPreferences prefs = await SharedPreferences.getInstance();
-                      // prefs.clear();
-
-
-
-                       // Logoutstr = prefs.getString('logoutkey') ?? "";
-                      print('dashboard sts...');
+                       print('dashboard sts...');
                       print(Logoutstr);
-                      // NewBookingUserstr = prefs.getString('newBookingUserkey') ?? "";
                       LoggedInUSerstr = prefs.getString('LoggedinUserkey') ?? "";
                       print(' logged in user...');
                       print(LoggedInUSerstr);
-                      // print(NewBookingUserstr);
-
-                       // String newuserstr = prefs.getString('NewuserBookingkey') ?? "";
-                       // print(newuserstr);
-                      // if(Logoutstr == 'LogoutDashboard')
-                      // {
-                      //   print('logout...');
-                      //   Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => Apartmentscreen()),
-                      //   );
-                      //   print('Logged user....');
-                      //
-                      // }
                        print('letters length....');
                        LoggedinUserlist.add(LoggedInUSerstr);
                        print(LoggedinUserlist);
@@ -228,12 +210,33 @@ class _ServiceDashboardScreenState extends State<ServiceDashboardScreen> {
                         ],
                       ),
                     ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => FlightScreen()),
-                      );
+                    onTap: () async{
+                      LoggedinUserlist.add(LoggedInUSerstr);
+                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                      LoggedInUSerstr = prefs.getString('LoggedinUserkey') ?? "";
+                      LoggedinUserlist.add(LoggedInUSerstr);
+                      if (LoggedInUSerstr == 'LoggedUser') {
+                        print('login...');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AuthFlightScreen()),
+                        );
+                        SharedPreferences prefrences = await SharedPreferences.getInstance();
+                        await prefrences.remove("LoggedinUserkey");
+
+                      }  else{
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FlightScreen()),
+                        );
+                      }
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //       builder: (context) => FlightScreen()),
+                      // );
                     },
                   ),
                 ),
@@ -265,22 +268,45 @@ class _ServiceDashboardScreenState extends State<ServiceDashboardScreen> {
                     onTap: () async{
                       SharedPreferences prefs = await SharedPreferences.getInstance();
                       Logoutstr = prefs.getString('logoutkey') ?? "";
-                      print('dashboard sts...');
+                      print('vehicle dashboard sts...');
                       print(Logoutstr);
-                      if(Logoutstr == 'LogoutDashboard'){
-                        print('loged in user....');
+                      LoggedinUserlist.add(LoggedInUSerstr);
+                     // SharedPreferences prefs = await SharedPreferences.getInstance();
+                      LoggedInUSerstr = prefs.getString('LoggedinUserkey') ?? "";
+                      LoggedinUserlist.add(LoggedInUSerstr);
+                      print('vehcle LoggedInUSerstr.....');
+                      print(LoggedInUSerstr);
+                      if (LoggedInUSerstr == 'LoggedUser') {
+                        print('vehicle login...');
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => AuthenticatedVehiclescreen()),
                         );
-                      } else {
-                        print('fresh vehicle use...');
+                        SharedPreferences prefrences = await SharedPreferences.getInstance();
+                        await prefrences.remove("LoggedinUserkey");
+
+                      }  else{
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => Vehiclescreen()),
-                        );                      }
+                        );
+                      }
+                      // if(Logoutstr == 'LogoutDashboard'){
+                      //   print('loged in user....');
+                      //   Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => AuthenticatedVehiclescreen()),
+                      //   );
+                      // } else {
+                      //   print('fresh vehicle use...');
+                      //   Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => Vehiclescreen()),
+                      //   );                      }
                     },
                   ),
                 ),
@@ -305,7 +331,7 @@ class _ServiceDashboardScreenState extends State<ServiceDashboardScreen> {
                               ),
                             ),
                           ),
-                          Text('Profile',style: (TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),)
+                          Text('My Profile',style: (TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),)
                         ],
                       ),
                     ),
@@ -341,7 +367,7 @@ class _ServiceDashboardScreenState extends State<ServiceDashboardScreen> {
                               ),
                             ),
                           ),
-                          Text('Settings',style: (TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),)
+                          Text('More',style: (TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),)
                         ],
                       ),
                     ),
@@ -349,7 +375,7 @@ class _ServiceDashboardScreenState extends State<ServiceDashboardScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => FlightScreen()),
+                            builder: (context) => settingsScreen()),
                       );
                     },
                   ),
@@ -383,7 +409,7 @@ class _ServiceDashboardScreenState extends State<ServiceDashboardScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => FlightScreen()),
+                            builder: (context) => supportScreen()),
                       );
                     },
                   ),

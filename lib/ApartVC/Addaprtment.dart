@@ -10,6 +10,7 @@ import 'package:tourstravels/userDashboardvc.dart';
 import 'package:tourstravels/UserDashboard_Screens/newDashboard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../MyBookings/MybookingVC.dart';
 import '../ServiceDasboardVC.dart';
 import 'Authenticated_Userbookingscreen.dart';
 //import 'models/user.dart';
@@ -229,7 +230,7 @@ class HomeState extends State<AddApartment> {
         }
         else {
           Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-            builder: (_) => newuserDashboard(),
+            builder: (_) => MyBookingScreen(),
           ),);
           print('calling token....');
           print(RetrivedBearertoekn);

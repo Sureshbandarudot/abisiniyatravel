@@ -15,6 +15,7 @@ import 'package:tourstravels/My_Apartments/My_AprtmetsVC.dart';
 import 'package:tourstravels/My_Apartments/ViewApartmentVC.dart';
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 
+import '../UserDashboard_Screens/newDashboard.dart';
 import 'Apartment_EditVC.dart';
 import 'CreateApartmentVC.dart';
 //import 'NewUserbooking.dart';
@@ -274,17 +275,39 @@ print(ApartmentId);
       //   backgroundColor: Colors.green,
       //
       // ),
-      appBar: AppBar(
-        centerTitle: true,
-        leading: Padding(
-          // padding: const EdgeInsets.all(0.0),
-          padding: EdgeInsets.only(left: 15.0, top: 0.0),
-          child: Image.asset(
-            "images/logo.jpg",
-          ),),
-        title: Text('ABISINIYA',textAlign: TextAlign.center,
-            style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
-        iconTheme: IconThemeData(color: Colors.green),),
+
+        appBar: AppBar(
+          centerTitle: true,
+          leading: BackButton(
+            onPressed: () async{
+              print("back Pressed");
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              // prefs.setString('logoutkey', ('LogoutDashboard'));
+              //prefs.setString('Property_type', ('Apartment'));
+              //prefs.setString('LoggedinUserkey', LoggedInUser);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => newuserDashboard()),
+              );
+
+            },
+          ),
+          title: Text('My Apartments',textAlign: TextAlign.center,
+              style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
+
+        ),
+      // appBar: AppBar(
+      //   centerTitle: true,
+      //   leading: Padding(
+      //     // padding: const EdgeInsets.all(0.0),
+      //     padding: EdgeInsets.only(left: 15.0, top: 0.0),
+      //     child: Image.asset(
+      //       "images/logo.jpg",
+      //     ),),
+      //   title: Text('ABISINIYA',textAlign: TextAlign.center,
+      //       style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
+      //   iconTheme: IconThemeData(color: Colors.green),),
       // endDrawer: Drawer(
       //   child: ListView(
       //
@@ -821,13 +844,13 @@ child: const Align(
 
                                     Column(
                                       children:<Widget>[
-                                        Text('second test'),
+                                       // Text('second test'),
                                         ListView.builder(
                                             physics: NeverScrollableScrollPhysics(),
                                             shrinkWrap: true,
                                             itemCount: 1,
                                             itemBuilder: (context,index){
-                                              return  Text(' Vehicles',style: TextStyle(fontSize: 22),);
+                                              return  Text('',style: TextStyle(fontSize: 22),);
                                             }),
 
                                       ],

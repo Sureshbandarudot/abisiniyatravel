@@ -10,6 +10,7 @@ import 'package:tourstravels/ApartVC/Addaprtment.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tourstravels/UserDashboard_Screens/Apartbooking_Model.dart';
 import 'package:tourstravels/UserDashboard_Screens/PivoteVC.dart';
+import 'package:tourstravels/UserDashboard_Screens/newDashboard.dart';
 import 'package:tourstravels/tabbar.dart';
 import 'package:tourstravels/My_Apartments/My_AprtmetsVC.dart';
 import 'package:tourstravels/My_Apartments/ViewApartmentVC.dart';
@@ -278,15 +279,50 @@ class _userDashboardState extends State<MyVehicleScreen> {
       // ),
       appBar: AppBar(
         centerTitle: true,
-        leading: Padding(
-          // padding: const EdgeInsets.all(0.0),
-          padding: EdgeInsets.only(left: 15.0, top: 0.0),
-          child: Image.asset(
-            "images/logo.jpg",
-          ),),
-        title: Text('ABISINIYA',textAlign: TextAlign.center,
+        leading: BackButton(
+          onPressed: () async{
+            print("back Pressed");
+            // SharedPreferences prefs = await SharedPreferences.getInstance();
+            // // prefs.setString('logoutkey', ('LogoutDashboard'));
+            // //prefs.setString('Property_type', ('Apartment'));
+            // prefs.setString('LoggedinUserkey', LoggedInUser);
+
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => newuserDashboard()),
+            );
+            // LoggedInUser = 'LoggedUser';
+            // prefs.setString('LoggedinUserkey', LoggedInUser);
+            //
+            // NewBookingUserstr = prefs.getString('newBookingUserkey') ?? "";
+            // LoggedInUSerstr = prefs.getString('LoggedinUserkey') ?? "";
+            // print(' dashboard logged in user...');
+            // print(LoggedInUSerstr);
+            // print(NewBookingUserstr);
+
+          },
+
+        ),
+        // iconTheme: IconThemeData(
+        //     color: Colors.green,
+        // ),
+        title: Text('My Vehicles',textAlign: TextAlign.center,
             style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
-        iconTheme: IconThemeData(color: Colors.green),),
+
+      ),
+      // appBar: AppBar(
+      //   centerTitle: true,
+      //   leading: Padding(
+      //     // padding: const EdgeInsets.all(0.0),
+      //     padding: EdgeInsets.only(left: 15.0, top: 0.0),
+      //     child: Image.asset(
+      //       "images/logo.jpg",
+      //     ),),
+      //   title: Text('ABISINIYA',textAlign: TextAlign.center,
+      //       style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
+      //   iconTheme: IconThemeData(color: Colors.green),),
       // endDrawer: Drawer(
       //   child: ListView(
       //
@@ -800,13 +836,13 @@ class _userDashboardState extends State<MyVehicleScreen> {
 
                                     Column(
                                       children:<Widget>[
-                                        Text('second test'),
+                                        //Text('second test'),
                                         ListView.builder(
                                             physics: NeverScrollableScrollPhysics(),
                                             shrinkWrap: true,
                                             itemCount: 1,
                                             itemBuilder: (context,index){
-                                              return  Text(' Vehicles',style: TextStyle(fontSize: 22),);
+                                              return  Text('',style: TextStyle(fontSize: 22),);
                                             }),
 
                                       ],

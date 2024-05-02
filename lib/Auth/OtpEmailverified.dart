@@ -6,6 +6,12 @@ import 'package:tourstravels/tabbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
+import '../ServiceDasboardVC.dart';
+import 'dart:async';
+
+import 'Register.dart';
+import 'otpResendVC.dart';
+
 String _email='';
 
 
@@ -21,6 +27,9 @@ class _OTPVerifiedState extends State<OTPVerified> {
   bool isLoading = false;
   String? emaildata;
   final globalKey = GlobalKey<ScaffoldState>();
+  int secondsRemaining = 60;
+  bool enableResend = false;
+  late Timer timer;
 
 
   TextEditingController emailController = TextEditingController();
@@ -61,15 +70,21 @@ class _OTPVerifiedState extends State<OTPVerified> {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => tabbar()
+              builder: (context) => ServiceDashboardScreen()
           ),
         );
 
-      }else {
+      } else if(response.statusCode == 404){
+        final snackBar = SnackBar(
+          content: Text('User Already Verified.'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+      else {
         print('failed');
 
         final snackBar = SnackBar(
-          content: Text('The password confirmation does not match.'),
+          content: Text('The otp confirmation does not match.'),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
@@ -94,6 +109,24 @@ class _OTPVerifiedState extends State<OTPVerified> {
   void initState() {
     super.initState();
     _retrieveValues();
+    timer = Timer.periodic(Duration(seconds: 1), (_) {
+      if (secondsRemaining != 0) {
+        setState(() {
+          secondsRemaining--;
+        });
+      } else {
+        setState(() {
+          enableResend = true;
+          //print('clicked resend otp btn....');
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //       builder: (context) => ResendOTPScreen()
+          //   ),
+          // );
+        });
+      }
+    });
   }
   Widget build(BuildContext context) {
     //emaildata = ModalRoute.of(context)?.settings.arguments as String?;
@@ -111,20 +144,24 @@ class _OTPVerifiedState extends State<OTPVerified> {
 
         appBar: AppBar(
           centerTitle: true,
-          iconTheme: IconThemeData(
-              color: Colors.green
+          leading: BackButton(
+            onPressed: () async{
+              print("back Pressed");
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              // prefs.setString('logoutkey', ('LogoutDashboard'));
+              //prefs.setString('Property_type', ('Apartment'));
+              //prefs.setString('LoggedinUserkey', LoggedInUser);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Register()),
+              );
 
+            },
           ),
-
-          title: const Text('OTP Verification',
-              textAlign: TextAlign.center,
+          title: Text('OTP Email Verification',textAlign: TextAlign.center,
               style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
 
-          // title: const Text('OTP Verification',
-          //     textAlign: TextAlign.center,
-          //     style: TextStyle(
-          //         color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20)),
-          // backgroundColor: Colors.grey,
         ),
         body: Column(
           children: <Widget>[
@@ -142,7 +179,7 @@ class _OTPVerifiedState extends State<OTPVerified> {
                           child: Column(
                             children: [
                               Container(
-                                  height: 310.0,
+                                  height: 375.0,
                                   width: 325.0,
                                   decoration: const BoxDecoration(
                                     //color: Color(0xFFffffff),
@@ -195,7 +232,7 @@ class _OTPVerifiedState extends State<OTPVerified> {
                                       Container(
                                         padding: EdgeInsets.all(20),
                                         width: 325,
-                                        height: 250,
+                                        height: 315,
                                         color: Colors.white,
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -228,8 +265,11 @@ class _OTPVerifiedState extends State<OTPVerified> {
                                               height: 10,
                                             ),
                                             TextField (
+                                              
                                               obscureText: true,
                                               controller: otpController,
+                                              keyboardType: TextInputType.number,
+
                                               decoration: InputDecoration(
                                                   border:OutlineInputBorder(),
                                                   labelText: 'otp',
@@ -264,9 +304,45 @@ class _OTPVerifiedState extends State<OTPVerified> {
                                               //child: const Text('Verified'),
                                               child: const Text('Verify',style: TextStyle(color:Colors.white,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
                                             ),
+                                            SizedBox(
+                                              height: 25,
+                                            ),
+                                            Column(
+                                              children: [
+                                                Row(
+                                                 children: [
+                                                   Text(
+                                                     ' $secondsRemaining ',
+                                                     style: TextStyle(color: Colors.red, fontSize: 18),
+                                                   ),
+                                                   SizedBox(
+                                                     width: 100,
+                                                   ),
+
+                                                   TextButton(
+                                                     style: TextButton.styleFrom(
+                                                         fixedSize: const Size(150, 18),
+                                                         foregroundColor: Colors.green,
+                                                         backgroundColor: Colors.white,
+                                                         shape: RoundedRectangleBorder(
+                                                           borderRadius: BorderRadius.circular(00),
+                                                         ),
+                                                         textStyle: const TextStyle(fontSize: 18)),
+                                                     child: Text('Resend OTP'),
+                                                     onPressed: enableResend ? _resendCode : null,
+
+                                                     // child: const Text('Resend',style: TextStyle(color:Colors.white,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
+                                                   ),
+                                                 ],
+
+                                                )
+                                              ],
+                                            )
                                           ],
                                         ),
+
                                       ),
+
                                     ],
                                   )
                               ),
@@ -297,5 +373,26 @@ class _OTPVerifiedState extends State<OTPVerified> {
           ],
         )
     );
+  }
+
+  void _resendCode() {
+    //other code here
+    setState((){
+      secondsRemaining = 60;
+      enableResend = false;
+      print('click.....');
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ResendOTPScreen()
+        ),
+      );
+    });
+  }
+
+  @override
+  dispose(){
+    timer.cancel();
+    super.dispose();
   }
 }

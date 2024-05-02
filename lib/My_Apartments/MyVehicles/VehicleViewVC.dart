@@ -107,8 +107,9 @@ class _userDashboardState extends State<ViewVehicle> {
     // String url = 'https://staging.abisiniya.com/api/v1/vehicle/auth/show/' + VehicleId.toString();
     String url = baseDioSingleton.AbisiniyaBaseurl + 'vehicle/auth/show/' + VehicleId.toString();
 
-    print('url...');
+    print('url.....');
     print(url);
+    print(RetrivedBearertoekn);
     var response = await http.get(
       Uri.parse(
           url),
@@ -124,6 +125,7 @@ class _userDashboardState extends State<ViewVehicle> {
       var getpicsData = [];
       var viewApartmentdata = data1['data'];
       print('data.....');
+      print(viewApartmentdata);
 
       for (var pics in viewApartmentdata){
 

@@ -72,6 +72,8 @@ class _userDashboardState extends State<ViewManagePictures> {
     try {
 
       print('delete url...');
+      print('delete view Apartment... ');
+      print(RetrivedBearertoekn);
       var url = '';
       url = (baseDioSingleton.AbisiniyaBaseurl + 'apartment/pictures/$ApartmentId/$Picture_Id');
 
@@ -86,6 +88,7 @@ class _userDashboardState extends State<ViewManagePictures> {
         },
       );
 
+      //Error: You need to have at least 1 picture
       if (response.statusCode == 200) {
         print('Deleted successfully');
         Navigator.push(
@@ -94,7 +97,14 @@ class _userDashboardState extends State<ViewManagePictures> {
               builder: (context) => MyApartmentScreen()
           ),
         );
-      } else {
+      } else if (response.statusCode == 404) {
+        final snackBar = SnackBar(
+          content: Text('Error: You need to have at least 1 picture'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+      }
+      else {
         throw Exception('Failed to delete data');
       }
     } catch (error) {

@@ -14,6 +14,8 @@ import 'package:tourstravels/tabbar.dart';
 import 'package:tourstravels/My_Apartments/My_AprtmetsVC.dart';
 import 'package:tourstravels/My_Apartments/ViewApartmentVC.dart';
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
+import '../ServiceDasboardVC.dart';
+import '../flyScreens/MyflightRequest.dart';
 import 'ViewBookingsVC.dart';
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 
@@ -29,7 +31,7 @@ class MyBookingScreen extends StatefulWidget {
 class _userDashboardState extends State<MyBookingScreen> {
   final baseDioSingleton = BaseSingleton();
   int bookingID = 0;
-
+  String LoggedInUser = 'LoggedUser';
   String RetrivedBearertoekn = '';
   String Bookingsts = 'Not booked yet!';
   int ApartmentId = 0;
@@ -52,12 +54,19 @@ class _userDashboardState extends State<MyBookingScreen> {
     super.initState();
     _retrieveValues();
     getData();
+   // VehiclegetData();
 
   }
 
   Future<dynamic> getData() async {
     // String url = 'https://staging.abisiniya.com/api/v1/booking/apartment/mybookings';
     String url = baseDioSingleton.AbisiniyaBaseurl + 'booking/apartment/mybookings';
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    RetrivedBearertoekn = prefs.getString('tokenkey') ?? "";
+    print('booking token...');
+    print(RetrivedBearertoekn);
+
 
     var response = await http.get(
       Uri.parse(
@@ -65,6 +74,8 @@ class _userDashboardState extends State<MyBookingScreen> {
       headers: {
         // 'Authorization':
         // 'Bearer <--your-token-here-->',
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
         "Authorization": "Bearer $RetrivedBearertoekn",
 
       },
@@ -83,6 +94,9 @@ class _userDashboardState extends State<MyBookingScreen> {
       throw Exception('Failed to load post');
     }
   }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,156 +111,234 @@ class _userDashboardState extends State<MyBookingScreen> {
       // ),
       appBar: AppBar(
         centerTitle: true,
-        leading: Padding(
-          // padding: const EdgeInsets.all(0.0),
-          padding: EdgeInsets.only(left: 15.0, top: 0.0),
-          child: Image.asset(
-            "images/logo.jpg",
-          ),),
-        title: Text('ABISINIYA',textAlign: TextAlign.center,
+        leading: BackButton(
+          onPressed: () async{
+            print("back Pressed");
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            // prefs.setString('logoutkey', ('LogoutDashboard'));
+            //prefs.setString('Property_type', ('Apartment'));
+            prefs.setString('LoggedinUserkey', LoggedInUser);
+
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ServiceDashboardScreen()),
+            );
+            // LoggedInUser = 'LoggedUser';
+            // prefs.setString('LoggedinUserkey', LoggedInUser);
+            //
+            // NewBookingUserstr = prefs.getString('newBookingUserkey') ?? "";
+            // LoggedInUSerstr = prefs.getString('LoggedinUserkey') ?? "";
+            // print(' dashboard logged in user...');
+            // print(LoggedInUSerstr);
+            // print(NewBookingUserstr);
+
+          },
+
+        ),
+        // iconTheme: IconThemeData(
+        //     color: Colors.green,
+        // ),
+        title: Text('My Bookings',textAlign: TextAlign.center,
             style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
-        iconTheme: IconThemeData(color: Colors.green),),
-      // endDrawer: Drawer(
-      //   child: ListView(
-      //
-      //     // Important: Remove any padding from the ListView.
-      //     padding: EdgeInsets.zero,
-      //     children: [
-      //       DrawerHeader(
-      //
-      //         //child: Text('Categories', style: TextStyle(color: Colors.white)),
-      //         decoration: BoxDecoration(color: Color(0xffffff
-      //         ),),
-      //         padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-      //
-      //         child: Image.asset(
-      //           'images/logo2.png',
-      //           width: 50,height: 50,
-      //         ),
-      //       ),
-      //       ListTile(
-      //         trailing: Icon(
-      //           Icons.login,
-      //           color: Colors.green,
-      //         ),
-      //         title: const Text('My Bookings',
-      //             style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
-      //
-      //         onTap: () {
-      //           Navigator.push(
-      //             context,
-      //             MaterialPageRoute(
-      //                 builder: (context) => Login()),
-      //           );
-      //         },
-      //       ),
-      //       ListTile(
-      //         trailing: Icon(
-      //           Icons.money,
-      //           color: Colors.green,
-      //         ),
-      //         title: const Text('Booking Commision',
-      //             style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
+
+      ),
+      // appBar: AppBar(
+      //   centerTitle: true,
+      //   leading: BackButton(
+      //   onPressed: () async{
+      // print("back Pressed");
+      // SharedPreferences prefs = await SharedPreferences.getInstance();
+      // // prefs.setString('logoutkey', ('LogoutDashboard'));
+      // //prefs.setString('Property_type', ('Apartment'));
+      // prefs.setString('LoggedinUserkey', LoggedInUser);
       //
       //
-      //         onTap: () {
-      //           Navigator.pop(context);
-      //         },
-      //       ),
-      //       ListTile(
-      //         trailing: Icon(
-      //           Icons.flight,
-      //           color: Colors.green,
-      //         ),
-      //
-      //         title: const Text('My Flight Requests',
-      //             style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
-      //
-      //         onTap: () {
-      //           Navigator.pop(context);
-      //         },
-      //       ),
-      //       ListTile(
-      //         trailing: Icon(
-      //           Icons.apartment,
-      //           color: Colors.green,
-      //         ),
-      //
-      //
-      //         title: const Text('My Apartments',
-      //             style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
-      //
-      //         onTap: () {
-      //           Navigator.pop(context);
-      //         },
-      //       ),
-      //       ListTile(
-      //         trailing: Icon(
-      //           Icons.bus_alert,
-      //           color: Colors.green,
-      //         ),
-      //         title: const Text('My Vehicles',
-      //             style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
-      //         //title: const Text('Airport Shuttle',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w400,fontSize: 18)),
-      //         onTap: () {
-      //           Navigator.pop(context);
-      //         },
-      //       ),
-      //       ListTile(
-      //         trailing: Icon(
-      //           Icons.bus_alert_sharp,
-      //           color: Colors.green,
-      //         ),
-      //         //title: const Text('List Property and Car',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w400,fontSize: 18)),
-      //         title: const Text('My Buses',
-      //             style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
-      //
-      //         onTap: () {
-      //           Navigator.pop(context);
-      //         },
-      //       ),
-      //       ListTile(
-      //         trailing: Icon(
-      //           Icons.airport_shuttle,
-      //           color: Colors.green,
-      //         ),
-      //         //title: const Text('Contact Us',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w400,fontSize: 18)),
-      //         title: const Text('My Shuttle',
-      //             style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
-      //
-      //         onTap: () {
-      //           Navigator.pop(context);
-      //         },
-      //       ),
-      //       ListTile(
-      //         trailing: Icon(
-      //           Icons.logout,
-      //           color: Colors.green,
-      //         ),
-      //         //title: const Text('Sign Out',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w900,fontSize: 20)),
-      //         title: const Text('Logout',
-      //             style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
-      //         //onTap: () async {
-      //         onTap: ()async{
-      //           SharedPreferences prefs = await SharedPreferences.getInstance();
-      //           prefs.setString('logoutkey', ('LogoutDashboard'));
-      //           prefs.setString('Property_type', ('Apartment'));
-      //           Navigator.push(
-      //             context,
-      //             MaterialPageRoute(
-      //                 builder: (context) => tabbar()),
-      //           );
-      //
-      //
-      //         },
-      //
-      //         // onTap: () {
-      //         //   Navigator.pop(context);
-      //         // },
-      //       ),
-      //     ],
-      //   ),
-      // ),
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //       builder: (context) => ServiceDashboardScreen()),
+      // );
+      //   leading: Padding(
+      //     // padding: const EdgeInsets.all(0.0),
+      //     padding: EdgeInsets.only(left: 15.0, top: 0.0),
+      //     child: Image.asset(
+      //       "images/logo.jpg",
+      //     ),),
+      //   title: Text('ABISINIYA',textAlign: TextAlign.center,
+      //       style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
+      //   iconTheme: IconThemeData(color: Colors.green),),
+      endDrawer: Drawer(
+        child: ListView(
+
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+
+              //child: Text('Categories', style: TextStyle(color: Colors.white)),
+              decoration: BoxDecoration(color: Color(0xffffff
+              ),),
+              padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+
+              child: Image.asset(
+                'images/logo2.png',
+                width: 50,height: 50,
+              ),
+            ),
+            ListTile(
+              trailing: Icon(
+                Icons.login,
+                color: Colors.green,
+              ),
+              title: const Text('My Bookings',
+                  style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
+
+              onTap: () async{
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.setString('logoutkey', ('LogoutDashboard'));
+                prefs.setString('Property_type', ('Apartment'));
+                prefs.setString('tokenkey',RetrivedBearertoekn );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MyBookingScreen()),
+                );
+              },
+            ),
+            ListTile(
+              trailing: Icon(
+                Icons.money,
+                color: Colors.green,
+              ),
+              title: const Text('Booking Commision',
+                  style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
+
+
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              trailing: Icon(
+                Icons.flight,
+                color: Colors.green,
+              ),
+
+              title: const Text('My Flight Requests',
+                  style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
+
+              onTap: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.setString('logoutkey', ('LogoutDashboard'));
+                prefs.setString('Property_type', ('Apartment'));
+                print('flight token');
+                print(RetrivedBearertoekn);
+                prefs.setString('tokenkey',RetrivedBearertoekn );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => FluBooking_RequestScreen()),
+                );
+                // SharedPreferences prefs = await SharedPreferences.getInstance();
+                // prefs.setString('logoutkey', ('LogoutDashboard'));
+                // prefs.setString('Property_type', ('Apartment'));
+                // prefs.setString('tokenkey',RetrivedBearertoekn );
+              },
+            ),
+            ListTile(
+              trailing: Icon(
+                Icons.apartment,
+                color: Colors.green,
+              ),
+
+
+              title: const Text('My Apartments',
+                  style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
+
+              onTap: ()async{
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.setString('logoutkey', ('LogoutDashboard'));
+                prefs.setString('Property_type', ('Apartment'));
+                prefs.setString('tokenkey',RetrivedBearertoekn );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MyApartmentScreen()),
+                );
+              },
+            ),
+            ListTile(
+              trailing: Icon(
+                Icons.bus_alert,
+                color: Colors.green,
+              ),
+              title: const Text('My Vehicles',
+                  style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
+              //title: const Text('Airport Shuttle',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w400,fontSize: 18)),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              trailing: Icon(
+                Icons.bus_alert_sharp,
+                color: Colors.green,
+              ),
+              //title: const Text('List Property and Car',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w400,fontSize: 18)),
+              title: const Text('My Buses',
+                  style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
+
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              trailing: Icon(
+                Icons.airport_shuttle,
+                color: Colors.green,
+              ),
+              //title: const Text('Contact Us',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w400,fontSize: 18)),
+              title: const Text('My Shuttle',
+                  style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
+
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              trailing: Icon(
+                Icons.logout,
+                color: Colors.green,
+              ),
+              //title: const Text('Sign Out',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w900,fontSize: 20)),
+              title: const Text('Logout',
+                  style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
+
+              //onTap: () async {
+              onTap: ()async{
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.setString('logoutkey', ('LogoutDashboard'));
+                //prefs.setString('Property_type', ('Apartment'));
+                //prefs.setString('newBookingUserkey', (LoggedInUser));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ServiceDashboardScreen()),
+                );
+                SharedPreferences prefrences = await SharedPreferences.getInstance();
+                await prefrences.remove("LoggedinUserkey");
+                // NewBookingUserstr = prefs.getString('newBookingUserkey') ?? "";
+                // LoggedInUSerstr = prefs.getString('LoggedinUserkey') ?? "";
+                // print(' dashboard logged in user...');
+                // print(LoggedInUSerstr);
+                // print(NewBookingUserstr);
+              },
+            ),
+          ],
+        ),
+      ),
       body: FutureBuilder<dynamic>(
 
         //future: BookingDashboardUsers,
@@ -535,13 +627,14 @@ class _userDashboardState extends State<MyBookingScreen> {
 
                                     Column(
                                       children:<Widget>[
-                                        Text('second test'),
+
+                                       //Text('second test'),
                                         ListView.builder(
                                             physics: NeverScrollableScrollPhysics(),
                                             shrinkWrap: true,
                                             itemCount: 1,
                                             itemBuilder: (context,index){
-                                              return  Text(' Vehicles',style: TextStyle(fontSize: 22),);
+                                              return  Text('',style: TextStyle(fontSize: 22),);
                                             }),
 
                                       ],

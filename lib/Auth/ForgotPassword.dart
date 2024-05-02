@@ -102,13 +102,22 @@ class _ForgotState extends State<Forgot> {
       // ),
 
         appBar: AppBar(
+          backgroundColor: Colors.lightGreen,
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: <Color>[Colors.white, Colors.green]),
+            ),
+          ),
           centerTitle: true,
           iconTheme: IconThemeData(
-              color: Colors.green
+              color: Colors.white
           ),
           title: const Text('Forgot Password',
               textAlign: TextAlign.center,
-              style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
+              style: TextStyle(color:Colors.white,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
               //style: TextStyle(
                   //color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20)),
           //backgroundColor: Colors.grey,

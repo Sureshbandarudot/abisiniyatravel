@@ -10,6 +10,8 @@ import 'package:tourstravels/userDashboardvc.dart';
 import 'package:tourstravels/UserDashboard_Screens/newDashboard.dart';
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 
+import '../Auth/Login.dart';
+import '../MyBookings/MybookingVC.dart';
 import '../Vehicles.dart';
 //import 'models/user.dart';
 class CarHire_NewUserBooking extends StatefulWidget {
@@ -43,6 +45,7 @@ class HomeState extends State<CarHire_NewUserBooking> {
   String fromDatestr = '';
   String toDatestr = '';
   String bookable_type = '';
+  String newBookingUser = '';
 
 
   int idnum = 0;
@@ -77,6 +80,116 @@ class HomeState extends State<CarHire_NewUserBooking> {
 
 
     });
+  }
+
+  showAlertDialog(BuildContext context) {
+    Widget cancelButton = TextButton(
+      child: Text("Cancel",style: TextStyle(fontWeight: FontWeight.w900,fontSize: 20,color: Colors.green),),
+      onPressed:  () {
+        Navigator.of(context, rootNavigator: true).pop();
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text("Login",style: TextStyle(fontWeight: FontWeight.w900,fontSize: 20,color: Colors.green),),
+      onPressed:  () async{
+        Navigator.of(context, rootNavigator: true).pop();
+        await Navigator.of(context)
+            .push(new MaterialPageRoute(builder: (context) => Login()));
+        setState((){
+          //Navigator.pop(context);
+        });
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Abisiniya",style: TextStyle(fontWeight: FontWeight.w900,fontSize: 24,color: Colors.green),),
+      content: Text("If Already registered Phone and Email,Please Login and try again or Please enter different Email and Phone numbers and try again..... ",
+        style:TextStyle(fontWeight: FontWeight.w600,fontSize: 16,color: Colors.black54) ,),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  Phonenumber_showAlertDialog(BuildContext context) {
+    Widget cancelButton = TextButton(
+      child: Text("Cancel",style: TextStyle(fontWeight: FontWeight.w900,fontSize: 20,color: Colors.green),),
+      onPressed:  () {
+        Navigator.of(context, rootNavigator: true).pop();
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text("Login",style: TextStyle(fontWeight: FontWeight.w900,fontSize: 20,color: Colors.green),),
+      onPressed:  () async{
+        Navigator.of(context, rootNavigator: true).pop();
+        await Navigator.of(context)
+            .push(new MaterialPageRoute(builder: (context) => Login()));
+        setState((){
+          //Navigator.pop(context);
+        });
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Abisiniya",style: TextStyle(fontWeight: FontWeight.w900,fontSize: 24,color: Colors.green),),
+      content: Text("If Already registered Phone number,Please Login and try again else Please enter different Phone number and try again. ",
+        style:TextStyle(fontWeight: FontWeight.w600,fontSize: 16,color: Colors.black54) ,),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+  Email_showAlertDialog(BuildContext context) {
+    Widget cancelButton = TextButton(
+      child: Text("Cancel",style: TextStyle(fontWeight: FontWeight.w900,fontSize: 20,color: Colors.green),),
+      onPressed:  () {
+        Navigator.of(context, rootNavigator: true).pop();
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text("Login",style: TextStyle(fontWeight: FontWeight.w900,fontSize: 20,color: Colors.green),),
+      onPressed:  () async{
+        Navigator.of(context, rootNavigator: true).pop();
+        await Navigator.of(context)
+            .push(new MaterialPageRoute(builder: (context) => Login()));
+        setState((){
+          //Navigator.pop(context);
+        });
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Abisiniya",style: TextStyle(fontWeight: FontWeight.w900,fontSize: 24,color: Colors.green),),
+      content: Text("If Already registered Email ,Please Login and try again else Please enter different Email and try again. ",
+        style:TextStyle(fontWeight: FontWeight.w600,fontSize: 16,color: Colors.black54) ,),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
   Future<dynamic> carHiregetData() async {
@@ -147,7 +260,7 @@ class HomeState extends State<CarHire_NewUserBooking> {
       if (response.statusCode == 200) {
         // Successful POST request, handle the response here
         final responseData = jsonDecode(response.body);
-        print('Apartment fresh user data successfully posted');
+        print('car fresh user data successfully posted');
         print(responseData);
         var data = jsonDecode(response.body.toString());
         print('message...');
@@ -166,56 +279,110 @@ class HomeState extends State<CarHire_NewUserBooking> {
           // Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
           //   builder: (_) => newuserDashboard(),
           // ),);
-        } else if (data['message'] != 'Start date should be greater or equal to booking day') {
-          final snackBar = SnackBar(
-            content: Text('Start date should be greater or equal to booking day'),
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
         }
+
+        // else if (data['message'] != 'Start date should be greater or equal to booking day') {
+        //   final snackBar = SnackBar(
+        //     content: Text('Start date should be greater or equal to booking day'),
+        //   );
+        //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        //
+        // }
         else {
           print('calling....');
           Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-            builder: (_) => newuserDashboard(),
+            builder: (_) => MyBookingScreen(),
           ),);
           print('calling token....');
           print(RetrivedBearertoekn);
+          RetrivedBearertoekn = data['data']['token'];
+          print('token generated...');
+          print(RetrivedBearertoekn);
+          newBookingUser = 'NewBookingUser';
           SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setString('tokenkey', RetrivedBearertoekn);
+          prefs.setString('newBookingUserkey', newBookingUser);
+          // Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+          //   builder: (_) => newuserDashboard(),
+          // ),);
+          // print('calling token....');
+          // print(RetrivedBearertoekn);
+          // SharedPreferences prefs = await SharedPreferences.getInstance();
+          // prefs.setString('tokenkey', RetrivedBearertoekn);
 
         }
-      }       else if (response.statusCode == 422) {
+      }
+      if (response.statusCode == 422) {
         print('already entered existing data1...');
         var data = jsonDecode(response.body);
         print('email...');
-        print(data['message']['email'].toString());
+        print(data['message']['email']);
         //String emailstr = (data['message']['email']);
         //print(emailstr);
-        //print(data['message']['phone'].toString());
+        print(data['message']['phone']);
+        print(data['message']['end_date']);
+        if ((data['message']['phone']) != null && (data['message']['email']) != null) {
+          showAlertDialog(context);
+          // final snackBar = SnackBar(
+          //   content: Text('The email and phone has already been taken.'),
+          // );
+          // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+        else if ((data['message']['phone']) != null) {
+          // final snackBar = SnackBar(
+          //   content: Text('The phone has already been taken.'),
+          // );
+          // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          Phonenumber_showAlertDialog(context);
 
-        if ((data['message']['email']) == '[The email has already been taken.]' && (data['message']['phone']) == '[The phone has already been taken.]'){
-          final snackBar = SnackBar(
-            content: Text('The email and phone has already been taken.'),
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-        }  else if ((data['message']['email']) != '[The email has already been taken.]') {
+        } else if ((data['message']['email']) != null) {
+          Email_showAlertDialog(context);
+
+          // final snackBar = SnackBar(
+          //   content: Text('The  email has already been taken.'),
+          // );
+          // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }else if ((data['message']['password']) != null) {
           final snackBar = SnackBar(
-            content: Text('The email  has already been taken.'),
+            content: Text('The password confirmation does not match.'),
           );
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        } else if ((data['message']['phone']) != '[The phone has already been taken.]'){
-          final snackBar = SnackBar(
-            content: Text('The  phone has already been taken.'),
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        } else if ((data['message']['end_date']) != '[The end date must be a date after start date.]') {
+        }
+
+        else if ((data['message']['end_date']) != null) {
+          print('date....');
           final snackBar = SnackBar(
             content: Text('The end date must be a date after start date.'),
           );
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        } else {
+          print('nullll.....');
         }
-      } else {
+        // if ((data['message']['email']) != '[The email has already been taken.]' && (data['message']['phone']) != '[The phone has already been taken.]'){
+        //   final snackBar = SnackBar(
+        //     content: Text('The email and phone has already been taken.'),
+        //   );
+        //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        //
+        // }  else if ((data['message']['email']) != '[The email has already been taken.]') {
+        //   final snackBar = SnackBar(
+        //     content: Text('The email  has already been taken.'),
+        //   );
+        //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        // } else if ((data['message']['phone']) != '[The phone has already been taken.]'){
+        //   final snackBar = SnackBar(
+        //     content: Text('The  phone has already been taken.'),
+        //   );
+        //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        // } else if ((data['message']['end_date']) != '[The end date must be a date after start date.]') {
+        //   final snackBar = SnackBar(
+        //     content: Text('The end date must be a date after start date.'),
+        //   );
+        //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        // }
+      }
+      else {
         // If the server returns an error response, throw an exception
         throw Exception('Failed to post data');
       }

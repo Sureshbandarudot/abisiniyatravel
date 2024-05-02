@@ -15,6 +15,8 @@ import 'VehicleScreens/CarHire_ExistingBookingVC.dart';
 import 'VehicleScreens/CarHire_NewBookingVC.dart';
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 
+import 'VehicleScreens/VehicleFilterVC.dart';
+
 void main() {
   runApp(const Vehiclescreen());
 
@@ -94,6 +96,9 @@ class _MyStatefulWidgetState extends State<carHire> {
   String RetrivedEmail = '';
   String Logoutstr = '';
    String RetrivedBearertoekn = '';
+   String LoggedInUSerstr = '';
+  List<String> LoggedinUserlist = [];
+
 
   _retrieveValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -135,7 +140,7 @@ class _MyStatefulWidgetState extends State<carHire> {
     String url = baseDioSingleton.AbisiniyaBaseurl + 'vehicle/list';
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
-      print('success.....');
+      print('car   success.....');
       final data1 = jsonDecode(response.body);
       print(data1);
       return json.decode(response.body);
@@ -215,13 +220,14 @@ class _MyStatefulWidgetState extends State<carHire> {
     width: 220.0,
     height: 50,
     child: TextField(
+      cursorColor: Colors.white,
     decoration: InputDecoration(
     //border: OutlineInputBorder(),
     border: InputBorder.none,
     hintText: 'Search',
     ),
     controller: searchController,
-    style: TextStyle(fontSize: 18.0, height: 0.0, color: Colors.black),
+    style: TextStyle(fontSize: 18.0, height: 0.0, color: Colors.white),
     ),
     )
     ),
@@ -237,12 +243,12 @@ class _MyStatefulWidgetState extends State<carHire> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
     } else {
     print('search btn clicked...');
-    // Navigator.push(
-    // context,
-    // MaterialPageRoute(
-    // builder: (context) => ApartmentSearchResultscreen()
-    // ),
-    // );
+    Navigator.push(
+    context,
+    MaterialPageRoute(
+    builder: (context) => VehiclefilterSearchResultscreen()
+    ),
+    );
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('locationkey', searchController.text);
 
@@ -402,6 +408,40 @@ class _MyStatefulWidgetState extends State<carHire> {
                                                     print(index);
                                                     print(
                                                         'index value...');
+                                                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                                                    print('dashboard sts...');
+                                                    print(Logoutstr);
+                                                    LoggedInUSerstr = prefs.getString('LoggedinUserkey') ?? "";
+                                                    print(' logged in user...');
+                                                    print(LoggedInUSerstr);
+                                                    print('letters length....');
+                                                    LoggedinUserlist.add(LoggedInUSerstr);
+                                                    print(LoggedinUserlist);
+                                                    print(LoggedinUserlist.length);
+                                                    // if (LoggedInUSerstr == 'LoggedUser') {
+                                                    //   print('login...');
+                                                    //   Navigator.push(
+                                                    //     context,
+                                                    //     MaterialPageRoute(
+                                                    //         builder: (context) => CarHire_ExistingBookingScreen()),
+                                                    //   );
+                                                    //   SharedPreferences prefrences = await SharedPreferences.getInstance();
+                                                    //   await prefrences.remove("LoggedinUserkey");
+                                                    //
+                                                    // }  else{
+                                                    //   Navigator.push(
+                                                    //     context,
+                                                    //     MaterialPageRoute(
+                                                    //         builder: (context) => CarHire_NewUserBooking()
+                                                    //     ),
+                                                    //   );
+                                                    // }
+                                                     prefs.setString('namekey', snapshot.data['data'][index]['name'] ?? '');
+                                                     prefs.setString('citykey', snapshot.data['data'][index]['city']);
+                                                     prefs.setInt('imgkeyId', snapshot.data['data'][index]['id']);
+                                                     prefs.setString('addresskey', snapshot.data['data'][index]['address']);
+                                                     prefs.setString('bookable_type', ('Vehicle'));
+
 
                                                     Navigator.push(
                                                       context,
@@ -409,12 +449,12 @@ class _MyStatefulWidgetState extends State<carHire> {
                                                           builder: (context) => CarHire_NewUserBooking()
                                                       ),
                                                     );
-                                                    SharedPreferences prefs = await SharedPreferences.getInstance();
-                                                    prefs.setString('namekey', snapshot.data['data'][index]['name']);
-                                                    prefs.setString('citykey', snapshot.data['data'][index]['city']);
-                                                    prefs.setInt('imgkeyId', snapshot.data['data'][index]['id']);
-                                                    prefs.setString('addresskey', snapshot.data['data'][index]['address']);
-                                                    prefs.setString('bookable_type', ('Vehicle'));
+                                                   // SharedPreferences prefs = await SharedPreferences.getInstance();
+                                                   //  prefs.setString('namekey', snapshot.data['data'][index]['name']);
+                                                   //  prefs.setString('citykey', snapshot.data['data'][index]['city']);
+                                                   //  prefs.setInt('imgkeyId', snapshot.data['data'][index]['id']);
+                                                   //  prefs.setString('addresskey', snapshot.data['data'][index]['address']);
+                                                   //  prefs.setString('bookable_type', ('Vehicle'));
                                                   },
                                                   child: const Text('Drive Now',style: (TextStyle(color: Colors.white,fontWeight: FontWeight.w600,fontSize: 18)),),
                                                 ),

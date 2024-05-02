@@ -1,5 +1,6 @@
 //import 'dart:html';
 
+
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart';
@@ -9,42 +10,57 @@ import 'package:tourstravels/Auth/Login.dart';
 import 'package:tourstravels/Auth/forgotpwdemailVerify.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
+import 'package:http/http.dart' as http;
+
 
 
 import 'package:tourstravels/tabbar.dart';
 
-class Register extends StatefulWidget {
+import '../UserDashboard_Screens/newDashboard.dart';
 
-   String registerinputemailData = '';
+class profileUpdatescreen extends StatefulWidget {
 
-
-
+  String registerinputemailData = '';
   @override
-
   _RegisterState createState() => _RegisterState();
 }
 
-class _RegisterState extends State<Register> {
+class _RegisterState extends State<profileUpdatescreen> {
 
   final baseDioSingleton = BaseSingleton();
   bool isLoading = false;
-
+  String profileNamestr = '';
+  String Retrivedprofilestr = '';
+  String profileEmail = '';
+  String RetrivedEmailstr = '';
+  String RetrivedBearertoekn = '';
   String _email = '';
-
-
   TextEditingController nameController = TextEditingController();
   TextEditingController surnameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmpwdController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  TextEditingController countryController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   _retrieveValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      emailController.text = prefs.getString('emailkey') ?? "";
+      // emailController.text = prefs.getString('emailkey') ?? "";
       print(emailController.text);
-      //ageController.text = prefs.getString('age') ?? "";
-      //print(ageController.text);
+      setState(() {
+        RetrivedBearertoekn = prefs.getString('tokenkey') ?? "";
+        print('booking token...');
+        print(RetrivedBearertoekn);
+        Retrivedprofilestr = prefs.getString('profileuserKey') ?? "";
+        RetrivedEmailstr = prefs.getString('profileemailKey') ?? "";
+        prefs.setString('Property_type', ('Apartment'));
+        nameController.text = prefs.getString('profilenamekey') ?? "";
+        surnameController.text = prefs.getString('profilesurnamekey') ?? "";
+        emailController.text = prefs.getString('profile_emailkey') ?? "";
+        phoneController.text = prefs.getString('profilephonekey') ?? "";
+        addressController.text = prefs.getString('profile_addresskey') ?? "";
+        countryController.text = prefs.getString('profile_countrykey') ?? "";
+
+      });
     });
   }
 
@@ -54,19 +70,67 @@ class _RegisterState extends State<Register> {
     _retrieveValues();
   }
 
+  Future<dynamic> Profile() async {
+    // String url = 'https://staging.abisiniya.com/api/v1/booking/vehicle/withbooking';
+    String url = baseDioSingleton.AbisiniyaBaseurl + 'profile';
+    print('profile url..');
+    print(url);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    RetrivedBearertoekn = prefs.getString('tokenkey') ?? "";
+    print('profile token...');
 
-  void RegisterAPI(String name , surname , email , password , password_confirmation , phone) async {
+    print(RetrivedBearertoekn);
+    var response = await http.get(
+      Uri.parse(
+          url),
+      headers: {
+        "Authorization": "Bearer $RetrivedBearertoekn",
+      },
+    );
+    if (response.statusCode == 200) {
+      print('profile name .......');
+      final data1 = jsonDecode(response.body);
+      var getpicsData = [];
+      return json.decode(response.body);
+    } else {
+      // If that call was not successful, throw an error.
+      throw Exception('Failed to load post');
+    }
+  }
+
+  void profileUpdate(String name , surname , email , address , country , phone) async {
     try{
-      Response response = await post(
-          Uri.parse(baseDioSingleton.AbisiniyaBaseurl + 'myregister'),
-          body: {
-            'name' : nameController.text.toString(),
-            'surname' : surnameController.text.toString(),
-            'email' : emailController.text.toString(),
-            'password' : passwordController.text.toString(),
-            'password_confirmation' : confirmpwdController.text.toString(),
-            'phone' : phoneController.text.toString(),
-          });
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      RetrivedBearertoekn = prefs.getString('tokenkey') ?? "";
+      print('pst profile token...');
+
+      print(RetrivedBearertoekn);
+      String apiUrl = baseDioSingleton.AbisiniyaBaseurl + 'profileupdate';
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: <String, String>{
+          // 'Content-Type': 'application/json; charset=UTF-8',
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer $RetrivedBearertoekn",
+        },
+        body: jsonEncode(<String, dynamic>{
+          'name' : nameController.text,
+          'surname' : surnameController.text,
+          'email' : emailController.text,
+          'address' : addressController.text,
+          'country' : countryController.text,
+          'phone' : phoneController.text,
+          // Add any other data you want to send in the body
+        }),
+      );
+
+      print('status...');
+      print(response.statusCode);
+      print(nameController.text.toString());
+      print(countryController.text.toString());
+      print(addressController.text);
+      print(phoneController.text);
 
       if(response.statusCode == 200){
         var data = jsonDecode(response.body.toString());
@@ -75,14 +139,13 @@ class _RegisterState extends State<Register> {
         var data1 = jsonDecode(response.body.toString());
         print(data1['message']);
         bool successMsg = true;
-        if (successMsg == (data1['success'])){
+        if (successMsg == (data1['status'])){
           String inputemailData = emailController.text.toString();
           print('Go to Email or OTP verification screen');
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => OTPVerified(),
-              settings: RouteSettings(arguments: inputemailData),
+                builder: (context) => newuserDashboard()
             ),
           );
         }
@@ -106,13 +169,13 @@ class _RegisterState extends State<Register> {
             content: Text('email has already been taken and password confirmation does not match'),
           );
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        } else if(data1['message']['email'] == null && data1['message']['phone'] != null && data1['message']['password'] != null  ){
+        } else if(data1['message']['email'] == null && data1['message']['phone'] != null){
           print('email valid...');
           final snackBar = SnackBar(
             content: Text('phone has already been taken and password confirmation does not match'),
           );
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        }else if(data1['message']['email'] == null && data1['message']['phone'] == null && data1['message']['password'] == null  ){
+        }else if(data1['message']['email'] == null && data1['message']['phone'] == null){
           print('email valid...');
           final snackBar = SnackBar(
             content: Text('email , phone has already been taken '),
@@ -139,38 +202,16 @@ class _RegisterState extends State<Register> {
         }
 
 
-
-        // else if(data1['message']['email'] != '[The email has already been taken.]' && data1['message']['phone'] == '[The phone has already been taken.]' && data1['message']['password'] == '[The password confirmation does not match.]'  ){
-        //   print('email valid...');
-        //   final snackBar = SnackBar(
-        //     content: Text('email has already been taken'),
-        //   );
-        //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        // } else if(data1['message']['email'] == '[The email has already been taken.]' && data1['message']['phone'] != '[The phone has already been taken.]' && data1['message']['password'] == '[The password confirmation does not match.]'  ){
-        //   print('email valid...');
-        //   final snackBar = SnackBar(
-        //     content: Text('phone has already been taken'),
-        //   );
-        //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        // } else if(data1['message']['email'] == '[The email has already been taken.]' && data1['message']['phone'] == '[The phone has already been taken.]' && data1['message']['password'] != '[The password confirmation does not match.]'  ){
-        //   print('email valid...');
-        //   final snackBar = SnackBar(
-        //     content: Text('The password confirmation does not match.'),
-        //   );
-        //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        // }
-
-
       }
-        else {
+      else {
         print('failed');
         print('validations123....');
-        var data = jsonDecode(response.body.toString());
-        print('response data');
-        print(data);
-        var data2 = jsonDecode(response.body);
-        print('response data2');
-        print(data2);
+        // var data = jsonDecode(response.body.toString());
+        // print('response data');
+        // print(data);
+        // var data2 = jsonDecode(response.body);
+        // print('response data2');
+        // print(data2);
 
         final snackBar = SnackBar(
           content: Text('Please Fill All Fields or Make sure enter new details and please try again...'),
@@ -207,7 +248,7 @@ class _RegisterState extends State<Register> {
               color: Colors.white
           ),
 
-          title: const Text('Registration',
+          title: const Text('Profile',
               textAlign: TextAlign.center,
               style: TextStyle(color:Colors.white,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
 
@@ -268,7 +309,7 @@ class _RegisterState extends State<Register> {
                                           )
                                       ),
                                       Text(
-                                        "Create Your Account",
+                                        "Profile Update",
                                         textAlign: TextAlign.center ,
                                         style: TextStyle(
                                             color: Colors.black,fontWeight: FontWeight.bold,fontSize: 26),),
@@ -305,7 +346,7 @@ class _RegisterState extends State<Register> {
                                         width: 300.0,
                                         height: 40.0,
                                         child: TextField(
-                                          controller: surnameController,
+                                            controller: surnameController,
                                             textAlign: TextAlign.left,
                                             autocorrect: false,
                                             decoration:
@@ -352,7 +393,7 @@ class _RegisterState extends State<Register> {
                                         width: 300.0,
                                         height: 40.0,
                                         child: TextField(
-                                          controller: emailController,
+                                            controller: emailController,
                                             textAlign: TextAlign.left,
                                             autocorrect: false,
                                             decoration:
@@ -374,14 +415,14 @@ class _RegisterState extends State<Register> {
                                         width: 300.0,
                                         height: 40.0,
                                         child: TextField(
-                                          obscureText: true,
-                                          controller: passwordController,
+                                            //obscureText: true,
+                                            controller: addressController,
                                             textAlign: TextAlign.left,
                                             autocorrect: false,
                                             decoration:
                                             //disable single line border below the text field
                                             new InputDecoration.collapsed(
-                                                hintText: 'Password')),
+                                                hintText: 'Address')),
                                       ),
                                       SizedBox(
                                         height: 10,
@@ -396,14 +437,14 @@ class _RegisterState extends State<Register> {
                                         width: 300.0,
                                         height: 40.0,
                                         child: TextField(
-                                          obscureText: true,
-                                          controller: confirmpwdController,
+                                           // obscureText: true,
+                                            controller: countryController,
                                             textAlign: TextAlign.left,
                                             autocorrect: false,
                                             decoration:
                                             //disable single line border below the text field
                                             new InputDecoration.collapsed(
-                                                hintText: 'Confirm Password')),
+                                                hintText: 'Country')),
                                       ),
                                       SizedBox(
                                         height: 15,
@@ -420,111 +461,22 @@ class _RegisterState extends State<Register> {
                                         //onPressed: () {
 
                                         onPressed: () async {
-
                                           setState(() => isLoading = true);
-
-
-    //RegisterAPI(nameController.text.toString(),surnameController.text.toString(),phoneController.text,toString(),emailController.text.toString(), passwordController.text.toString(), pwdController.text.toString());
-
                                           SharedPreferences prefs = await SharedPreferences.getInstance();
                                           prefs.setString('emailkey', emailController.text);
                                           print('email.....');
                                           print(emailController.text);
-
                                           print(emailController.text.toString());
-
-
-                                          RegisterAPI(nameController.text.toString(), surnameController.text.toString(), emailController.text.toString(), passwordController.text.toString(),confirmpwdController.text.toString(),phoneController.text.toString());
-
+                                          profileUpdate(nameController.text.toString(), surnameController.text.toString(), emailController.text.toString(), addressController.text.toString(),countryController.text.toString(),phoneController.text.toString());
                                           await Future.delayed(Duration(seconds: 2), () => () {});
                                           setState(() => isLoading = false);
                                         },
                                         //child: const Text('Register'),
-                                        child: const Text('Register',style: TextStyle(color:Colors.white,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
-
-                                      ),
-
-
-                                      Container(
-                                        padding: EdgeInsets.all(5),
-                                        child: Row(
-                                          children: [
-                                            Text("Already have an account?",
-                                              style: TextStyle(color: Colors.black87,fontSize: 14),
-                                            ),
-                                            SizedBox(
-                                              width: 15,
-                                            ),
-                                            TextButton(
-                                              style: TextButton.styleFrom(
-                                                  fixedSize: const Size(90, 40),
-                                                  foregroundColor: Colors.green,
-                                                  backgroundColor: Colors.transparent,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(00),
-                                                  ),
-                                                  textStyle: const TextStyle(fontSize: 20)),
-                                              onPressed: () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) => Login()),
-                                                  );
-                                              },
-                                              child: const Text('Login'),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                          child: TextButton(
-                                            style: TextButton.styleFrom(
-                                                fixedSize: const Size(180, 40),
-                                                foregroundColor: Colors.redAccent,
-                                                backgroundColor: Colors.transparent,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(00),
-                                                ),
-                                                textStyle: const TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
-                                            onPressed: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) => ForgotpwdOTPVerified()
-                                                ),
-                                              );
-                                            },
-                                            child: const Text('Forgot password'),
-                                          )
+                                        child: const Text('Update',style: TextStyle(color:Colors.white,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
                                       ),
                                     ],
                                   )
                               ),
-                              // Container(
-                              //   width: 320,
-                              //   height: 400,
-                              //   color: Colors.white,
-                              //
-                              //   child: Column(
-                              //     children: [
-                              //       Container(
-                              //           width: 125,
-                              //           child: CircleAvatar(
-                              //             backgroundColor: Colors.transparent,
-                              //             radius: 70.0,
-                              //             child: Image.asset(
-                              //                 "images/logo.jpg",
-                              //                 height: 100.0,
-                              //                 width: 125.0,
-                              //                 fit: BoxFit.fill
-                              //             ),
-                              //           )
-                              //       )
-                              //     ],
-                              //   ),
-                              // ),
-
-
                               // middle widget goes here
                               Expanded(
                                 child: Container(),

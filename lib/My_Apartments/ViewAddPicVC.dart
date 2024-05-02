@@ -67,13 +67,17 @@ class _LoginState extends State<AddpicScreen> {
 
   Future addProduct() async{
     print('entered.....');
+    print('Add img...');
+    print(RetrivedBearertoekn);
     var token = '353|9NBSCUPjPAK54iUIwJgZBdapulScrjumr10pwqeM';
+    String url = baseDioSingleton.AbisiniyaBaseurl +'apartment/pictures/add';
+    print(url);
     var header = {
       "Authorization":"Bearer $RetrivedBearertoekn"
     };
         final request = await http.MultipartRequest(
       'POST',
-      Uri.parse(baseDioSingleton.AbisiniyaBaseurl +'apartment/pictures'),
+      Uri.parse(baseDioSingleton.AbisiniyaBaseurl +'apartment/pictures/add'),
     );
     request.headers.addAll(header);
      request.fields['apartment_id'] = ApartmentId.toString();
@@ -83,6 +87,8 @@ class _LoginState extends State<AddpicScreen> {
     request.files.add(takenPicture);
     var response = await request.send();
     print(response);
+    print('code...');
+    print(response.statusCode);
     if(response.statusCode == 201) {
       var responseData = await response.stream.toBytes();
       var responseToString = String.fromCharCodes(responseData);

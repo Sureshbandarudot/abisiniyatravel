@@ -17,11 +17,16 @@ class Splashscreen  extends StatefulWidget {
 class _SplashscreenState extends State<Splashscreen> {
 
   String Logoutstr = '';
+  String freshstr = '';
+
 
   _retrieveValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       Logoutstr = prefs.getString('logoutkey') ?? "";
+      //freshstr = prefs.getString('freshuserkey') ?? "";
+      prefs.setString('freshuserkey', ('Newuser'));
+
       print('splash logout....');
       print(Logoutstr);
 

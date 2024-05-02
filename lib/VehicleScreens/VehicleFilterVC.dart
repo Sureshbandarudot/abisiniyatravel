@@ -488,7 +488,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                                                           height: 50,
                                                                           width: 280,
                                                                           color: Colors.white,
-                                                                          child:Text(snapshot.data['data'][index]['address'],textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w900,fontSize: 22,color: Colors.green)),),
+                                                                          child:Text(snapshot.data['data'][index]['address'],textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w900,fontSize: 20,color: Colors.green)),),
 
                                                                         ),
                                                                       ],

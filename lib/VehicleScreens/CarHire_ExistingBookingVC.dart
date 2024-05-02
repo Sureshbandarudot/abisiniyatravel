@@ -13,6 +13,7 @@ import 'package:tourstravels/UserDashboard_Screens/newDashboard.dart';
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 
 import '../Authenticated_Vehiclescreen.dart';
+import '../MyBookings/MybookingVC.dart';
 //import 'models/user.dart';
 class CarHire_ExistingBookingScreen extends StatefulWidget {
   @override
@@ -47,6 +48,7 @@ class HomeState extends State<CarHire_ExistingBookingScreen> {
   String result = '';
   String fromDatestr = '';
   String toDatestr = '';
+  String newBookingUser = '';
 
 
   int idnum = 0;
@@ -72,15 +74,19 @@ class HomeState extends State<CarHire_ExistingBookingScreen> {
       RetrivedId = prefs.getInt('imgkeyId') ?? 0;
       bookable_type = prefs.getString('bookable_type') ?? "";
       RetrivedBearertoekn = prefs.getString('tokenkey') ?? "";
-
+      print('veh token...');
+      print(RetrivedBearertoekn);
     });
   }
 
   Future<dynamic> carHiregetData() async {
     //String url = 'https://staging.abisiniya.com/api/v1/booking/apartment/mybookingdetail/$bookingID';
-    print('id value...');
+    print('car id value...');
     print(RetrivedId);
-    String url = baseDioSingleton.AbisiniyaBaseurl + 'vehicle/auth/show/$RetrivedId';
+    print(RetrivedBearertoekn);
+    // String url = baseDioSingleton.AbisiniyaBaseurl + 'vehicle/auth/show/$RetrivedId';
+    String url = baseDioSingleton.AbisiniyaBaseurl + 'vehicle/show/$RetrivedId';
+
     var response = await http.get(
       Uri.parse(
           url),
@@ -92,6 +98,7 @@ class HomeState extends State<CarHire_ExistingBookingScreen> {
       },
     );
     if (response.statusCode == 200) {
+      print('vehicle img success....');
       final data1 = jsonDecode(response.body);
       var getpicsData = [];
       var jsonData = data1['data'];
@@ -113,7 +120,14 @@ class HomeState extends State<CarHire_ExistingBookingScreen> {
       print('url.....1');
       print(apiUrl);
       print('bearer token vehicle auth...');
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      RetrivedId = prefs.getInt('imgkeyId') ?? 0;
+      bookable_type = prefs.getString('bookable_type') ?? "";
+      RetrivedBearertoekn = prefs.getString('tokenkey') ?? "";
+      //RetrivedBearertoekn = '1105|y4FmrkHw4n2opAur0ceH9D3u4WaI5xEhGBiq6Klb';
       print(RetrivedBearertoekn);
+      print('bookable type......');
       print(bookable_type);
       print(RetrivedId);
       final response = await http.post(
@@ -166,13 +180,26 @@ class HomeState extends State<CarHire_ExistingBookingScreen> {
           //   builder: (_) => newuserDashboard(),
           // ),);
         } else {
-          print('vehicle authenticated calling....');
+          print('calling....');
           Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-            builder: (_) => newuserDashboard(),
+            builder: (_) => MyBookingScreen(),
           ),);
+          print('calling token....');
           print(RetrivedBearertoekn);
+          RetrivedBearertoekn = data['data']['token'];
+          print('token generated...');
+          print(RetrivedBearertoekn);
+          newBookingUser = 'NewBookingUser';
           SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setString('tokenkey', RetrivedBearertoekn);
+          prefs.setString('newBookingUserkey', newBookingUser);
+          // print('vehicle authenticated calling....');
+          // Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+          //   builder: (_) => newuserDashboard(),
+          // ),);
+          // print(RetrivedBearertoekn);
+          // SharedPreferences prefs = await SharedPreferences.getInstance();
+          // prefs.setString('tokenkey', RetrivedBearertoekn);
         }
         //}
         setState(() {
@@ -204,7 +231,7 @@ class HomeState extends State<CarHire_ExistingBookingScreen> {
     _retrieveValues();
     // listUsers = fetchUsers();
     // pics = fetchpics();
-    _postData();
+   // _postData();
     carHiregetData();
   }
   String url = 'https://staging.abisiniya.com/api/v1/apartment/list';
@@ -235,7 +262,7 @@ class HomeState extends State<CarHire_ExistingBookingScreen> {
               );
             },
           ),
-          title: Text('logged in VEHICLES',textAlign: TextAlign.center,
+          title: Text('Auth VEHICLES',textAlign: TextAlign.center,
               style: TextStyle(color:Colors.white,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
         ),
       body: FutureBuilder(

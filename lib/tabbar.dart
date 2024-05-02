@@ -6,7 +6,7 @@ import 'package:tourstravels/Auth/Login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
-import 'package:tourstravels/Flights.dart';
+import 'package:tourstravels/flyScreens/Flights.dart';
 import 'package:tourstravels/tabbar.dart';
 
 //import 'package:tourstravels/ApartVC/apartment.dart';
