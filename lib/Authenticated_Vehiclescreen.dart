@@ -26,6 +26,7 @@ void main() {
 class AuthenticatedVehiclescreen extends StatelessWidget {
   const AuthenticatedVehiclescreen({Key? key}) : super(key: key);
 
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -34,19 +35,39 @@ class AuthenticatedVehiclescreen extends StatelessWidget {
         length: 2,
         child: Scaffold(
           appBar: AppBar(
+            // leading: BackButton(
+            //   onPressed: () async{
+            //     // print("back Pressed");
+            //     // SharedPreferences prefs = await SharedPreferences.getInstance();
+            //     // prefs.setString('logoutkey', ('LogoutDashboard'));
+            //     // prefs.setString('Property_type', ('Apartment'));
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //           builder: (context) => ServiceDashboardScreen()),
+            //     );
+            //   },
+            //
+            // ),
             leading: BackButton(
               onPressed: () async{
-                // print("back Pressed");
-                // SharedPreferences prefs = await SharedPreferences.getInstance();
-                // prefs.setString('logoutkey', ('LogoutDashboard'));
-                // prefs.setString('Property_type', ('Apartment'));
+                print("back Pressed");
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                //.setString('logoutkey', ('LogoutDashboard'));
+                prefs.setString('Property_type', ('Apartment'));
+                String LoggedInUser = 'LoggedUser';
+
+                prefs.setString('LoggedinUserkey', LoggedInUser);
+                print('Authvehicle screen clicked2...');
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => ServiceDashboardScreen()),
                 );
-              },
 
+
+              },
             ),
             bottom: const TabBar(
               tabs: [
@@ -98,6 +119,7 @@ class _MyStatefulWidgetState extends State<carHire> {
   String Logoutstr = '';
   String RetrivedBearertoekn = '';
   String LoggedInUSerstr = '';
+  String emptyName = '';
   List<String> LoggedinUserlist = [];
 
 
@@ -270,10 +292,21 @@ class _MyStatefulWidgetState extends State<carHire> {
                                             height: 570, // <-- you should put some value here
 
                                             child: ListView.separated(
+
                                               scrollDirection: Axis.vertical,
                                               itemCount: snapshot.data['data'].length ,
+
                                               separatorBuilder: (BuildContext context, int index) => const Divider(),
                                               itemBuilder: (BuildContext context, int index) {
+                                                if((snapshot.data['data'][index]['name'].toString() ?? '') != null){
+
+                                                  emptyName == '';
+                                                  print('empty name value...');
+                                                  print(emptyName);
+                                                } else {
+
+                                                  emptyName == (snapshot.data['data'][index]['name'].toString() ?? '');
+                                                }
                                                 return Container(
                                                   //margin: EdgeInsets.all(35),// add margin
                                                   color: Colors.white,
@@ -392,7 +425,7 @@ class _MyStatefulWidgetState extends State<carHire> {
                                                                                     Container(
                                                                                       height: 30,
                                                                                       width: 140,
-                                                                                      child:Text('${(snapshot.data['data'][index]['price'].toString())}.00/Night.',textAlign: TextAlign.left,
+                                                                                      child:Text('${(snapshot.data['data'][index]['price'].toString())}.00/Day.',textAlign: TextAlign.left,
                                                                                         style: (TextStyle(fontWeight: FontWeight.w400,fontSize: 20,color: Colors.green)),),
                                                                                     ),
                                                                                   ],
@@ -473,7 +506,7 @@ class _MyStatefulWidgetState extends State<carHire> {
                                                                   color: Colors.white,
                                                                   child: Align(
                                                                     alignment: Alignment.centerLeft,
-                                                                    child:Text('${(snapshot.data['data'][index]['name'].toString())}',textAlign: TextAlign.left,
+                                                                    child:Text('${emptyName}',textAlign: TextAlign.left,
                                                                       style: (TextStyle(fontWeight: FontWeight.w800,fontSize: 20,color: Colors.black)),),
                                                                   ),
                                                                 ),

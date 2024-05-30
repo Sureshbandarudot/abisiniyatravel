@@ -10,37 +10,28 @@ import 'package:tourstravels/tabbar.dart';
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tourstravels/UserDashboard_Screens/newDashboard.dart';
-
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
-
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
-
 import 'MyvehicleVC.dart';
 import 'VehicleAddimgVC.dart';
 
 // import 'My_AprtmetsVC.dart';
 // import 'ViewAddPicVC.dart';
 class VehicleViewManagePictures extends StatefulWidget {
-
   const VehicleViewManagePictures({super.key});
-
   @override
   State<VehicleViewManagePictures> createState() => _userDashboardState();
 }
 
 class _userDashboardState extends State<VehicleViewManagePictures> {
-
-
   final baseDioSingleton = BaseSingleton();
-
   String RetrivedPwd = '';
   String RetrivedEmail = '';
   String RetrivedBearertoekn = '';
   int VehicleId = 0;
   int Picture_Id = 0;
-
   String image = '';
   var ViewApartmentList = [];
   var controller = ScrollController();
@@ -53,11 +44,9 @@ class _userDashboardState extends State<VehicleViewManagePictures> {
       RetrivedBearertoekn = prefs.getString('tokenkey') ?? "";
       VehicleId = prefs.getInt('userbookingId') ?? 0;
       Picture_Id = prefs.getInt('Picturekey') ?? 0;
-
       print('Retrived Ids....');
       print(VehicleId);
       print(Picture_Id);
-
       print('view Apartment... ');
       print(RetrivedBearertoekn);
     });
@@ -76,9 +65,6 @@ class _userDashboardState extends State<VehicleViewManagePictures> {
 
   Future<void> _deleteData(int VehicleId, int Picture_Id) async {
     try {
-
-      print('delete url...');
-      print('ids...');
       print(VehicleId);
       print(Picture_Id);
       var url = '';
@@ -91,7 +77,6 @@ class _userDashboardState extends State<VehicleViewManagePictures> {
           // 'Authorization':
           // 'Bearer <--your-token-here-->',
           "Authorization": "Bearer $RetrivedBearertoekn",
-
         },
       );
 
@@ -118,7 +103,6 @@ class _userDashboardState extends State<VehicleViewManagePictures> {
     print(VehicleId);
     // String url = 'https://staging.abisiniya.com/api/v1/vehicle/auth/show/' + VehicleId.toString();
     String url = baseDioSingleton.AbisiniyaBaseurl + 'vehicle/auth/show/' + VehicleId.toString();
-
     print('url...');
     print(url);
     var response = await http.get(
@@ -136,9 +120,7 @@ class _userDashboardState extends State<VehicleViewManagePictures> {
       var getpicsData = [];
       var viewApartmentdata = data1['data'];
       print('data.....');
-
       for (var pics in viewApartmentdata){
-
         var picData = pics['pictures'];
         for (var picArray in picData){
           var img = picArray['imageUrl'];
@@ -492,7 +474,6 @@ class _userDashboardState extends State<VehicleViewManagePictures> {
                                                   ),
                                                 ],
                                               ),
-
                                             ),
                                           );
                                           //return  Text('Some text');
@@ -509,9 +490,6 @@ class _userDashboardState extends State<VehicleViewManagePictures> {
                                             itemCount: ViewApartmentList.length,
 
                                             itemBuilder: (context,index){
-                                              //return  Text(' Vehicles',style: TextStyle(fontSize: 22),)
-
-
                                               return Column(
                                                 children: [
                                                   Container(
@@ -552,7 +530,6 @@ class _userDashboardState extends State<VehicleViewManagePictures> {
 
                                       ],
                                     ),
-
                                     Column(
                                       children:<Widget>[
                                         Text('Add Picture',style: (TextStyle(fontSize: 24,fontWeight: FontWeight.w600,color: Colors.black54)),),
@@ -587,7 +564,6 @@ class _userDashboardState extends State<VehicleViewManagePictures> {
 
                                 ),
                               );
-
                             },
                           ),
                         ),

@@ -57,23 +57,17 @@ class _userDashboardState extends State<MyBookingScreen> {
    // VehiclegetData();
 
   }
-
   Future<dynamic> getData() async {
     // String url = 'https://staging.abisiniya.com/api/v1/booking/apartment/mybookings';
     String url = baseDioSingleton.AbisiniyaBaseurl + 'booking/apartment/mybookings';
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
     RetrivedBearertoekn = prefs.getString('tokenkey') ?? "";
     print('booking token...');
     print(RetrivedBearertoekn);
-
-
     var response = await http.get(
       Uri.parse(
           url),
       headers: {
-        // 'Authorization':
-        // 'Bearer <--your-token-here-->',
         'Content-type': 'application/json',
         'Accept': 'application/json',
         "Authorization": "Bearer $RetrivedBearertoekn",
@@ -100,15 +94,6 @@ class _userDashboardState extends State<MyBookingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   centerTitle: true,
-      //   title: const Text(
-      //     'Abisiniya',
-      //   ),
-      //   // backgroundColor: const Color(0xff764abc),
-      //   backgroundColor: Colors.green,
-      //
-      // ),
       appBar: AppBar(
         centerTitle: true,
         leading: BackButton(
@@ -118,70 +103,26 @@ class _userDashboardState extends State<MyBookingScreen> {
             // prefs.setString('logoutkey', ('LogoutDashboard'));
             //prefs.setString('Property_type', ('Apartment'));
             prefs.setString('LoggedinUserkey', LoggedInUser);
-
-
             Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => ServiceDashboardScreen()),
             );
-            // LoggedInUser = 'LoggedUser';
-            // prefs.setString('LoggedinUserkey', LoggedInUser);
-            //
-            // NewBookingUserstr = prefs.getString('newBookingUserkey') ?? "";
-            // LoggedInUSerstr = prefs.getString('LoggedinUserkey') ?? "";
-            // print(' dashboard logged in user...');
-            // print(LoggedInUSerstr);
-            // print(NewBookingUserstr);
-
           },
-
         ),
-        // iconTheme: IconThemeData(
-        //     color: Colors.green,
-        // ),
         title: Text('My Bookings',textAlign: TextAlign.center,
             style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
-
       ),
-      // appBar: AppBar(
-      //   centerTitle: true,
-      //   leading: BackButton(
-      //   onPressed: () async{
-      // print("back Pressed");
-      // SharedPreferences prefs = await SharedPreferences.getInstance();
-      // // prefs.setString('logoutkey', ('LogoutDashboard'));
-      // //prefs.setString('Property_type', ('Apartment'));
-      // prefs.setString('LoggedinUserkey', LoggedInUser);
-      //
-      //
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //       builder: (context) => ServiceDashboardScreen()),
-      // );
-      //   leading: Padding(
-      //     // padding: const EdgeInsets.all(0.0),
-      //     padding: EdgeInsets.only(left: 15.0, top: 0.0),
-      //     child: Image.asset(
-      //       "images/logo.jpg",
-      //     ),),
-      //   title: Text('ABISINIYA',textAlign: TextAlign.center,
-      //       style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
-      //   iconTheme: IconThemeData(color: Colors.green),),
       endDrawer: Drawer(
         child: ListView(
-
           // Important: Remove any padding from the ListView.
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-
               //child: Text('Categories', style: TextStyle(color: Colors.white)),
               decoration: BoxDecoration(color: Color(0xffffff
               ),),
               padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-
               child: Image.asset(
                 'images/logo2.png',
                 width: 50,height: 50,
@@ -214,8 +155,6 @@ class _userDashboardState extends State<MyBookingScreen> {
               ),
               title: const Text('Booking Commision',
                   style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
-
-
               onTap: () {
                 Navigator.pop(context);
               },
@@ -228,7 +167,6 @@ class _userDashboardState extends State<MyBookingScreen> {
 
               title: const Text('My Flight Requests',
                   style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
-
               onTap: () async {
                 SharedPreferences prefs = await SharedPreferences.getInstance();
                 prefs.setString('logoutkey', ('LogoutDashboard'));
@@ -241,10 +179,6 @@ class _userDashboardState extends State<MyBookingScreen> {
                   MaterialPageRoute(
                       builder: (context) => FluBooking_RequestScreen()),
                 );
-                // SharedPreferences prefs = await SharedPreferences.getInstance();
-                // prefs.setString('logoutkey', ('LogoutDashboard'));
-                // prefs.setString('Property_type', ('Apartment'));
-                // prefs.setString('tokenkey',RetrivedBearertoekn );
               },
             ),
             ListTile(
@@ -391,9 +325,6 @@ class _userDashboardState extends State<MyBookingScreen> {
                                         //itemCount: snapshot.data?['data']['bookings'].length ?? "" ,
                                         //itemCount: snapshot.data!['data'][0]['bookings'][0].length ?? 0,
                                         //itemCount: snapshot.data?.length ?? 0,
-
-
-
                                         separatorBuilder: (BuildContext context, int index) => const Divider(),
                                         itemBuilder: (BuildContext context, int index) {
                                           bookingID = snapshot.data['data'][index]['id'];
@@ -530,18 +461,6 @@ class _userDashboardState extends State<MyBookingScreen> {
 
                                                         Column(
                                                           children: [
-
-                                                            // Align(
-                                                            //   alignment: Alignment.center,
-                                                            //   child: Container(
-                                                            //     color: Colors.transparent,
-                                                            //     child: Text('Action:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w800,color: Colors.black),),
-                                                            //   ),
-                                                            // ),
-
-                                                            // SizedBox(
-                                                            //   width: 30,
-                                                            // ),
                                                             InkWell(
                                                               child: Container(
                                                                 color: Colors.green,
@@ -557,8 +476,6 @@ class _userDashboardState extends State<MyBookingScreen> {
                                                                       child: Text('View',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w800,color: Colors.white),),
                                                                     ),
                                                                   ),
-
-
                                                                 ),                                                              ),
                                                               onTap: () async {
 
@@ -655,15 +572,6 @@ class _userDashboardState extends State<MyBookingScreen> {
             }
           }
       ),
-      // body: Center(
-      //   child: Column(
-      //     children: [
-      //       SizedBox(
-      //         height: 50,
-      //       ),
-      //     ],
-      //   ),
-      // ),
     );
   }
 }

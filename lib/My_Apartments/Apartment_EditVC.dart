@@ -12,24 +12,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tourstravels/UserDashboard_Screens/newDashboard.dart';
 
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
-
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 
 import 'My_AprtmetsVC.dart';
-
-
-
-
-
-
 class AptmentEdit extends StatefulWidget {
-
   @override
   _LoginState createState() => _LoginState();
 }
-
 class _LoginState extends State<AptmentEdit> {
 
   String RetrivedBearertoekn = '';
@@ -93,15 +84,11 @@ class _LoginState extends State<AptmentEdit> {
     'Inactive',
     'Pending',
   ];
-
-
   void initState() {
     // TODO: implement initState
     super.initState();
     _retrieveValues();
   }
-
-
   File? galleryFile;
   final picker = ImagePicker();
   @override
@@ -110,11 +97,6 @@ class _LoginState extends State<AptmentEdit> {
     final response = await http.put(
       // Uri.parse('https://staging.abisiniya.com/api/v1/apartment/update/$ApartmentID'),
       Uri.parse(baseDioSingleton.AbisiniyaBaseurl + 'apartment/update/$ApartmentID'),
-
-      // NB: you don't need to fill headers field
-      // headers: {
-      //   'Content-Type': 'application/json' // 'application/x-www-form-urlencoded' or whatever you need
-      // },
 
       headers: {
     "Authorization":"Bearer $RetrivedBearertoekn"
@@ -144,8 +126,6 @@ class _LoginState extends State<AptmentEdit> {
       return "Error ${response.statusCode}: ${response.body}";
     }
   }
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -156,10 +136,7 @@ class _LoginState extends State<AptmentEdit> {
           ),
           title: Text('ABISINIYA',textAlign: TextAlign.center,
               style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
-
         ),
-
-
         body: Column(
           children: <Widget>[
             Container(color: Colors.white, height: 50),
@@ -375,8 +352,6 @@ class _LoginState extends State<AptmentEdit> {
                                       SizedBox(
                                         height: 15,
                                       ),
-
-
                                       Container(
                                         height: 50,
                                         width: 300,
@@ -417,8 +392,6 @@ class _LoginState extends State<AptmentEdit> {
                                       SizedBox(
                                         height: 10,
                                       ),
-
-
                                       Container(
                                         child:isLoading
                                             ? Center(child: CircularProgressIndicator())
@@ -439,17 +412,7 @@ class _LoginState extends State<AptmentEdit> {
                                             setState(() => isLoading = true);
                                           Update();
                                             SharedPreferences prefs = await SharedPreferences.getInstance();
-                                            // print('booking id...');
-                                            // print(snapshot.data['data'][index]['id']);
-                                            // prefs.setString('addresskey', snapshot.data['data'][index]['address']);
-                                            // prefs.setString('citykey', snapshot.data['data'][index]['city']);
-                                            // prefs.setInt('userbookingId', snapshot.data['data'][index]['id']);
                                             prefs.setString('tokenkey', RetrivedBearertoekn);
-
-
-                                            print('token value....');
-                                            // print(tokenvalue);
-                                            // prefs.setString('tokenkey', tokenvalue);
                                             await Future.delayed(Duration(seconds: 2), () => () {});
                                             setState(() => isLoading = false);
                                           },

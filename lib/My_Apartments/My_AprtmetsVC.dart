@@ -27,9 +27,7 @@ class MyApartmentScreen extends StatefulWidget {
 }
 
 class _userDashboardState extends State<MyApartmentScreen> {
-
   final baseDioSingleton = BaseSingleton();
-
   int bookingID = 0;
   var API = '';
   String status = '';
@@ -77,50 +75,10 @@ print(ApartmentId);
   //  BookingDashboardUsers = DashboardBooking_fetchUsers();
     //pics = fetchpics();
   }
-  // String url = 'https://staging.abisiniya.com/api/v1/apartment/auth/list';
-  // Future<List<DashboardApart>> DashboardBooking_fetchUsers() async {
-  //   final response = await http.get(Uri.parse(url));
-  //   if (response.statusCode == 200) {
-  //     final data1 = jsonDecode(response.body);
-  //     var getUsersData = data1['data'] as List;
-  //     //print(getUsersData);
-  //     var listUsers = getUsersData.map((i) => DashboardApart.fromJSON(i)).toList();
-  //     return listUsers;
-  //
-  //   } else {
-  //     throw Exception('Error');
-  //   }
-  // }
 
-  // Future deletePost() async {
-  //   print('delete url...');
-  //   var url = '';
-  //   url = (' https://staging.abisiniya.com/api/v1/apartment/delete/$ApartmentId');
-  //   print(url);
-  //
-  //   // Response res = await delete("$postsURL/$id");
-  //   // res.headers.set('content-type', 'application/json');
-  //
-  //   final http.Response response = await http.delete(
-  //     Uri.parse(url),
-  //       headers: {
-  //         // 'Authorization':
-  //         // 'Bearer <--your-token-here-->',
-  //         "Authorization": "Bearer $RetrivedBearertoekn",
-  //
-  //       },
-  //   );
-  //
-  //   if (response.statusCode == 200) {
-  //     print("Deleted");
-  //   } else {
-  //     throw "Sorry! Unable to delete this post.";
-  //   }
-  // }
 
   Future<void> _deleteData(int ApartmentId) async {
     try {
-
       print('delete url...');
         var url = '';
         // url = ('https://staging.abisiniya.com/api/v1/apartment/delete/$ApartmentId');
@@ -136,7 +94,6 @@ print(ApartmentId);
 
                 },
       );
-
       if (response.statusCode == 200) {
         print('Deleted successfully');
         Navigator.push(
@@ -266,16 +223,6 @@ print(ApartmentId);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   centerTitle: true,
-      //   title: const Text(
-      //     'Abisiniya',
-      //   ),
-      //   // backgroundColor: const Color(0xff764abc),
-      //   backgroundColor: Colors.green,
-      //
-      // ),
-
         appBar: AppBar(
           centerTitle: true,
           leading: BackButton(
@@ -297,158 +244,6 @@ print(ApartmentId);
               style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
 
         ),
-      // appBar: AppBar(
-      //   centerTitle: true,
-      //   leading: Padding(
-      //     // padding: const EdgeInsets.all(0.0),
-      //     padding: EdgeInsets.only(left: 15.0, top: 0.0),
-      //     child: Image.asset(
-      //       "images/logo.jpg",
-      //     ),),
-      //   title: Text('ABISINIYA',textAlign: TextAlign.center,
-      //       style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
-      //   iconTheme: IconThemeData(color: Colors.green),),
-      // endDrawer: Drawer(
-      //   child: ListView(
-      //
-      //     // Important: Remove any padding from the ListView.
-      //     padding: EdgeInsets.zero,
-      //     children: [
-      //       DrawerHeader(
-      //
-      //         //child: Text('Categories', style: TextStyle(color: Colors.white)),
-      //         decoration: BoxDecoration(color: Color(0xffffff
-      //         ),),
-      //         padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-      //
-      //         child: Image.asset(
-      //           'images/logo2.png',
-      //           width: 50,height: 50,
-      //         ),
-      //       ),
-      //       ListTile(
-      //         trailing: Icon(
-      //           Icons.login,
-      //           color: Colors.green,
-      //         ),
-      //         title: const Text('My Bookings',
-      //             style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
-      //
-      //         onTap: () {
-      //           Navigator.push(
-      //             context,
-      //             MaterialPageRoute(
-      //                 builder: (context) => Login()),
-      //           );
-      //         },
-      //       ),
-      //       ListTile(
-      //         trailing: Icon(
-      //           Icons.money,
-      //           color: Colors.green,
-      //         ),
-      //         title: const Text('Booking Commision',
-      //             style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
-      //
-      //
-      //         onTap: () {
-      //           Navigator.pop(context);
-      //         },
-      //       ),
-      //       ListTile(
-      //         trailing: Icon(
-      //           Icons.flight,
-      //           color: Colors.green,
-      //         ),
-      //
-      //         title: const Text('My Flight Requests',
-      //             style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
-      //
-      //         onTap: () {
-      //           Navigator.pop(context);
-      //         },
-      //       ),
-      //       ListTile(
-      //         trailing: Icon(
-      //           Icons.apartment,
-      //           color: Colors.green,
-      //         ),
-      //
-      //
-      //         title: const Text('My Apartments',
-      //             style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
-      //
-      //         onTap: () {
-      //           Navigator.pop(context);
-      //         },
-      //       ),
-      //       ListTile(
-      //         trailing: Icon(
-      //           Icons.bus_alert,
-      //           color: Colors.green,
-      //         ),
-      //         title: const Text('My Vehicles',
-      //             style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
-      //         //title: const Text('Airport Shuttle',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w400,fontSize: 18)),
-      //         onTap: () {
-      //           Navigator.pop(context);
-      //         },
-      //       ),
-      //       ListTile(
-      //         trailing: Icon(
-      //           Icons.bus_alert_sharp,
-      //           color: Colors.green,
-      //         ),
-      //         //title: const Text('List Property and Car',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w400,fontSize: 18)),
-      //         title: const Text('My Buses',
-      //             style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
-      //
-      //         onTap: () {
-      //           Navigator.pop(context);
-      //         },
-      //       ),
-      //       ListTile(
-      //         trailing: Icon(
-      //           Icons.airport_shuttle,
-      //           color: Colors.green,
-      //         ),
-      //         //title: const Text('Contact Us',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w400,fontSize: 18)),
-      //         title: const Text('My Shuttle',
-      //             style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
-      //
-      //         onTap: () {
-      //           Navigator.pop(context);
-      //         },
-      //       ),
-      //       ListTile(
-      //         trailing: Icon(
-      //           Icons.logout,
-      //           color: Colors.green,
-      //         ),
-      //         //title: const Text('Sign Out',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w900,fontSize: 20)),
-      //         title: const Text('Logout',
-      //             style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
-      //         //onTap: () async {
-      //         onTap: ()async{
-      //           SharedPreferences prefs = await SharedPreferences.getInstance();
-      //           prefs.setString('logoutkey', ('LogoutDashboard'));
-      //           prefs.setString('Property_type', ('Apartment'));
-      //           Navigator.push(
-      //             context,
-      //             MaterialPageRoute(
-      //                 builder: (context) => tabbar()),
-      //           );
-      //
-      //
-      //         },
-      //
-      //         // onTap: () {
-      //         //   Navigator.pop(context);
-      //         // },
-      //       ),
-      //     ],
-      //   ),
-      // ),
            body: FutureBuilder<dynamic>(
         //future: BookingDashboardUsers,
           future: getData(),
@@ -509,13 +304,6 @@ child: const Align(
             },
             )],
             ),
-            // child: const Align(
-            // alignment: Alignment.center,
-            // child: Text('Create',
-            // style: TextStyle(color: Colors.white, fontSize: 20,fontWeight: FontWeight.w800
-            // ),
-            // textAlign: TextAlign.center),
-            // ),
             ),
                       Expanded(
                         child: Container(
@@ -538,9 +326,6 @@ child: const Align(
                                         //itemCount: snapshot.data?['data']['bookings'].length ?? "" ,
                                         //itemCount: snapshot.data!['data'][0]['bookings'][0].length ?? 0,
                                         //itemCount: snapshot.data?.length ?? 0,
-
-
-
                                         separatorBuilder: (BuildContext context, int index) => const Divider(),
                                         itemBuilder: (BuildContext context, int index) {
                                           bookingID = snapshot.data['data'][index]['id'];
@@ -593,11 +378,9 @@ child: const Align(
                                                               width: 200,
                                                               color: Colors.transparent,
                                                               child:Text(snapshot.data['data'][index]['guest'].toString(),textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w500,fontSize: 18,color: Colors.black)),),
-
                                                               // child: Text('suresh',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
                                                             )
                                                           ],
-
                                                         ),
 
                                                         Row(
@@ -784,19 +567,6 @@ child: const Align(
 
                                                     ),
                                                   ),
-
-                                                  // Container(
-                                                  //   height: 50,
-                                                  //   width: 80,
-                                                  //   color: Colors.green,
-                                                  //   child: const Align(
-                                                  //     alignment: Alignment.center,
-                                                  //     child: Text('View',
-                                                  //         style: TextStyle(color: Colors.white, fontSize: 20,fontWeight: FontWeight.w800
-                                                  //         ),
-                                                  //         textAlign: TextAlign.center),
-                                                  //   ),
-                                                  // ),
                                                 ],
                                               ),
                                               onTap: () async{
@@ -871,15 +641,6 @@ child: const Align(
             }
           }
       ),
-      // body: Center(
-      //   child: Column(
-      //     children: [
-      //       SizedBox(
-      //         height: 50,
-      //       ),
-      //     ],
-      //   ),
-      // ),
     );
   }
 }

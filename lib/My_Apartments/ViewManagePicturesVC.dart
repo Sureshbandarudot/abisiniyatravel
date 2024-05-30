@@ -47,11 +47,9 @@ class _userDashboardState extends State<ViewManagePictures> {
       RetrivedBearertoekn = prefs.getString('tokenkey') ?? "";
       ApartmentId = prefs.getInt('userbookingId') ?? 0;
       Picture_Id = prefs.getInt('Picturekey') ?? 0;
-
       print('Retrived Ids....');
       print(ApartmentId);
       print(Picture_Id);
-
       print('view Apartment... ');
       print(RetrivedBearertoekn);
     });
@@ -61,16 +59,12 @@ class _userDashboardState extends State<ViewManagePictures> {
     super.initState();
     _retrieveValues();
     getData();
-
-
   }
 //@override
   File? galleryFile;
   final picker = ImagePicker();
-
   Future<void> _deleteData(int ApartmentId, int Picture_Id) async {
     try {
-
       print('delete url...');
       print('delete view Apartment... ');
       print(RetrivedBearertoekn);
@@ -423,11 +417,8 @@ class _userDashboardState extends State<ViewManagePictures> {
                                             shrinkWrap: true,
                                             //itemCount: snapshot.data?['data'].length ?? '',
                                             itemCount: ViewApartmentList.length,
-
                                             itemBuilder: (context,index){
                                               //return  Text(' Vehicles',style: TextStyle(fontSize: 22),)
-
-
                                               return Column(
                                                 children: [
                                                   Container(

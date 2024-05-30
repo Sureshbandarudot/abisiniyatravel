@@ -46,6 +46,10 @@ class _MyHomePageState extends State<MyHomePage> {
   String RetrivedEmail = '';
   String Logoutstr = '';
   String RetrivedCitylocation = '';
+  String emptyName = '';
+  String emptyBedroomstr = '';
+  String emptyBathroomstr = '';
+  String LoggedInUSerstr = '';
   _retrieveValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -299,71 +303,64 @@ class _MyHomePageState extends State<MyHomePage> {
                                             SizedBox(
                                                 height: 510, // <-- you should put some value here
                                                 child: ListView.separated(
-                                                  // physics: NeverScrollableScrollPhysics(),
-                                                  // shrinkWrap: true,
+
                                                   scrollDirection: Axis.vertical,
                                                   itemCount: snapshot.data['data'].length ,
+
                                                   separatorBuilder: (BuildContext context, int index) => const Divider(),
+
                                                   itemBuilder: (BuildContext context, int index) {
-                                                    var picstrr = snapshot.data['data'];
-                                                    for (var record in picstrr) {
-                                                      var pictures = record['pictures'];
-                                                      print(pictures);
-                                                      for(var pics in pictures) {
-                                                        //var picname = pics['imageUrl'];
-                                                        imageID = (snapshot.data['data'][index]['id']);
-                                                        print('iD value...');
-                                                        print(imageID);
-                                                        if (30 == 30) {
-                                                          var picname = pics['imageUrl'];
-                                                          var picimg = pics['imageName'];
-                                                          print('pic names');
-                                                          print(picname);
-                                                          print(picimg);
-                                                        }
-                                                      }
+                                                    print('null value...');
+                                                    print(snapshot.data['data'][index]['name'].toString() ?? '');
+
+                                                    if((snapshot.data['data'][index]['name'].toString() ?? '') != null){
+
+                                                      emptyName == '';
+                                                      print('empty name value...');
+                                                      print(emptyName);
+                                                    } else {
+
+                                                      emptyName == (snapshot.data['data'][index]['name'].toString() ?? '');
                                                     }
                                                     return Container(
-                                                      height: 510,
-                                                      width: 300,
-                                                      //margin: EdgeInsets.all(Top:20),// add margin
-                                                      //padding: EdgeInsets.all(20),
-                                                      margin: EdgeInsets.only(top: 0, left: 20,right: 20),
-
-                                                      decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color: Colors.black,
-                                                            width: 0.0,
-                                                            style: BorderStyle.solid
-                                                        ),
-                                                        borderRadius: BorderRadius.circular(20),
-                                                        //color: Colors.yellowAccent,
-                                                        color: Colors.white,
-                                                      ),
+                                                      //margin: EdgeInsets.all(35),// add margin
+                                                      color: Colors.white,
                                                       child: InkWell(
                                                         child: Column(
                                                           children: [
-                                                            SizedBox(
-                                                              height: 25,
-                                                            ),
+                                                            // SizedBox(
+                                                            //   height: 25,
+                                                            // ),
                                                             Container(
                                                               height: 475,
                                                               width: 300,
-                                                              decoration: const BoxDecoration(
-                                                                  color: Color(0xFFffffff),
-                                                                  boxShadow: [
-                                                                    BoxShadow(
-                                                                      color: Colors.white,
-                                                                      blurRadius: 15.0, // soften the shadow
-                                                                      spreadRadius: 5.0, //extend the shadow
-                                                                      offset: Offset(
-                                                                        5.0, // Move to right 5  horizontally
-                                                                        5.0, // Move to bottom 5 Vertically
-                                                                      ),
-                                                                    )
-                                                                  ],
-                                                                  borderRadius: BorderRadius.all(Radius.circular(10))
+                                                              margin: EdgeInsets.only(top: 0, left: 0),
+
+                                                              decoration: BoxDecoration(
+                                                                border: Border.all(
+                                                                    color: Colors.black,
+                                                                    width: 0.0,
+                                                                    style: BorderStyle.solid
+                                                                ),
+                                                                borderRadius: BorderRadius.circular(20),
+                                                                //color: Colors.yellowAccent,
+                                                                color: Colors.white,
                                                               ),
+                                                              // decoration: const BoxDecoration(
+                                                              //     color: Color(0xFFffffff),
+                                                              //     boxShadow: [
+                                                              //       BoxShadow(
+                                                              //         color: Colors.white,
+                                                              //         blurRadius: 15.0, // soften the shadow
+                                                              //         spreadRadius: 5.0, //extend the shadow
+                                                              //         offset: Offset(
+                                                              //           5.0, // Move to right 5  horizontally
+                                                              //           5.0, // Move to bottom 5 Vertically
+                                                              //         ),
+                                                              //       )
+                                                              //     ],
+                                                              //     borderRadius: BorderRadius.all(Radius.circular(10))
+                                                              // ),
                                                               child: Column(
                                                                 children: [
                                                                   SizedBox(
@@ -372,155 +369,223 @@ class _MyHomePageState extends State<MyHomePage> {
                                                                   Container(
                                                                     height: 200,
                                                                     //color: Colors.green,
+
+                                                                    // } else if ((snapshot.data?['data'][index]['bookings'].isEmpty ? Bookingsts
+                                                                    //     : snapshot.data?["data"][index]['bookings'][0]['pivot']['status'].toString() ?? 'empty') == 'Checked Out'){
+
+
                                                                     decoration: BoxDecoration(
-                                                                        image: DecorationImage(image: NetworkImage(snapshot.data["data"][index]['pictures'][0
-                                                                        ]['imageUrl']),
+                                                                      // image: DecorationImage(image: NetworkImage(snapshot.data["data"][index]['pictures'][0
+                                                                      // ]['imageUrl']),
+                                                                        image: DecorationImage(image: NetworkImage(snapshot.data?['data'][index]['pictures'].isEmpty ? 'Empty image'
+                                                                            : snapshot.data?["data"][index]['pictures'][0]['imageUrl'].toString() ?? 'empty'),
                                                                             fit: BoxFit.cover)
                                                                     ),
                                                                   ),
-                                                                  SizedBox(
-                                                                    height: 10,
-                                                                  ),
+
                                                                   Container(
-                                                                    height: 170,
+                                                                    height: 70,
                                                                     width: 300,
                                                                     color: Colors.white,
-                                                                    child: Column(
-                                                                      //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                      //crossAxisAlignment: CrossAxisAlignment.start,
-                                                                      children: [
-                                                                        SizedBox(
-                                                                          width: 10,
-                                                                        ),
-                                                                        Container(
-                                                                          width: 280,
-                                                                          height: 40,
-                                                                          color: Colors.white,
-                                                                          child:Text(snapshot.data['data'][index]['city'],textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w900,fontSize: 22,color: Colors.green)),),
-                                                                        ),
-                                                                        SizedBox(
-                                                                          width: 5,
-                                                                        ),
-                                                                        Container(
-                                                                          width: 280,
-                                                                          height: 70,
-                                                                          color: Colors.white,
-                                                                          //child: (Text(snapshot.data['data']['price'] as int)),
-                                                                          child:Row(
-                                                                            children: [
-                                                                              Container(
-                                                                                height: 60,
-                                                                                width: 140,
-                                                                                color: Colors.white,
-                                                                                child: Column(
-                                                                                  children: [
-                                                                                    Container(
-                                                                                      height: 30,
-                                                                                      width: 140,
-                                                                                      child:Text('Start From',textAlign: TextAlign.start,style: (TextStyle(fontWeight: FontWeight.w300,fontSize: 18,color: Colors.black)),),
-                                                                                    ),
-                                                                                    Container(
-                                                                                      height: 30,
-                                                                                      width: 140,
-                                                                                      child:Text('${(snapshot.data['data'][index]['price'].toString())}.00/Night.',textAlign: TextAlign.left,
-                                                                                        style: (TextStyle(fontWeight: FontWeight.w400,fontSize: 20,color: Colors.green)),),
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
-                                                                              ),
-                                                                              Container(
-                                                                                height: 40,
-                                                                                width: 140,
-                                                                                color: Colors.white,
-
-                                                                                child: TextButton(
-                                                                                  style: TextButton.styleFrom(backgroundColor:Colors.green),
-                                                                                  onPressed: () async {
-
-                                                                                    SharedPreferences prefs = await SharedPreferences.getInstance();
-                                                                                    prefs.setString('citykey', snapshot.data['data'][index]['city']);
-                                                                                    prefs.setInt('imgkeyId', snapshot.data['data'][index]['id']);
-                                                                                    prefs.setString('addresskey', snapshot.data['data'][index]['address']);
-                                                                                    prefs.setString('bathroomkey', (snapshot.data['data'][index]['bathroom'].toString()));
-                                                                                    prefs.setString('bedroomkey', (snapshot.data['data'][index]['bedroom'].toString()));
-                                                                                    prefs.setString('pricekey', (snapshot.data['data'][index]['price'].toString()));
-                                                                                    prefs.setString('Property_type', ('Apartment'));
-                                                                                    prefs.setString('emailkey', (RetrivedEmail));
-                                                                                    prefs.setString('passwordkey', (RetrivedPwd));
-                                                                                    print('email....');
-                                                                                    print(RetrivedEmail);
-                                                                                    print('pwd...');
-                                                                                    print(RetrivedPwd);
-                                                                                    print('logout......');
-                                                                                    print(Logoutstr);
-                                                                                    // Navigator.push(
-                                                                                    //   context,
-                                                                                    //   MaterialPageRoute(
-                                                                                    //       builder: (context) => CarHire_NewUserBooking()
-                                                                                    //   ),
-                                                                                    // );
-                                                                                    Navigator.push(
-                                                                                      context,
-                                                                                      MaterialPageRoute(
-                                                                                          builder: (context) => CarHire_NewUserBooking()
-                                                                                      ),
-                                                                                    );
-                                                                                    // SharedPreferences prefs = await SharedPreferences.getInstance();
-                                                                                    prefs.setString('namekey', snapshot.data['data'][index]['name']);
-                                                                                    prefs.setString('citykey', snapshot.data['data'][index]['city']);
-                                                                                    prefs.setInt('imgkeyId', snapshot.data['data'][index]['id']);
-                                                                                    prefs.setString('addresskey', snapshot.data['data'][index]['address']);
-                                                                                    prefs.setString('bookable_type', ('Vehicle'));
-                                                                                  },
-                                                                                  //child: const Text('BookNow'),
-                                                                                  child: const Text('Drive Now',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600,color: Colors.white),),
-
-                                                                                ),
-                                                                              )
-                                                                            ],
-                                                                          ),
-                                                                        ),
-                                                                        SizedBox(
-                                                                          width: 10,
-                                                                        ),
-
-                                                                        Container(
-                                                                          height: 50,
-                                                                          width: 280,
-                                                                          color: Colors.white,
-                                                                          child:Text(snapshot.data['data'][index]['address'],textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w900,fontSize: 20,color: Colors.green)),),
-
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    height: 24,
-                                                                  ),
-                                                                  Container(
-                                                                    height: 60,
-                                                                    width: 280,
-                                                                    color: Colors.green,
                                                                     child: Row(
                                                                       children: [
-
-                                                                        Container(
-                                                                          height: 40,
-                                                                          width: 140,
-                                                                          color: Colors.green,
-                                                                          child:Text('${(snapshot.data['data'][index]['bedroom'].toString())} Bedroom(s)',style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600,fontSize: 18),textAlign: TextAlign.center,
-                                                                          ),
-                                                                        ),
-                                                                        Container(
-                                                                          height: 40,
-                                                                          width: 140,
-                                                                          color: Colors.green,
-                                                                          child:Text('${(snapshot.data['data'][index]['bathroom'].toString())} Bathroom(s)',textAlign: TextAlign.center,
-                                                                            style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600,fontSize: 18), ),
+                                                                        Column(
+                                                                          children: [
+                                                                            Container(
+                                                                              height: 30,
+                                                                              width: 140,
+                                                                              child:Text('${(snapshot.data['data'][index]['year'].toString()) + '|' + (snapshot.data['data'][index]['make'].toString())}',textAlign: TextAlign.left,
+                                                                                style: (TextStyle(fontWeight: FontWeight.w600,fontSize: 18,color: Colors.green)),),
+                                                                            ),
+                                                                            SizedBox(
+                                                                              height: 10,
+                                                                            ),
+                                                                            Container(
+                                                                              height: 30,
+                                                                              width: 140,
+                                                                              child:Text('${(snapshot.data['data'][index]['model'].toString())}',textAlign: TextAlign.left,
+                                                                                style: (TextStyle(fontWeight: FontWeight.w800,fontSize: 20,color: Colors.black)),),
+                                                                            ),
+                                                                          ],
                                                                         ),
                                                                       ],
                                                                     ),
-                                                                  )
+                                                                  ),
+                                                                  Container(
+                                                                    height: 70,
+                                                                    width: 300,
+                                                                    color: Colors.white,
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Row(
+                                                                          children: [
+                                                                            Container(
+                                                                              width: 300,
+                                                                              height: 70,
+                                                                              color: Colors.white,
+                                                                              //child: (Text(snapshot.data['data']['price'] as int)),
+                                                                              child:Row(
+                                                                                children: [
+                                                                                  Container(
+                                                                                    height: 60,
+                                                                                    width: 150,
+                                                                                    color: Colors.white,
+                                                                                    child: Column(
+                                                                                      children: [
+                                                                                        Container(
+                                                                                          height: 30,
+                                                                                          width: 150,
+                                                                                          child:Text('Start From',textAlign: TextAlign.start,style: (TextStyle(fontWeight: FontWeight.w300,fontSize: 18,color: Colors.black)),),
+                                                                                        ),
+                                                                                        Container(
+                                                                                          height: 30,
+                                                                                          width: 140,
+                                                                                          child:Text('${(snapshot.data['data'][index]['price'].toString())}.00/Day.',textAlign: TextAlign.left,
+                                                                                            style: (TextStyle(fontWeight: FontWeight.w400,fontSize: 20,color: Colors.green)),),
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                                  ),
+                                                                                  Container(
+                                                                                    height: 40,
+                                                                                    width: 140,
+                                                                                    color: Colors.white,
+
+                                                                                    child: TextButton(
+                                                                                      style: TextButton.styleFrom(backgroundColor:Colors.green),
+                                                                                      onPressed: () async {
+                                                                                        print(index);
+                                                                                        print(
+                                                                                            'index value...');
+                                                                                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                                                                                        print('dashboard sts...');
+                                                                                        print(Logoutstr);
+                                                                                        LoggedInUSerstr = prefs.getString('LoggedinUserkey') ?? "";
+                                                                                        print(' logged in user...');
+                                                                                        print(LoggedInUSerstr);
+                                                                                        print('letters length....');
+                                                                                        // LoggedinUserlist.add(LoggedInUSerstr);
+                                                                                        // print(LoggedinUserlist);
+                                                                                        // print(LoggedinUserlist.length);
+                                                                                        // if (LoggedInUSerstr == 'LoggedUser') {
+                                                                                        //   print('login...');
+                                                                                        //   Navigator.push(
+                                                                                        //     context,
+                                                                                        //     MaterialPageRoute(
+                                                                                        //         builder: (context) => CarHire_ExistingBookingScreen()),
+                                                                                        //   );
+                                                                                        //   SharedPreferences prefrences = await SharedPreferences.getInstance();
+                                                                                        //   await prefrences.remove("LoggedinUserkey");
+                                                                                        //
+                                                                                        // }  else{
+                                                                                        //   Navigator.push(
+                                                                                        //     context,
+                                                                                        //     MaterialPageRoute(
+                                                                                        //         builder: (context) => CarHire_NewUserBooking()
+                                                                                        //     ),
+                                                                                        //   );
+                                                                                        // }
+                                                                                        prefs.setString('namekey', snapshot.data['data'][index]['name'] ?? '');
+                                                                                        prefs.setString('citykey', snapshot.data['data'][index]['city']);
+                                                                                        prefs.setInt('imgkeyId', snapshot.data['data'][index]['id']);
+                                                                                        prefs.setString('addresskey', snapshot.data['data'][index]['address']);
+                                                                                        prefs.setString('bookable_type', ('Vehicle'));
+
+
+                                                                                        Navigator.push(
+                                                                                          context,
+                                                                                          MaterialPageRoute(
+                                                                                              builder: (context) => CarHire_NewUserBooking()
+                                                                                          ),
+                                                                                        );
+                                                                                        // SharedPreferences prefs = await SharedPreferences.getInstance();
+                                                                                        //  prefs.setString('namekey', snapshot.data['data'][index]['name']);
+                                                                                        //  prefs.setString('citykey', snapshot.data['data'][index]['city']);
+                                                                                        //  prefs.setInt('imgkeyId', snapshot.data['data'][index]['id']);
+                                                                                        //  prefs.setString('addresskey', snapshot.data['data'][index]['address']);
+                                                                                        //  prefs.setString('bookable_type', ('Vehicle'));
+                                                                                      },
+                                                                                      child: const Text('Drive Now',style: (TextStyle(color: Colors.white,fontWeight: FontWeight.w600,fontSize: 18)),),
+                                                                                    ),
+                                                                                  )
+                                                                                ],
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                  Container(
+                                                                    height: 40,
+                                                                    width: 330,
+                                                                    color: Colors.white,
+                                                                    child:Container(
+                                                                      // width: 300,
+                                                                      // height: 50,
+                                                                      color: Colors.white,
+                                                                      child: Align(
+                                                                        alignment: Alignment.centerLeft,
+                                                                        child:Text('${emptyName}',textAlign: TextAlign.left,
+                                                                          style: (TextStyle(fontWeight: FontWeight.w800,fontSize: 20,color: Colors.black)),),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+
+
+                                                                  Container(
+                                                                    height: 70,
+                                                                    width: 300,
+                                                                    color: Colors.white,
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Row(
+                                                                          children: [
+                                                                            Container(
+                                                                              width: 300,
+                                                                              height: 70,
+                                                                              color: Colors.white,
+                                                                              //child: (Text(snapshot.data['data']['price'] as int)),
+                                                                              child:Row(
+                                                                                children: [
+                                                                                  Container(
+                                                                                    height: 50,
+                                                                                    width: 150,
+                                                                                    color: Colors.green,
+                                                                                    child:Container(
+                                                                                      width: 360,
+                                                                                      height: 230,
+                                                                                      color: Colors.green,
+                                                                                      child: Align(
+                                                                                        alignment: Alignment.center,
+                                                                                        child:Text('${(snapshot.data['data'][index]['fuel_type'].toString())}',textAlign: TextAlign.center,
+                                                                                          style: (TextStyle(fontWeight: FontWeight.w800,fontSize: 20,color: Colors.white)),),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                  Container(
+                                                                                    height: 50,
+                                                                                    width: 150,
+                                                                                    color: Colors.green,
+                                                                                    child:Container(
+                                                                                      width: 360,
+                                                                                      height: 230,
+                                                                                      color: Colors.green,
+                                                                                      child: Align(
+                                                                                        alignment: Alignment.center,
+                                                                                        child:Text('${(snapshot.data['data'][index]['transmission'].toString())}',textAlign: TextAlign.center,
+                                                                                          style: (TextStyle(fontWeight: FontWeight.w800,fontSize: 20,color: Colors.white)),),
+                                                                                      ),
+                                                                                    ),
+                                                                                  )
+                                                                                ],
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                  ),
                                                                 ],
                                                               ),
                                                             ),
@@ -528,11 +593,284 @@ class _MyHomePageState extends State<MyHomePage> {
                                                         ),
                                                         //onTap: ()
                                                         onTap: ()async{
+
+                                                          SharedPreferences prefs = await SharedPreferences.getInstance();
+                                                          prefs.setString('citykey', snapshot.data['data'][index]['city']);
+                                                          prefs.setInt('imgkeyId', snapshot.data['data'][index]['id']);
+                                                          prefs.setString('addresskey', snapshot.data['data'][index]['address']);
+                                                          prefs.setString('bathroomkey', (snapshot.data['data'][index]['bathroom'].toString()));
+                                                          prefs.setString('bedroomkey', (snapshot.data['data'][index]['bedroom'].toString()));
+                                                          prefs.setString('pricekey', (snapshot.data['data'][index]['price'].toString()));
+                                                          prefs.setString('Property_type', ('Apartment'));
                                                           print([index]);
                                                         },
                                                       ),
-                                                    );},
+                                                    );
+                                                  },
                                                 )
+                                                // child: ListView.separated(
+                                                //   // physics: NeverScrollableScrollPhysics(),
+                                                //   // shrinkWrap: true,
+                                                //   scrollDirection: Axis.vertical,
+                                                //   itemCount: snapshot.data['data'].length ,
+                                                //   separatorBuilder: (BuildContext context, int index) => const Divider(),
+                                                //   itemBuilder: (BuildContext context, int index) {
+                                                //
+                                                //     if((snapshot.data['data'][index]['name'].toString() ?? '') != null){
+                                                //
+                                                //       emptyName == '';
+                                                //       print('empty name value...');
+                                                //       print(emptyName);
+                                                //     } else {
+                                                //
+                                                //       emptyName == (snapshot.data['data'][index]['name'].toString() ?? '');
+                                                //     }
+                                                //     if((snapshot.data['data'][index]['bedroom'].toString() ?? '') != null){
+                                                //       emptyBedroomstr == '';
+                                                //       print('empty bed value...');
+                                                //       print(emptyName);
+                                                //     } else {
+                                                //
+                                                //       emptyBedroomstr == (snapshot.data['data'][index]['bathroom'].toString() ?? '');
+                                                //     }
+                                                //     if((snapshot.data['data'][index]['name'].toString() ?? '') != null){
+                                                //
+                                                //       emptyBathroomstr == '';
+                                                //       print('empty bath value...');
+                                                //       print(emptyName);
+                                                //     } else {
+                                                //
+                                                //       emptyBathroomstr == (snapshot.data['data'][index]['name'].toString() ?? '');
+                                                //     }
+                                                //
+                                                //     var picstrr = snapshot.data['data'];
+                                                //     for (var record in picstrr) {
+                                                //       var pictures = record['pictures'];
+                                                //       print(pictures);
+                                                //       for(var pics in pictures) {
+                                                //         //var picname = pics['imageUrl'];
+                                                //         imageID = (snapshot.data['data'][index]['id']);
+                                                //         print('iD value...');
+                                                //         print(imageID);
+                                                //         if (30 == 30) {
+                                                //           var picname = pics['imageUrl'];
+                                                //           var picimg = pics['imageName'];
+                                                //           print('pic names');
+                                                //           print(picname);
+                                                //           print(picimg);
+                                                //         }
+                                                //       }
+                                                //     }
+                                                //     return Container(
+                                                //       height: 510,
+                                                //       width: 300,
+                                                //       //margin: EdgeInsets.all(Top:20),// add margin
+                                                //       //padding: EdgeInsets.all(20),
+                                                //       margin: EdgeInsets.only(top: 0, left: 20,right: 20),
+                                                //
+                                                //       decoration: BoxDecoration(
+                                                //         border: Border.all(
+                                                //             color: Colors.black,
+                                                //             width: 0.0,
+                                                //             style: BorderStyle.solid
+                                                //         ),
+                                                //         borderRadius: BorderRadius.circular(20),
+                                                //         //color: Colors.yellowAccent,
+                                                //         color: Colors.white,
+                                                //       ),
+                                                //       child: InkWell(
+                                                //         child: Column(
+                                                //           children: [
+                                                //             SizedBox(
+                                                //               height: 25,
+                                                //             ),
+                                                //             Container(
+                                                //               height: 475,
+                                                //               width: 300,
+                                                //               decoration: const BoxDecoration(
+                                                //                   color: Color(0xFFffffff),
+                                                //                   boxShadow: [
+                                                //                     BoxShadow(
+                                                //                       color: Colors.white,
+                                                //                       blurRadius: 15.0, // soften the shadow
+                                                //                       spreadRadius: 5.0, //extend the shadow
+                                                //                       offset: Offset(
+                                                //                         5.0, // Move to right 5  horizontally
+                                                //                         5.0, // Move to bottom 5 Vertically
+                                                //                       ),
+                                                //                     )
+                                                //                   ],
+                                                //                   borderRadius: BorderRadius.all(Radius.circular(10))
+                                                //               ),
+                                                //               child: Column(
+                                                //                 children: [
+                                                //                   SizedBox(
+                                                //                     height: 10,
+                                                //                   ),
+                                                //                   Container(
+                                                //                     height: 200,
+                                                //                     //color: Colors.green,
+                                                //                     decoration: BoxDecoration(
+                                                //                         image: DecorationImage(image: NetworkImage(snapshot.data["data"][index]['pictures'][0
+                                                //                         ]['imageUrl']),
+                                                //                             fit: BoxFit.cover)
+                                                //                     ),
+                                                //                   ),
+                                                //                   SizedBox(
+                                                //                     height: 10,
+                                                //                   ),
+                                                //                   Container(
+                                                //                     height: 170,
+                                                //                     width: 300,
+                                                //                     color: Colors.white,
+                                                //                     child: Column(
+                                                //                       //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                //                       //crossAxisAlignment: CrossAxisAlignment.start,
+                                                //                       children: [
+                                                //                         SizedBox(
+                                                //                           width: 10,
+                                                //                         ),
+                                                //                         Container(
+                                                //                           width: 280,
+                                                //                           height: 40,
+                                                //                           color: Colors.white,
+                                                //                           child:Text(snapshot.data['data'][index]['city'],textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w900,fontSize: 22,color: Colors.green)),),
+                                                //                         ),
+                                                //                         SizedBox(
+                                                //                           width: 5,
+                                                //                         ),
+                                                //                         Container(
+                                                //                           width: 280,
+                                                //                           height: 70,
+                                                //                           color: Colors.white,
+                                                //                           //child: (Text(snapshot.data['data']['price'] as int)),
+                                                //                           child:Row(
+                                                //                             children: [
+                                                //                               Container(
+                                                //                                 height: 60,
+                                                //                                 width: 140,
+                                                //                                 color: Colors.white,
+                                                //                                 child: Column(
+                                                //                                   children: [
+                                                //                                     Container(
+                                                //                                       height: 30,
+                                                //                                       width: 140,
+                                                //                                       child:Text('Start From',textAlign: TextAlign.start,style: (TextStyle(fontWeight: FontWeight.w300,fontSize: 18,color: Colors.black)),),
+                                                //                                     ),
+                                                //                                     Container(
+                                                //                                       height: 30,
+                                                //                                       width: 140,
+                                                //                                       child:Text('${(snapshot.data['data'][index]['price'].toString())}.00/Day.',textAlign: TextAlign.left,
+                                                //                                         style: (TextStyle(fontWeight: FontWeight.w400,fontSize: 20,color: Colors.green)),),
+                                                //                                     ),
+                                                //                                   ],
+                                                //                                 ),
+                                                //                               ),
+                                                //                               Container(
+                                                //                                 height: 40,
+                                                //                                 width: 140,
+                                                //                                 color: Colors.white,
+                                                //
+                                                //                                 child: TextButton(
+                                                //                                   style: TextButton.styleFrom(backgroundColor:Colors.green),
+                                                //                                   onPressed: () async {
+                                                //
+                                                //                                     SharedPreferences prefs = await SharedPreferences.getInstance();
+                                                //                                     prefs.setString('citykey', snapshot.data['data'][index]['city']);
+                                                //                                     prefs.setInt('imgkeyId', snapshot.data['data'][index]['id']);
+                                                //                                     prefs.setString('addresskey', snapshot.data['data'][index]['address']);
+                                                //                                     prefs.setString('bathroomkey', (snapshot.data['data'][index]['bathroom'].toString()));
+                                                //                                     prefs.setString('bedroomkey', (snapshot.data['data'][index]['bedroom'].toString()));
+                                                //                                     prefs.setString('pricekey', (snapshot.data['data'][index]['price'].toString()));
+                                                //                                     prefs.setString('Property_type', ('Apartment'));
+                                                //                                     prefs.setString('emailkey', (RetrivedEmail));
+                                                //                                     prefs.setString('passwordkey', (RetrivedPwd));
+                                                //                                     print('email....');
+                                                //                                     print(RetrivedEmail);
+                                                //                                     print('pwd...');
+                                                //                                     print(RetrivedPwd);
+                                                //                                     print('logout......');
+                                                //                                     print(Logoutstr);
+                                                //                                     // Navigator.push(
+                                                //                                     //   context,
+                                                //                                     //   MaterialPageRoute(
+                                                //                                     //       builder: (context) => CarHire_NewUserBooking()
+                                                //                                     //   ),
+                                                //                                     // );
+                                                //                                     Navigator.push(
+                                                //                                       context,
+                                                //                                       MaterialPageRoute(
+                                                //                                           builder: (context) => CarHire_NewUserBooking()
+                                                //                                       ),
+                                                //                                     );
+                                                //                                     // SharedPreferences prefs = await SharedPreferences.getInstance();
+                                                //                                     prefs.setString('namekey', snapshot.data['data'][index]['name']);
+                                                //                                     prefs.setString('citykey', snapshot.data['data'][index]['city']);
+                                                //                                     prefs.setInt('imgkeyId', snapshot.data['data'][index]['id']);
+                                                //                                     prefs.setString('addresskey', snapshot.data['data'][index]['address']);
+                                                //                                     prefs.setString('bookable_type', ('Vehicle'));
+                                                //                                   },
+                                                //                                   //child: const Text('BookNow'),
+                                                //                                   child: const Text('Drive Now',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600,color: Colors.white),),
+                                                //
+                                                //                                 ),
+                                                //                               )
+                                                //                             ],
+                                                //                           ),
+                                                //                         ),
+                                                //                         SizedBox(
+                                                //                           width: 10,
+                                                //                         ),
+                                                //
+                                                //                         Container(
+                                                //                           height: 50,
+                                                //                           width: 280,
+                                                //                           color: Colors.white,
+                                                //                           child:Text(snapshot.data['data'][index]['address'],textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w900,fontSize: 20,color: Colors.green)),),
+                                                //
+                                                //                         ),
+                                                //                       ],
+                                                //                     ),
+                                                //                   ),
+                                                //                   SizedBox(
+                                                //                     height: 24,
+                                                //                   ),
+                                                //                   Container(
+                                                //                     height: 60,
+                                                //                     width: 280,
+                                                //                     color: Colors.green,
+                                                //                     child: Row(
+                                                //                       children: [
+                                                //
+                                                //                         Container(
+                                                //                           height: 40,
+                                                //                           width: 140,
+                                                //                           color: Colors.green,
+                                                //                           child:Text('${(emptyBedroomstr)} Bedroom(s)',style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600,fontSize: 18),textAlign: TextAlign.center,
+                                                //                           ),
+                                                //                         ),
+                                                //                         Container(
+                                                //                           height: 40,
+                                                //                           width: 140,
+                                                //                           color: Colors.green,
+                                                //                           child:Text('${(emptyBathroomstr)} Bathroom(s)',textAlign: TextAlign.center,
+                                                //                             style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600,fontSize: 18), ),
+                                                //                         ),
+                                                //                       ],
+                                                //                     ),
+                                                //                   )
+                                                //                 ],
+                                                //               ),
+                                                //             ),
+                                                //           ],
+                                                //         ),
+                                                //         //onTap: ()
+                                                //         onTap: ()async{
+                                                //           print([index]);
+                                                //         },
+                                                //       ),
+                                                //     );},
+                                                // )
                                             ),
                                             Column(
                                               children: [

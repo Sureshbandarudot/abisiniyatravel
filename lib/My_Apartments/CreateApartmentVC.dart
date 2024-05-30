@@ -15,14 +15,7 @@ import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
-
 import 'My_AprtmetsVC.dart';
-
-
-
-
-
-
 class CreateApartment extends StatefulWidget {
 
   @override
@@ -67,9 +60,22 @@ class _LoginState extends State<CreateApartment> {
   @override
   Future addProduct() async{
     print('entered.....');
-    var token = '238|ykUFIyUUUX0xsykL24ckNe5XfYJGganQogKCf3ic';
+    if (galleryFile == null) {
+      if(nameController.text.isEmpty) {
+        print('Please fill name.');
+        final snackBar = SnackBar(
+              content: Text('Please Fill name'),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+
+    }
+
+    //var token = '238|ykUFIyUUUX0xsykL24ckNe5XfYJGganQogKCf3ic';
     var header = {
-      "Authorization":"Bearer $RetrivedBearertoekn"
+      "Authorization":"Bearer $RetrivedBearertoekn",
+      "Accept": "application/json",
+      "Content-Type": "application/json"
     };
     final request = await http.MultipartRequest(
       'POST',
@@ -87,6 +93,8 @@ class _LoginState extends State<CreateApartment> {
     request.fields['bathroom'] = bathroomController.text.toString();
     request.fields['price'] = priceController.text.toString();
     request.fields['pictures[]'] = '[]';
+
+
     var takenPicture = await http.MultipartFile.fromPath("pictures[]",galleryFile!.path);
     print(takenPicture);
     request.files.add(takenPicture);
@@ -95,17 +103,6 @@ class _LoginState extends State<CreateApartment> {
     if(response.statusCode == 200) {
       var responseData = await response.stream.toBytes();
       var responseToString = String.fromCharCodes(responseData);
-      // final List parsedList = json.decode(responseToString);
-      // final snackBar = SnackBar(
-      //   content: Text('Apartment created successfully'),
-      // );
-      // // ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //       builder: (context) => MyApartmentScreen()
-      //   ),
-      // );
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -114,19 +111,28 @@ class _LoginState extends State<CreateApartment> {
       );
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('tokenkey', RetrivedBearertoekn);
-
       var jsonBody = jsonDecode(responseToString);
       setState(() {
         print(jsonBody);
       });
-    } else {
-      final snackBar = SnackBar(
-        content: Text('Please fill all fields'),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+    if(response.statusCode == 422) {
+      var responseData = await response.stream.toBytes();
+      var responseToString = String.fromCharCodes(responseData);
+      var jsonBody = jsonDecode(responseToString);
+      print('error message...');
+      print(jsonBody);
+      setState(() {
+        print(jsonBody);
+      });
+    }
+    else {
+      // final snackBar = SnackBar(
+      //   content: Text('Please fill all fields'),
+      // );
+      // ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,7 +143,6 @@ class _LoginState extends State<CreateApartment> {
           ),
           title: Text('ABISINIYA',textAlign: TextAlign.center,
               style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
-
         ),
 
 
@@ -310,7 +315,6 @@ class _LoginState extends State<CreateApartment> {
                                         child: TextField(
                                             controller: bedroomController,
                                             keyboardType: TextInputType.number,
-
                                             textAlign: TextAlign.left,
                                             autocorrect: false,
                                             decoration:
@@ -396,8 +400,65 @@ class _LoginState extends State<CreateApartment> {
                                           child: const Text('Send',style: TextStyle(color:Colors.white,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
 
                                           onPressed: () async {
-                                            setState(() => isLoading = true);
-                                            addProduct();
+                                            //setState(() => isLoading = true);
+                                              if(nameController.text.isEmpty) {
+                                                final snackBar = SnackBar(
+                                                  content: Text('Please Fill name'),
+                                                );
+                                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                                            } else if(addressController.text.isEmpty) {
+                                                final snackBar = SnackBar(
+                                                  content: Text('Please Fill address'),
+                                                );
+                                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                                              } else if(cityController.text.isEmpty) {
+                                                final snackBar = SnackBar(
+                                                  content: Text('Please Fill city'),
+                                                );
+                                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                                              } else if(countryController.text.isEmpty) {
+                                                final snackBar = SnackBar(
+                                                  content: Text('Please Fill country'),
+                                                );
+                                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                                              } else if(guestController.text.isEmpty) {
+                                                final snackBar = SnackBar(
+                                                  content: Text('Please Fill guest'),
+                                                );
+                                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                                              } else if(bedroomController.text.isEmpty) {
+                                                final snackBar = SnackBar(
+                                                  content: Text('Please Fill bedroom'),
+                                                );
+                                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                                              } else if(bathroomController.text.isEmpty) {
+                                                final snackBar = SnackBar(
+                                                  content: Text('Please Fill bathroom'),
+                                                );
+                                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                                              } else if(priceController.text.isEmpty) {
+                                                final snackBar = SnackBar(
+                                                  content: Text('Please Fill price'),
+                                                );
+                                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                                              } else if(galleryFile == null) {
+                                                final snackBar = SnackBar(
+                                                  content: Text('Please select image from gallery..'),
+                                                );
+                                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                                              } else {
+                                                addProduct();
+
+                                              }
                                             // _postData();
                                             //login(emailController.text.toString(), passwordController.text.toString());
 

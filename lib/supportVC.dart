@@ -138,9 +138,6 @@ class _ModalBottomSheetState extends State<supportScreen> {
                       );
                     });
               },
-              // padding:
-              // EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
-              // color: Colors.pink,
               child: Text(
                 'Support Abisiniya Team',
                 style: TextStyle(

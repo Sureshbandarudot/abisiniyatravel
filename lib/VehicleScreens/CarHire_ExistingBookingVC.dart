@@ -34,12 +34,6 @@ class HomeState extends State<CarHire_ExistingBookingScreen> {
   TextEditingController pwd_confirmcontroller = TextEditingController();
   TextEditingController FromdateInputController = TextEditingController();
   TextEditingController TodateInputController = TextEditingController();
-
-  //final baseDioSingleton = BaseSingleton();
-//   print(baseDioSingleton.Appname);
-  //List listUsers= [];
-  //Future? listUsers;;
-
   String bookable_type = '';
   String RetrivedBearertoekn = '';
   bool isLoading = false;
@@ -49,8 +43,6 @@ class HomeState extends State<CarHire_ExistingBookingScreen> {
   String fromDatestr = '';
   String toDatestr = '';
   String newBookingUser = '';
-
-
   int idnum = 0;
   int aptId = 0;
   int RetrivedId = 0;
@@ -91,10 +83,7 @@ class HomeState extends State<CarHire_ExistingBookingScreen> {
       Uri.parse(
           url),
       headers: {
-        // 'Authorization':
-        // 'Bearer <--your-token-here-->',
         "Authorization": "Bearer $RetrivedBearertoekn",
-
       },
     );
     if (response.statusCode == 200) {
@@ -139,12 +128,6 @@ class HomeState extends State<CarHire_ExistingBookingScreen> {
           "Authorization": "Bearer $RetrivedBearertoekn",
         },
         body: jsonEncode(<String, dynamic>{
-          // 'name': namecontroller.text,
-          // 'surname': surnamecontroller.text,
-          // 'email': emailcontroller.text,
-          // 'phone': phonecontroller.text,
-          // 'password': passwordcontroller.text,
-          // 'password_confirmation': pwd_confirmcontroller.text,
           'start_date': FromdateInputController.text,
           'end_date': TodateInputController.text,
           'bookable_type': bookable_type,
@@ -205,7 +188,46 @@ class HomeState extends State<CarHire_ExistingBookingScreen> {
         setState(() {
           //result = 'ID: ${responseData['id']}\nName: ${responseData['name']}\nEmail: ${responseData['email']}';
         });
-      } else if (response.statusCode == 404){
+      }
+      if (response.statusCode == 422) {
+        print('already entered existing data1...');
+        var data = jsonDecode(response.body);
+        print('email...');
+        print(data['message']['email']);
+        //String emailstr = (data['message']['email']);
+        //print(emailstr);
+        print(data['message']['phone']);
+
+        print(data['message']['password']);
+        print(data['message']['end_date']);
+        if (FromdateInputController.text.isEmpty) {
+          final snackBar = SnackBar(
+            content: Text('Please select start date'),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        } else if (TodateInputController.text.isEmpty) {
+          final snackBar = SnackBar(
+            content: Text('Please select end date'),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+        else if ((data['message']['password']) != null) {
+          final snackBar = SnackBar(
+            content: Text('The password confirmation does not match.'),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+        else if ((data['message']['end_date']) != null) {
+          print('date....');
+          final snackBar = SnackBar(
+            content: Text('The end date must be a date after start date.'),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        } else {
+          print('nullll.....');
+        }
+      }
+      else if (response.statusCode == 404){
         var data = jsonDecode(response.body.toString());
         final snackBar = SnackBar(
           content: Text('You cant book your own vehicle.'),
@@ -468,7 +490,7 @@ class HomeState extends State<CarHire_ExistingBookingScreen> {
                                                             color: Colors.white,
                                                             child: Text('${((snapshot.data?['data'].isEmpty ? 'Empty name'
                                                                 : snapshot.data?["data"]['price'].toString()
-                                                                ?? 'empty'))} /night',style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.black)),),
+                                                                ?? 'empty'))} /Day',style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.black)),),
 
                                                           )
                                                         ],
@@ -629,9 +651,7 @@ class HomeState extends State<CarHire_ExistingBookingScreen> {
                                                             height: 20,
                                                           ),
                                                           Container(
-                                                            child:isLoading
-                                                                ? Center(child: CircularProgressIndicator())
-                                                                : TextButton(
+                                                            child: TextButton(
                                                               style: TextButton.styleFrom(
                                                                   fixedSize: const Size(340, 50),
                                                                   foregroundColor: Colors.white,

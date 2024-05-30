@@ -13,17 +13,11 @@ import 'package:tourstravels/UserDashboard_Screens/newDashboard.dart';
 
 import '../ApartVC/Apartment.dart';
 import '../ServiceDasboardVC.dart';
-
-
-
 class Login extends StatefulWidget {
-
   @override
   _LoginState createState() => _LoginState();
 }
-
 class _LoginState extends State<Login> {
-
   final baseDioSingleton = BaseSingleton();
   bool isLoading = false;
   final globalKey = GlobalKey<ScaffoldState>();
@@ -32,7 +26,6 @@ class _LoginState extends State<Login> {
   String tokenvalue = '';
 
   showAlertDialog(BuildContext context) {
-
     // set up the buttons
     Widget cancelButton = TextButton(
       child: Text("Cancel",style: TextStyle(fontWeight: FontWeight.w900,fontSize: 20,color: Colors.green),),
@@ -72,27 +65,17 @@ class _LoginState extends State<Login> {
   }
 
   void login(String email , password) async {
-
     try{
-
-      // isLoading = true;
-      // var response = await http.get(url);
-      // isLoading = false;
       print('login url...');
       print(baseDioSingleton.AbisiniyaBaseurl +'login');
       Response response = await post(
           //Uri.parse('https://staging.abisiniya.com/api/v1/login'),
           Uri.parse(baseDioSingleton.AbisiniyaBaseurl +'login'),
-
-
-
           body: {
             'email' : emailController.text.toString(),
             'password' : passwordController.text.toString()
           }
-
       );
-
       isLoading = true;
       if(response.statusCode == 200){
         isLoading = false;
@@ -107,36 +90,10 @@ class _LoginState extends State<Login> {
         print(tokenvalue);
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('tokenkey', tokenvalue);
-
-
-
-        //
-        //
-        // var datar = jsonDecode(response.body['data']['token']);
-        //
-        // json.encode(response.body['data'['token']]);
-        //
-        // //SharedPreferences localStorage = await SharedPreferences.getInstance();
-        // //localStorage.setString('token', json.encode(body['data']['token']));
-        //
-        // //localStorage.setString('data', json.encode(body['data']));
-
         showAlertDialog(context);
-        //
-        // print(data);
-        // print(data['token']);
-        // print('Login successfully');
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //       builder: (context) => newuserDashboard()
-        //   ),
         // );
-
       }else {
         print('failed');
-
-
         final snackBar = SnackBar(
           content: Text('Hi, Invalid login credentials'),
         );
@@ -146,21 +103,9 @@ class _LoginState extends State<Login> {
       print(e.toString());
     }
   }
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        //appBar: AppBar(
-        //   backgroundColor: PrimaryColor,
-        //
-        //   centerTitle: true,
-        //   title: Text('Login',
-        //     textAlign: TextAlign.center,
-        //     style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18,),),
-        // ),
-
         appBar: AppBar(
           backgroundColor: Colors.lightGreen,
           flexibleSpace: Container(
@@ -172,23 +117,6 @@ class _LoginState extends State<Login> {
             ),
           ),
           actions: <Widget>[
-            // TextButton(
-            //   onPressed: () async {
-            //
-            //     Navigator.push(
-            //       context,
-            //       MaterialPageRoute(
-            //           builder: (context) => ServiceDashboardScreen()
-            //       ),
-            //     );
-            //     SharedPreferences prefs = await SharedPreferences.getInstance();
-            //     // prefs.setString('logoutkey', ('LogoutDashboard'));
-            //     //prefs.setString('Property_type', ('Apartment'));
-            //     prefs.setString('NewuserBookingkey', 'NewuserBooking');
-            //
-            //   },
-            //   child: Text('New Booking',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w800,color: Colors.green),),
-            // ),
           ],
           centerTitle: true,
           iconTheme: IconThemeData(
@@ -196,14 +124,7 @@ class _LoginState extends State<Login> {
           ),
             title: Text('ABISINIYA',textAlign: TextAlign.center,
                 style: TextStyle(color:Colors.white,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
-
         ),
-
-      // title: Text('ABISINIYA',textAlign: TextAlign.center,
-      //     style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
-      // iconTheme: IconThemeData(color: Colors.green),),
-
-
     body: Column(
           children: <Widget>[
             Container(color: Colors.white, height: 50),
@@ -300,8 +221,6 @@ class _LoginState extends State<Login> {
                                           new InputDecoration.collapsed(
                                               hintText: 'Password')),
                                     ),
-
-
                                     SizedBox(
                                       height: 15,
                                     ),
@@ -320,7 +239,6 @@ class _LoginState extends State<Login> {
                                         // child: Text('Book Now'),
 
                                         child: const Text('Login',style: TextStyle(color:Colors.white,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
-
                                         onPressed: () async {
                                           setState(() => isLoading = true);
                                          // _postData();
@@ -329,67 +247,14 @@ class _LoginState extends State<Login> {
                                                 SharedPreferences prefs = await SharedPreferences.getInstance();
                                                 prefs.setString('emailkey', emailController.text);
                                                 prefs.setString('passwordkey', passwordController.text);
-
-
-
                                           print('token value....');
                                                 print(tokenvalue);
                                                 prefs.setString('tokenkey', tokenvalue);
-
-
-
-
-                                              // Navigator.push(
-                                              //   context,
-                                              //   MaterialPageRoute(
-                                              //       builder: (context) => tabbar()
-                                              //   ),
-                                              // );
-
-
                                           await Future.delayed(Duration(seconds: 2), () => () {});
                                           setState(() => isLoading = false);
                                         },
                                       ),
                                     ),
-
-
-
-                                    // TextButton(
-                                    //   style: TextButton.styleFrom(
-                                    //       fixedSize: const Size(300, 45),
-                                    //       foregroundColor: Colors.white,
-                                    //       backgroundColor: Colors.green,
-                                    //       shape: RoundedRectangleBorder(
-                                    //         borderRadius: BorderRadius.circular(00),
-                                    //       ),
-                                    //       textStyle: const TextStyle(fontSize: 20)),
-                                    //   onPressed: () async {
-                                    //
-                                    //       login(emailController.text.toString(), passwordController.text.toString());
-                                    //
-                                    //       SharedPreferences prefs = await SharedPreferences.getInstance();
-                                    //       prefs.setString('emailkey', emailController.text);
-                                    //       prefs.setString('passwordkey', passwordController.text);
-                                    //
-                                    //       // print('token value....');
-                                    //       // print(tokenvalue);
-                                    //       // prefs.setString('tokenkey', tokenvalue);
-                                    //
-                                    //
-                                    //
-                                    //
-                                    //     // Navigator.push(
-                                    //     //   context,
-                                    //     //   MaterialPageRoute(
-                                    //     //       builder: (context) => tabbar()
-                                    //     //   ),
-                                    //     // );
-                                    //   },
-                                    //   child: const Text('Login',style: TextStyle(color:Colors.white,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
-                                    // ),
-
-
                                     Container(
                                       padding: EdgeInsets.all(5),
                                       child: Row(
@@ -434,7 +299,6 @@ class _LoginState extends State<Login> {
                                             ),
                                             textStyle: const TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
                                         onPressed: () {
-
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(

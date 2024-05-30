@@ -6,32 +6,24 @@ import 'package:url_launcher/url_launcher.dart';
 import '../supportVC.dart';
 
 
-// function to trigger the app build
-//void main() => runApp(const MyApp());
-
-// _makingPhoneCall() async {
-//   var url = Uri.parse(_phoneController);
-//   if (await canLaunchUrl(url)) {
-//     await launchUrl(url);
-//   } else {
-//     throw 'Could not launch $url';
-//   }
-// }
 class CallToAbisiniya extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();
 }
 class _LoginState extends State<CallToAbisiniya> {
-
-//class CallToAbisiniya extends StatelessWidget {
-
-
-  //CallToAbisiniya({Key? key}) : super(key: key);
   late TextEditingController _phoneController = TextEditingController();
+  String dropdownvalue = 'Please select Country';
+
+// List of items in our dropdown menu
+  var items = [
+    'Please select Country',
+    'Zimbabwe',
+    'South Africa',
+  ];
   void initState() {
     // TODO: implement initState
     super.initState();
-    _phoneController.text = '27 65 532 6408';
+    //_phoneController.text = '27 65 532 6408';
   }
   _makingPhoneCall() async {
     //var url = Uri.parse();
@@ -95,6 +87,52 @@ class _LoginState extends State<CallToAbisiniya> {
                 ),//Text
                 Container(
                   height: 20.0,
+                ),
+                SizedBox(
+                  width: 310,
+                  height: 45,
+
+                  child:DropdownButton(
+
+                    isExpanded: true,
+
+                    // Initial Value
+                    value: dropdownvalue,
+
+                    // Down Arrow Icon
+                    icon: const Icon(Icons.keyboard_arrow_down),
+
+                    // Array list of items
+                    items: items.map((String items) {
+                      return DropdownMenuItem(
+                        value: items,
+                        child: Text(items),
+                      );
+                    }).toList(),
+                    // After selecting the desired option,it will
+                    // change button value to selected value
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        dropdownvalue = newValue!;
+                        print('new value...');
+                        print(newValue);
+                        if(newValue == 'Zimbabwe') {
+                          print('zim num..');
+                          //263 777 223 158
+                          _phoneController.text = '263 777 223 158';
+
+                        } else {
+
+                          _phoneController.text = '27 65 532 6408';
+
+                        }
+                      });
+                    },
+                  ),
+                ),
+
+                SizedBox(
+                  height: 10,
                 ),
                 SizedBox(
                     width: 310,
@@ -168,14 +206,6 @@ class _LoginState extends State<CallToAbisiniya> {
                 //   child: const Text('   Call   '),
                 // ), // ElevatedButton
 
-
-                // DEPRECATED
-                // RaisedButton(
-                // onPressed: _makingPhoneCall,
-                // child: Text('Call'),
-                // textColor: Colors.black,
-                // padding: const EdgeInsets.all(5.0),
-                // ),
               ],
             ),
           ),

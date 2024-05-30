@@ -20,23 +20,15 @@ import 'package:http/http.dart' as http;
 import 'My_AprtmetsVC.dart';
 import 'ViewApartmentVC.dart';
 
-
-
-
-
-
 class AddpicScreen extends StatefulWidget {
 
   @override
   _LoginState createState() => _LoginState();
 }
-
 class _LoginState extends State<AddpicScreen> {
-
   final baseDioSingleton = BaseSingleton();
   String RetrivedBearertoekn = '';
   int ApartmentId = 0;
-
   _retrieveValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -92,17 +84,6 @@ class _LoginState extends State<AddpicScreen> {
     if(response.statusCode == 201) {
       var responseData = await response.stream.toBytes();
       var responseToString = String.fromCharCodes(responseData);
-      // final List parsedList = json.decode(responseToString);
-      // final snackBar = SnackBar(
-      //   content: Text('Apartment created successfully'),
-      // );
-      // // ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //       builder: (context) => MyApartmentScreen()
-      //   ),
-      // );
       Navigator.push(
         context,
         MaterialPageRoute(

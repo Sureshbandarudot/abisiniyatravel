@@ -140,7 +140,7 @@ class _LoginState extends State<CreateVehice> {
       });
     } else {
       final snackBar = SnackBar(
-        content: Text('Please fill all fields'),
+        content: Text(''),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
@@ -512,8 +512,97 @@ class _LoginState extends State<CreateVehice> {
                                           child: const Text('Send',style: TextStyle(color:Colors.white,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
 
                                           onPressed: () async {
-                                            setState(() => isLoading = true);
-                                            addProduct();
+                                            // setState(() => isLoading = true);
+                                            // addProduct();
+                                            if(nameController.text.isEmpty) {
+                                              final snackBar = SnackBar(
+                                                content: Text('Please Fill name'),
+                                              );
+                                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                                            } else if(addressController.text.isEmpty) {
+                                              final snackBar = SnackBar(
+                                                content: Text('Please Fill address'),
+                                              );
+                                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                                            } else if(cityController.text.isEmpty) {
+                                              final snackBar = SnackBar(
+                                                content: Text('Please Fill city'),
+                                              );
+                                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                                            } else if(countryController.text.isEmpty) {
+                                              final snackBar = SnackBar(
+                                                content: Text('Please Fill country'),
+                                              );
+                                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                                            } else if(makeController.text.isEmpty) {
+                                              final snackBar = SnackBar(
+                                                content: Text('Please Fill make'),
+                                              );
+                                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                                            } else if(modelController.text.isEmpty) {
+                                              final snackBar = SnackBar(
+                                                content: Text('Please Fill model'),
+                                              );
+                                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                                            } else if(yearController.text.isEmpty) {
+                                              final snackBar = SnackBar(
+                                                content: Text('Please Fill year'),
+                                              );
+                                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                                            } else if(enginesizeController.text.isEmpty) {
+                                              final snackBar = SnackBar(
+                                                content: Text('Please Fill enginesize'),
+                                              );
+                                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                                            } else if(fuelsizeController.text.isEmpty) {
+                                              final snackBar = SnackBar(
+                                                content: Text('Please Fill fueltype'),
+                                              );
+                                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                                            } else if(weightController.text.isEmpty) {
+                                              final snackBar = SnackBar(
+                                                content: Text('Please Fill weight'),
+                                              );
+                                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                                            } else if(colorController.text.isEmpty) {
+                                              final snackBar = SnackBar(
+                                                content: Text('Please Fill color'),
+                                              );
+                                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                                            } else if(transmisionController.text.isEmpty) {
+                                              final snackBar = SnackBar(
+                                                content: Text('Please Fill transimission'),
+                                              );
+                                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                                            } else if(priceController.text.isEmpty) {
+                                              final snackBar = SnackBar(
+                                                content: Text('Please Fill price'),
+                                              );
+                                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                                            } else if(galleryFile == null) {
+                                              final snackBar = SnackBar(
+                                                content: Text('Please select image from gallery..'),
+                                              );
+                                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                                            } else {
+                                              print('product calling...');
+                                              addProduct();
+
+                                            }
                                             // _postData();
                                             //login(emailController.text.toString(), passwordController.text.toString());
 

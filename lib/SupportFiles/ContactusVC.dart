@@ -189,12 +189,6 @@ class _LoginState extends State<ContactUsScreen> {
                                               color: Colors.black54,fontWeight: FontWeight.normal,fontSize: 16),),
                                         ],
                                       ),
-
-
-                                      // Text('We pride ourselves on our outstanding customer service.Let us take you across the world in easier and affordable ways.',
-                                      //   textAlign: TextAlign.center ,
-                                      //   style: TextStyle(
-                                      //       color: Colors.black,fontWeight: FontWeight.w600,fontSize: 20),)
                                     ],
                                   )
                               ),
@@ -304,12 +298,9 @@ class _LoginState extends State<ContactUsScreen> {
                                                   color: Colors.black54,fontWeight: FontWeight.normal,fontSize: 16),),
                                             ],
                                           ),
-
                                         ],
                                       ),
                                     )
-
-
                                   ],
                                 ),
                               ),

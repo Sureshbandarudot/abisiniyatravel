@@ -6,8 +6,6 @@ import 'package:tourstravels/Auth/ForgotPassword.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
-
-
 class ForgotpwdOTPVerified extends StatefulWidget {
   @override
   _ForgotpwdOTPVerifiedState createState() => _ForgotpwdOTPVerifiedState();
@@ -18,21 +16,15 @@ class _ForgotpwdOTPVerifiedState extends State<ForgotpwdOTPVerified> {
   bool isLoading = false;
   final globalKey = GlobalKey<ScaffoldState>();
   TextEditingController emailController = TextEditingController();
-
   void OTPVerified(String email) async {
-
     try{
-
       Response response = await post(
           // Uri.parse('https://staging.abisiniya.com/api/v1/forgotpass/emailverify'),
           Uri.parse(baseDioSingleton.AbisiniyaBaseurl + 'forgotpass/emailverify'),
-
           body: {
             'email' : emailController.text.toString(),
           }
-
       );
-
       if(response.statusCode == 200){
         var data = jsonDecode(response.body.toString());
                print(data);
@@ -44,10 +36,8 @@ class _ForgotpwdOTPVerifiedState extends State<ForgotpwdOTPVerified> {
               builder: (context) => Forgot()
           ),
         );
-
       }else {
         print('failed');
-
         final snackBar = SnackBar(
           content: Text('The email confirmation does not match.'),
         );
@@ -57,18 +47,14 @@ class _ForgotpwdOTPVerifiedState extends State<ForgotpwdOTPVerified> {
       print(e.toString());
     }
   }
-
-
   @override
   _retrieveValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       emailController.text = prefs.getString('emailkey') ?? "";
       print(emailController.text);
-
     });
   }
-
   @override
   void initState() {
     super.initState();
@@ -96,12 +82,6 @@ class _ForgotpwdOTPVerifiedState extends State<ForgotpwdOTPVerified> {
           title: const Text('Forgot Password',
               textAlign: TextAlign.center,
               style: TextStyle(color:Colors.white,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
-
-          // title: const Text('OTP Verification',
-          //     textAlign: TextAlign.center,
-          //     style: TextStyle(
-          //         color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20)),
-          // backgroundColor: Colors.grey,
         ),
         body: Column(
           children: <Widget>[
@@ -152,7 +132,6 @@ class _ForgotpwdOTPVerifiedState extends State<ForgotpwdOTPVerified> {
                                       SizedBox(
                                         height: 5,
                                       ),
-
                                       Container(
                                         padding: EdgeInsets.all(20),
                                         width: 325,

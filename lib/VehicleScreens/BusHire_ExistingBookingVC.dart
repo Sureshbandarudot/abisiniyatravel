@@ -66,19 +66,15 @@ class HomeState extends State<BusHire_ExistingBookingScreen> {
     setState(() {
       print(baseDioSingleton.AbisiniyaBaseurl);
       carid = prefs.getInt('caridkey') ?? 0;
-
       bookable_type = prefs.getString('bookable_type') ?? "";
       RetrivedBearertoekn = prefs.getString('tokenkey') ?? "";
-
     });
   }
-
   Future<dynamic>BusHiregetData() async {
     print('id value...');
     print(carid);
     // String url = 'https://staging.abisiniya.com/api/v1/bus/detail/$carid';
     String url = baseDioSingleton.AbisiniyaBaseurl + 'bus/detail/$carid';
-
     var response = await http.get(
       Uri.parse(
           url),
@@ -86,7 +82,6 @@ class HomeState extends State<BusHire_ExistingBookingScreen> {
         // 'Authorization':
         // 'Bearer <--your-token-here-->',
         //"Authorization": "Bearer $RetrivedBearertoekn",
-
       },
     );
     if (response.statusCode == 200) {
@@ -171,6 +166,9 @@ class HomeState extends State<BusHire_ExistingBookingScreen> {
         }
         //}
         setState(() {
+
+
+
           //result = 'ID: ${responseData['id']}\nName: ${responseData['name']}\nEmail: ${responseData['email']}';
         });
       } else if (response.statusCode == 404){

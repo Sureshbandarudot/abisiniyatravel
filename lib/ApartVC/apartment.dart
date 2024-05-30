@@ -8,7 +8,6 @@ import 'dart:convert';
 import 'package:tourstravels/ApartVC/Addaprtment.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
-
 import '../ServiceDasboardVC.dart';
 import 'FilterApartmentVC.dart';
 import 'NewUserbooking.dart';
@@ -19,23 +18,18 @@ class Apartmentscreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-
       home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  //MyHomePage({Key key, this.title}) : super(key: key);
-  //final String title;
-  @override
+    @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 class _MyHomePageState extends State<MyHomePage> {
   TextEditingController searchController = TextEditingController();
   TextEditingController emailController = TextEditingController();
-
-
   final baseDioSingleton = BaseSingleton();
   final borderRadius = BorderRadius.circular(20); // Image border
   int _counter = 0;
@@ -88,7 +82,6 @@ print(propertytype);
           ),
         );
         print('User Login not Authentication  successfully');
-
       }
     }catch(e){
       print(e.toString());
@@ -100,7 +93,6 @@ void initState() {
   super.initState();
   _retrieveValues();
   getData();
-
 }
   Future<dynamic> getData() async {
     //String url = 'https://staging.abisiniya.com/api/v1/apartment/list';
@@ -182,7 +174,6 @@ void initState() {
                                           // mainAxisSize: MainAxisSize.min,
                                           // crossAxisAlignment: CrossAxisAlignment.start,
                                           children: <Widget>[
-
                                             SizedBox(
                                               height: 20,
                                             ),
@@ -196,7 +187,6 @@ void initState() {
                                                     end: Alignment.bottomCenter,
                                                     colors: <Color>[Colors.blueGrey, Colors.green]),
                                                   borderRadius: BorderRadius.all(Radius.circular(30))
-
                                               ),
                                               child: Row(
                                                 children: [
@@ -229,7 +219,6 @@ void initState() {
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
     } else {
-                                                            print('search btn clicked...');
                                                             Navigator.push(
                                                               context,
                                                               MaterialPageRoute(
@@ -238,16 +227,13 @@ void initState() {
                                                             );
                                                             final prefs = await SharedPreferences.getInstance();
                                                             await prefs.setString('locationkey', searchController.text);
-
                                                           }
                                                         },
                                                         icon: const Icon(Icons.search),
                                                       )
                                                   )
                                                 ],
-
                                               ),
-
                                             ),
                                             SizedBox(
                                               height: 20,
@@ -285,7 +271,6 @@ void initState() {
                                                       //margin: EdgeInsets.all(Top:20),// add margin
                                                       //padding: EdgeInsets.all(20),
                                                       margin: EdgeInsets.only(top: 0, left: 20,right: 20),
-
                                                       decoration: BoxDecoration(
                                                         border: Border.all(
                                                             color: Colors.black,
@@ -388,11 +373,9 @@ void initState() {
                                                                                 height: 40,
                                                                                 width: 140,
                                                                                 color: Colors.white,
-
                                                                                 child: TextButton(
                                                                                   style: TextButton.styleFrom(backgroundColor:Colors.green),
                                                                                   onPressed: () async {
-
                                                                                     SharedPreferences prefs = await SharedPreferences.getInstance();
                                                                                     prefs.setString('citykey', snapshot.data['data'][index]['city']);
                                                                                     prefs.setInt('imgkeyId', snapshot.data['data'][index]['id']);
@@ -447,7 +430,6 @@ void initState() {
                                                                     color: Colors.green,
                                                                     child: Row(
                                                                       children: [
-
                                                                         Container(
                                                                           height: 40,
                                                                           width: 140,

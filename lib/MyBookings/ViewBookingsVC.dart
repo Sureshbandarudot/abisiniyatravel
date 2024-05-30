@@ -88,15 +88,6 @@ class _userDashboardState extends State<ViewBookingscreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   centerTitle: true,
-      //   title: const Text(
-      //     'Abisiniya',
-      //   ),
-      //   // backgroundColor: const Color(0xff764abc),
-      //   backgroundColor: Colors.green,
-      //
-      // ),
       appBar: AppBar(
         centerTitle: true,
         leading: BackButton(
@@ -106,8 +97,6 @@ class _userDashboardState extends State<ViewBookingscreen> {
             // prefs.setString('logoutkey', ('LogoutDashboard'));
             //prefs.setString('Property_type', ('Apartment'));
             //prefs.setString('LoggedinUserkey', LoggedInUser);
-
-
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -121,9 +110,7 @@ class _userDashboardState extends State<ViewBookingscreen> {
             // print(' dashboard logged in user...');
             // print(LoggedInUSerstr);
             // print(NewBookingUserstr);
-
           },
-
         ),
         // iconTheme: IconThemeData(
         //     color: Colors.green,
@@ -133,10 +120,8 @@ class _userDashboardState extends State<ViewBookingscreen> {
 
       ),
       body: FutureBuilder<dynamic>(
-
         //future: BookingDashboardUsers,
           future: getData(),
-
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
@@ -593,18 +578,6 @@ class _userDashboardState extends State<ViewBookingscreen> {
                                     ),
                                     Column(
                                       children: [
-
-                                        // Align(
-                                        //   alignment: Alignment.center,
-                                        //   child: Container(
-                                        //     color: Colors.transparent,
-                                        //     child: Text('Action:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w800,color: Colors.black),),
-                                        //   ),
-                                        // ),
-
-                                        // SizedBox(
-                                        //   width: 30,
-                                        // ),
                                         InkWell(
                                           child: Container(
                                             color: Colors.green,
@@ -620,8 +593,6 @@ class _userDashboardState extends State<ViewBookingscreen> {
                                                   child: Text('Add Reply',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w800,color: Colors.white),),
                                                 ),
                                               ),
-
-
                                             ),                                                              ),
                                           onTap: () async {
 
@@ -636,15 +607,10 @@ class _userDashboardState extends State<ViewBookingscreen> {
                                             prefs.setString('tokenkey', RetrivedBearertoekn);
                                             // prefs.setInt('userbookingId', snapshot.data['data'][index]['id']);
                                             // prefs.setString('tokenkey', RetrivedBearertoekn);
-
                                             },
                                         ),
-
-
                                       ],
                                     ),
-
-
                                     Column(
                                       children:<Widget>[
                                         //Text('second test'),
@@ -652,20 +618,13 @@ class _userDashboardState extends State<ViewBookingscreen> {
                                             physics: NeverScrollableScrollPhysics(),
                                             shrinkWrap: true,
                                             itemCount: snapshot.data?["data"]['add_reply_responses'].length ?? '',
-
-
                                             separatorBuilder: (BuildContext context, int index) => const Divider(),
-
-
                                             itemBuilder: (BuildContext context, int index) {
-
                                               SizedBox(
                                                 height: 20,
                                               );
                                               return Container(
-
                                                   child: Column(
-
                                                     children: [
                                                       SizedBox(
                                                         height: 20,
@@ -764,15 +723,6 @@ class _userDashboardState extends State<ViewBookingscreen> {
             }
           }
       ),
-      // body: Center(
-      //   child: Column(
-      //     children: [
-      //       SizedBox(
-      //         height: 50,
-      //       ),
-      //     ],
-      //   ),
-      // ),
     );
   }
 }

@@ -8,21 +8,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 import '../ServiceDasboardVC.dart';
 import 'dart:async';
-
+import '../UserDashboard_Screens/newDashboard.dart';
 import 'Register.dart';
 import 'otpResendVC.dart';
 
 String _email='';
-
-
 class OTPVerified extends StatefulWidget {
   @override
-
   _OTPVerifiedState createState() => _OTPVerifiedState();
 }
-
 class _OTPVerifiedState extends State<OTPVerified> {
-
   final baseDioSingleton = BaseSingleton();
   bool isLoading = false;
   String? emaildata;
@@ -30,47 +25,27 @@ class _OTPVerifiedState extends State<OTPVerified> {
   int secondsRemaining = 60;
   bool enableResend = false;
   late Timer timer;
-
-
   TextEditingController emailController = TextEditingController();
   TextEditingController otpController = TextEditingController();
-
   void OTPVerified(String email , String otp ) async {
-
     try{
-
       Response response = await post(
           //Uri.parse('https://staging.abisiniya.com/api/v1/otpverify'),
           Uri.parse(baseDioSingleton.AbisiniyaBaseurl + 'otpverify'),
-
           body: {
             'email' : emailController.text.toString(),
             'otp' : otpController.text.toString(),
           }
-
       );
-
       if(response.statusCode == 200){
         var data = jsonDecode(response.body.toString());
-        //
-        //
-        // var datar = jsonDecode(response.body['data']['token']);
-        //
-        // json.encode(response.body['data'['token']]);
-        //
-        // //SharedPreferences localStorage = await SharedPreferences.getInstance();
-        // //localStorage.setString('token', json.encode(body['data']['token']));
-        //
-        // //localStorage.setString('data', json.encode(body['data']));
-
-
         print(data);
         print(data['token']);
         print('Login successfully');
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => ServiceDashboardScreen()
+              builder: (context) => Login()
           ),
         );
 
@@ -94,8 +69,6 @@ class _OTPVerifiedState extends State<OTPVerified> {
   }
 
   @override
-
-
   _retrieveValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -133,15 +106,6 @@ class _OTPVerifiedState extends State<OTPVerified> {
     print('inside widget....');
     print(emailController.text);
     return Scaffold(
-      //appBar: AppBar(
-      //   backgroundColor: PrimaryColor,
-      //
-      //   centerTitle: true,
-      //   title: Text('Login',
-      //     textAlign: TextAlign.center,
-      //     style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18,),),
-      // ),
-
         appBar: AppBar(
           centerTitle: true,
           leading: BackButton(
@@ -198,19 +162,6 @@ class _OTPVerifiedState extends State<OTPVerified> {
                                   ),
                                   child: Column(
                                     children: [
-                                      // Container(
-                                      //     width: 125,
-                                      //     child: CircleAvatar(
-                                      //       backgroundColor: Colors.transparent,
-                                      //       radius: 60.0,
-                                      //       child: Image.asset(
-                                      //           "images/logo.jpg",
-                                      //           height: 100.0,
-                                      //           width: 125.0,
-                                      //           fit: BoxFit.fill
-                                      //       ),
-                                      //     )
-                                      // ),
                                       Container(
                                         padding: EdgeInsets.all(10),
                                         height: 50,
@@ -218,17 +169,13 @@ class _OTPVerifiedState extends State<OTPVerified> {
                                         color: Colors.transparent,
                                         child: Text(
                                           "Email or OTP Verification",
-
                                           textAlign: TextAlign.left ,
                                           style: TextStyle(
                                               color: Colors.black87,fontWeight: FontWeight.bold,fontSize: 22),),
-
-
                                       ),
                                       SizedBox(
                                         height: 5,
                                       ),
-
                                       Container(
                                         padding: EdgeInsets.all(20),
                                         width: 325,
@@ -237,21 +184,6 @@ class _OTPVerifiedState extends State<OTPVerified> {
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-
-                                            // SizedBox(
-                                            //   height: 5,
-                                            // ),
-                                            // Container(
-                                            //   height: 40,
-                                            //   width: 325,
-                                            //   color: Colors.transparent,
-                                            //   child: Text(
-                                            //     "E-mail Address",
-                                            //     textAlign: TextAlign.left ,
-                                            //     style: TextStyle(
-                                            //         color: Colors.black87,fontWeight: FontWeight.normal,fontSize: 18),),
-                                            // ),
-
                                             TextField (
                                               readOnly: true,
                                               controller: emailController,
@@ -265,11 +197,9 @@ class _OTPVerifiedState extends State<OTPVerified> {
                                               height: 10,
                                             ),
                                             TextField (
-                                              
                                               obscureText: true,
                                               controller: otpController,
                                               keyboardType: TextInputType.number,
-
                                               decoration: InputDecoration(
                                                   border:OutlineInputBorder(),
                                                   labelText: 'otp',
@@ -296,7 +226,6 @@ class _OTPVerifiedState extends State<OTPVerified> {
                                                   SharedPreferences prefs = await SharedPreferences.getInstance();
                                                 prefs.setString('emailkey', emailController.text);
                                                 print(emailController.text);
-
                                                 OTPVerified(emailController.text.toString(), otpController.text.toString());
                                                   await Future.delayed(Duration(seconds: 2), () => () {});
                                                   setState(() => isLoading = false);

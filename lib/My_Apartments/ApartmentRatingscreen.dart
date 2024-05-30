@@ -6,17 +6,9 @@ import 'package:tourstravels/Auth/Login.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 
 import 'ViewApartmentVC.dart';
-
-//import 'VehicleViewVC.dart';
-
-
-//void main() => runApp(RatingScreen());
-
 class ApartmentRatingScreen extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
@@ -29,15 +21,12 @@ class _MyAppState extends State<ApartmentRatingScreen> {
   int Picture_Id = 0;
   late final _ratingController;
   late double _rating;
-
   double _userRating = 3.0;
   int _ratingBarMode = 1;
   double _initialRating = 1.0;
   bool _isRTLMode = false;
   bool _isVertical = false;
-
   IconData? _selectedIcon;
-
   _retrieveValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -46,11 +35,9 @@ class _MyAppState extends State<ApartmentRatingScreen> {
       RetrivedBearertoekn = prefs.getString('tokenkey') ?? "";
       ApartmentId = prefs.getInt('userbookingId') ?? 0;
       Picture_Id = prefs.getInt('Picturekey') ?? 0;
-
       print('Retrived Ids....');
       print(ApartmentId);
       print(Picture_Id);
-
       print('view Apartment... ');
       print(RetrivedBearertoekn);
     });
@@ -78,7 +65,8 @@ class _MyAppState extends State<ApartmentRatingScreen> {
           "Authorization": "Bearer $RetrivedBearertoekn",
         },
         body: jsonEncode(<String, dynamic>{
-          'rating_type': 'App/Models/Vehicles',
+          //App\Models\Apartment
+          'rating_type': 'App\\Models\\Apartment ',
           'rating_id': ApartmentId,
           'score': _rating.toInt(),
           'comment': _ratingController.text,
@@ -91,17 +79,8 @@ class _MyAppState extends State<ApartmentRatingScreen> {
       if (response.statusCode == 201) {
         // Successful POST request, handle the response here
         final responseData = jsonDecode(response.body);
-        print('Vehicle fresh user data successfully posted');
+        print('Apartment fresh user data successfully posted');
         print(responseData);
-        // var data = jsonDecode(response.body.toString());
-        // print(data['message']);
-        // RetrivedBearertoekn = data['data']['token'];
-        // print('token generated...');
-        // print(RetrivedBearertoekn);
-        // Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-        //   builder: (_) => ViewVehicle(),
-        // ),);
-
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -136,9 +115,7 @@ class _MyAppState extends State<ApartmentRatingScreen> {
     super.initState();
     //_ratingController = TextEditingController(text: '3.0');
     _ratingController = TextEditingController();
-
     _rating = _initialRating;
-
     _retrieveValues();
   }
 
@@ -159,20 +136,6 @@ class _MyAppState extends State<ApartmentRatingScreen> {
         builder: (context) => Scaffold(
           appBar: AppBar(
             title: Text('Flutter Rating Bar'),
-            // actions: [
-            //   IconButton(
-            //     icon: Icon(Icons.settings),
-            //     color: Colors.white,
-            //     onPressed: () async {
-            //       _selectedIcon = await showDialog<IconData>(
-            //         context: context,
-            //         builder: (context) => IconAlert(),
-            //       );
-            //       _ratingBarMode = 1;
-            //       setState(() {});
-            //     },
-            //   ),
-            // ],
           ),
           body: Directionality(
             textDirection: _isRTLMode ? TextDirection.rtl : TextDirection.ltr,
@@ -207,14 +170,6 @@ class _MyAppState extends State<ApartmentRatingScreen> {
                               border: OutlineInputBorder(),
                               hintText: 'Enter Review',
                               labelText: 'Review',
-                              // suffixIcon: MaterialButton(
-                              //   onPressed: () {
-                              //     _userRating =
-                              //         double.parse(_ratingController.text ?? '0.0');
-                              //     setState(() {});
-                              //   },
-                              //   child: Text('Rate'),
-                              // ),
                             ),
                           ),
                         ),
@@ -242,31 +197,6 @@ class _MyAppState extends State<ApartmentRatingScreen> {
                         ),
                       ],
                     ),
-                    // child: TextFormField(
-                    //   controller: _ratingController,
-                    //   //keyboardType: TextInputType.number,
-                    //   decoration: InputDecoration(
-                    //     border: OutlineInputBorder(),
-                    //     hintText: 'Enter Review',
-                    //     labelText: 'Review',
-                    //     // suffixIcon: MaterialButton(
-                    //     //   onPressed: () {
-                    //     //     _userRating =
-                    //     //         double.parse(_ratingController.text ?? '0.0');
-                    //     //     setState(() {});
-                    //     //   },
-                    //     //   child: Text('Rate'),
-                    //     // ),
-                    //   ),
-                    // ),
-                    // child:TextButton(
-                    //
-                    //   onPressed: () {},
-                    //   style: TextButton.styleFrom(
-                    //       foregroundColor: Colors.red,
-                    //       elevation: 2,
-                    //       backgroundColor: Colors.amber),
-                    // ),
                   ),
                 ],
 
@@ -278,29 +208,6 @@ class _MyAppState extends State<ApartmentRatingScreen> {
       ),
     );
   }
-
-  // Widget _radio(int value) {
-  //   return Expanded(
-  //     // child: RadioListTile<int>(
-  //     //   value: value,
-  //     //   groupValue: _ratingBarMode,
-  //     //   dense: true,
-  //     //   title: Text(
-  //     //     'Mode $value',
-  //     //     style: TextStyle(
-  //     //       fontWeight: FontWeight.w300,
-  //     //       fontSize: 12.0,
-  //     //     ),
-  //     //   ),
-  //     //   onChanged: (value) {
-  //     //     setState(() {
-  //     //       _ratingBarMode = value!;
-  //     //     });
-  //     //   },
-  //     // ),
-  //   );
-  // }
-
   Widget _ratingBar(int mode) {
     switch (mode) {
       case 1:

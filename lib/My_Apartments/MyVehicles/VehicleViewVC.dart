@@ -13,6 +13,7 @@ import 'package:tourstravels/UserDashboard_Screens/PivoteVC.dart';
 import 'package:tourstravels/tabbar.dart';
 import 'package:tourstravels/My_Apartments/My_AprtmetsVC.dart';
 
+import '../../UserDashboard_Screens/newDashboard.dart';
 import 'VehicleManagePicturesVC.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
@@ -25,25 +26,28 @@ import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 //import 'NewUserbooking.dart';
 class ViewVehicle extends StatefulWidget {
   const ViewVehicle({super.key});
-
   @override
   State<ViewVehicle> createState() => _userDashboardState();
 }
-
 class _userDashboardState extends State<ViewVehicle> {
+  //suresh
   final baseDioSingleton = BaseSingleton();
   String RetrivedPwd = '';
   String RetrivedEmail = '';
   String RetrivedBearertoekn = '';
   int VehicleId = 0;
   int Rating_review = 0;
-  //num Rating_review = 0.0;
-
-
-
+  String AvgRating_review = '';
+  int avgRating = 0;
+  var avglistMessage = '';
   var ViewApartmentList = [];
+  var Reviewlist = [];
+  var scoreRatinglist = [];
+  var ReviewcreateDatelist = [];
   var PicArrayList = [];
   int Picture_Id = 0;
+  String RetrivedProfileNamestr = '';
+  String RetrivedProfileEmailstr = '';
   var controller = ScrollController();
   int count = 15;
   _retrieveValues() async {
@@ -53,17 +57,16 @@ class _userDashboardState extends State<ViewVehicle> {
       RetrivedPwd = prefs.getString('passwordkey') ?? "";
       RetrivedBearertoekn = prefs.getString('tokenkey') ?? "";
       VehicleId = prefs.getInt('userbookingId') ?? 0;
-      print('view Apartment... ');
       print(RetrivedBearertoekn);
+      RetrivedProfileNamestr = prefs.getString('Profilenamekey') ?? "";
+      RetrivedProfileEmailstr = prefs.getString('Profileemailkey') ?? "";
     });
   }
 //@override
-
   Future<dynamic> Review() async {
-    //String url = 'https://staging.abisiniya.com/api/v1/rating/list/$VehicleId';
-    String url = baseDioSingleton.AbisiniyaBaseurl + 'rating/list/$VehicleId';
-
-    print('url...');
+    //https://staging.abisiniya.com/api/v1/rating/vehicle/avgrating/81
+    String url = baseDioSingleton.AbisiniyaBaseurl + 'rating/vehicle/avgrating/$VehicleId';
+    print('avg vehicle rating...');
     print(url);
     var response = await http.get(
       Uri.parse(
@@ -72,30 +75,27 @@ class _userDashboardState extends State<ViewVehicle> {
         // 'Authorization':
         // 'Bearer <--your-token-here-->',
         "Authorization": "Bearer $RetrivedBearertoekn",
-
       },
     );
     if (response.statusCode == 200) {
       final data1 = jsonDecode(response.body);
-      var getpicsData = [];
-      var viewApartmentdata = data1['data'];
-      print('data.....');
-
-      // for (var pics in viewApartmentdata){
-      //
-      //   var picData = pics['pictures'];
-      //   for (var picArray in picData){
-      //     var img = picArray['imageUrl'];
-      //
-      //     Picture_Id = picArray['id'];
-      //     print('img....');
-      //     print(img);
-      //     ViewApartmentList.add(img);
-      //     PicArrayList.add(Picture_Id);
-      //
-      //   }
-      // }
-      print('Review success....');
+     // var data1 = jsonDecode(response.body.toString());
+      var ReviewData = data1['data']['ratingDetails'];
+      print('Review data.....');
+      print(ReviewData);
+      AvgRating_review = data1['data']['avgRating'];
+      for (var Reviewmsg in ReviewData){
+        var picReviewData = Reviewmsg['rating_comment'];
+        var scoreArray = Reviewmsg['rating_score'];
+        var createDateArray = Reviewmsg['created_at'];
+        print('review array...');
+        print(picReviewData);
+        Reviewlist.add(picReviewData);
+        scoreRatinglist.add(scoreArray);
+        ReviewcreateDatelist.add(createDateArray);
+        print('count...');
+        print(ReviewcreateDatelist.length);
+      }
       // print(ViewApartmentList);
       return json.decode(response.body);
     } else {
@@ -117,28 +117,23 @@ class _userDashboardState extends State<ViewVehicle> {
         // 'Authorization':
         // 'Bearer <--your-token-here-->',
         "Authorization": "Bearer $RetrivedBearertoekn",
-
       },
     );
     if (response.statusCode == 200) {
       final data1 = jsonDecode(response.body);
       var getpicsData = [];
       var viewApartmentdata = data1['data'];
-      print('data.....');
+      print('vehicle data.....');
       print(viewApartmentdata);
-
       for (var pics in viewApartmentdata){
-
         var picData = pics['pictures'];
         for (var picArray in picData){
           var img = picArray['imageUrl'];
-
           Picture_Id = picArray['id'];
           print('img....');
           print(img);
           ViewApartmentList.add(img);
           PicArrayList.add(Picture_Id);
-
         }
       }
       print('View Apartment success....');
@@ -149,8 +144,6 @@ class _userDashboardState extends State<ViewVehicle> {
       throw Exception('Failed to load post');
     }
   }
-
-
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -163,7 +156,16 @@ class _userDashboardState extends State<ViewVehicle> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        iconTheme: IconThemeData(
+          leading: BackButton(
+            onPressed: () async{
+              print("back Pressed");
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => newuserDashboard()),
+              );
+            },
+          ),  iconTheme: IconThemeData(
             color: Colors.green
         ),
         title: Text('ABISINIYA',textAlign: TextAlign.center,
@@ -189,8 +191,6 @@ class _userDashboardState extends State<ViewVehicle> {
                     style: TextStyle(color: Colors.white),
                   );
                 } else {
-                  //return InkWell(
-
                   return Column(
                     children: <Widget>[
                       Container(color: Colors.white, height: 10),
@@ -222,9 +222,7 @@ class _userDashboardState extends State<ViewVehicle> {
                                           Align(
                                               alignment: Alignment.topLeft,
                                               child: Text(
-                                                (snapshot.data?['data'].isEmpty ? 'Empty name'
-                                                    : snapshot.data?["data"][0]['user_detail']?['name']?.toString()
-                                                    ?? 'empty'),
+                                                (RetrivedProfileNamestr),
                                                 style: TextStyle(
                                                     color: Colors.black,fontSize: 20,fontWeight: FontWeight.w600),
                                               )
@@ -232,9 +230,7 @@ class _userDashboardState extends State<ViewVehicle> {
                                           Align(
                                               alignment: Alignment.topLeft,
                                               child: Text(
-                                                (snapshot.data?['data'].isEmpty ? 'Empty name'
-                                                    : snapshot.data?["data"][0]['user_detail']?['email']?.toString()
-                                                    ?? 'empty'),
+                                                (RetrivedProfileEmailstr),
                                                 style: TextStyle(
                                                     color: Colors.black,fontSize: 20,fontWeight: FontWeight.w600),
                                               )
@@ -584,31 +580,73 @@ class _userDashboardState extends State<ViewVehicle> {
                                                       style: TextStyle(color: Colors.white),
                                                     );
                                                   } else {
-                                                    //return SingleChildScrollView(
-                                                    //scrollDirection: Axis.horizontal,
-                                                    //physics: ScrollPhysics(),
-
+                                                    print('avg...');
+                                                    print(AvgRating_review);
+                                                    var myDouble = double.parse(AvgRating_review);
+                                                    print(myDouble);
+                                                    print(ReviewcreateDatelist.length);
+                                                    avglistMessage = '${AvgRating_review}  average based on ${ReviewcreateDatelist.length} reviews.';
                                                     return Column(
                                                       children: [
-                                                        SizedBox(height: 30,),
-                                                        Text('User Ratings',style: TextStyle(fontSize: 25,fontWeight:FontWeight.w900),),
+                                                        Column(
+                                                          children: [
+                                               //Text('User Ratings',style: TextStyle(fontSize: 25,fontWeight:FontWeight.w900),),
+                                                          Container(
+                                                            height: 50,
+                                                            width: 340,
+                                                            child:                                                //Text('User Ratings',style: TextStyle(fontSize: 25,fontWeight:FontWeight.w900),),
+                                                            Text('User Ratings',style: TextStyle(fontSize: 25,fontWeight:FontWeight.w900),),),
+                                                            Container(
+                                                              child: Column(
+                                                                children: [
+                                                                  RatingBarIndicator(
+                                                                      rating: double.parse(AvgRating_review),
+                                                                      itemCount: 5,
+                                                                      itemSize: 40.0,
+                                                                      itemBuilder: (context, _) => const Icon(
+                                                                        Icons.star,
+                                                                        color: Colors.orange,
+                                                                      )),
+                                                                ],
+                                                              ),
+
+                                                            ),
+                                                            Container(
+                                                              child:Text(avglistMessage,style: TextStyle(fontSize: 18,fontWeight:FontWeight.w900),),
+                                                              // child:Text('${(snapshot.data['data'][index]['price'].toString())}.00/Day.',textAlign: TextAlign.left,
+                                                              //   style: (TextStyle(fontWeight: FontWeight.w400,fontSize: 20,color: Colors.green)),),
+                                                            ),
+                                                          ],),
+                                                        //Text('User Ratings',style: TextStyle(fontSize: 25,fontWeight:FontWeight.w900),),
                                                         ListView.separated(
                                                             physics: NeverScrollableScrollPhysics(),
                                                             shrinkWrap: true,
                                                             //itemCount:50,
-                                                            itemCount: snapshot.data['data'].length ?? '',
+                                                           // itemCount: snapshot.data['data'].length ?? '',
+                                                            itemCount: snapshot.data["data"]['ratingDetails'].length ?? '',
+
                                                             //itemCount: snapshot.data?['data']['bookings'].length ?? "" ,
                                                             //itemCount: snapshot.data!['data'][0]['bookings'][0].length ?? 0,
                                                             //itemCount: snapshot.data?.length ?? 0,
                                                             separatorBuilder: (BuildContext context, int index) => const Divider(),
                                                             itemBuilder: (BuildContext context, int index) {
                                                               //bookingID = snapshot.data['data'][index]['id'];
-
-                                                              print('id....');
-                                                             Rating_review = snapshot.data['data'][index]['score'];
-                                                             print(Rating_review.toDouble());
-//    itemBuilder: (context,index){
-
+                                                              // (snapshot.data?['data'].isEmpty ? 'Empty name'
+                                                              //     : snapshot.data?["data"][0]['user_detail']?['name']?.toString()
+                                                              //     ?? 'empty'),
+                                                              print('rating....');
+                                                              print(Reviewlist[index].toString());
+                                                              //print(scoreRatinglist[index].toString());
+                                                              Rating_review = scoreRatinglist[index];
+                                                              print('review score....');
+                                                              print(Rating_review);
+                                                             // print(snapshot.data['data']['ratingDetails']['rating_comment']);
+                                                              // print((snapshot.data?['data']['ratingDetails'].isEmpty ? 'Empty name'
+                                                              //     : snapshot.data?["data"]['ratingDetails'][index]['user_detail']['full_name']
+                                                              //     ?? 'empty'),);
+//                                                              Rating_review = snapshot.data['data'][index]['score'];
+//                                                              print(Rating_review.toDouble());
+// //    itemBuilder: (context,index){
                                                               return Container(
                                                                 height: 220,
                                                                 width: 100,
@@ -617,12 +655,20 @@ class _userDashboardState extends State<ViewVehicle> {
                                                                 child: InkWell(
                                                                   child: Column(
                                                                     children: [
+                                                                      SizedBox(
+                                                                        height: 20,
+                                                                      ),
                                                                       Container(
-                                                                        height: 165,
+                                                                        height: 190,
                                                                         width: 340,
                                                                         color: Colors.black12,
                                                                         child: Column(
                                                                           children: [
+                                                                            Column(
+                                                                              children: [
+                                                                                Text(RetrivedProfileNamestr,style: TextStyle(fontSize: 18,fontWeight:FontWeight.w900),),
+                                                                              ],
+                                                                            ),
                                                                         RatingBarIndicator(
                                                                                         rating: Rating_review.toDouble(),
                                                                                         itemCount: 5,
@@ -645,8 +691,9 @@ class _userDashboardState extends State<ViewVehicle> {
                                                                                   color: Colors.white,
                                                                                   //child:Text(snapshot.data['data'][index]['name'],textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w500,fontSize: 18,color: Colors.green)),),
 
-                                                                                  child:Text(snapshot.data?['data'].isEmpty ? 'Empty name'
-                                                                                      : snapshot.data?["data"][index]?['comment']?.toString() ?? 'empty',style: (TextStyle(fontWeight: FontWeight.w300,fontSize: 18,color: Colors.black))),
+                                                                                  // child:Text(snapshot.data?['data'].isEmpty ? 'Empty name'
+                                                                                  //     : snapshot.data?["data"][index]?['comment']?.toString() ?? 'empty',style: (TextStyle(fontWeight: FontWeight.w300,fontSize: 18,color: Colors.black))),
+                                                                                  child:Text(Reviewlist[index].toString(),style: (TextStyle(fontWeight: FontWeight.w300,fontSize: 18,color: Colors.black))),
                                                                                 )
                                                                               ],
                                                                             ),
@@ -663,29 +710,17 @@ class _userDashboardState extends State<ViewVehicle> {
                                                                                   width: 200,
                                                                                   color: Colors.white,
                                                                                   //child: Text('suresh',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
-                                                                                  child:Text(snapshot.data['data'][index]['created_at'],textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w300,fontSize: 16,color: Colors.black)),),
+                                                                                  child:Text(ReviewcreateDatelist[index].toString(),textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w300,fontSize: 16,color: Colors.black)),),
                                                                                 )
                                                                               ],
                                                                             ),
                                                                           ],
                                                                         ),
                                                                       ),
-                                                                      // Container(
-                                                                      //   height: 50,
-                                                                      //   width: 340,
-                                                                      //   color: Colors.green,
-                                                                      //   child: const Align(
-                                                                      //     alignment: Alignment.center,
-                                                                      //     child: Text('Review',
-                                                                      //         style: TextStyle(color: Colors.white, fontSize: 20,fontWeight: FontWeight.w800
-                                                                      //         ),
-                                                                      //         textAlign: TextAlign.center),
-                                                                      //   ),
-                                                                      // ),
+
                                                                     ],
                                                                   ),
                                                                   onTap: () async{
-
                                                                     // Navigator.push(
                                                                     //   context,
                                                                     //   MaterialPageRoute(
@@ -726,7 +761,7 @@ class _userDashboardState extends State<ViewVehicle> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => RatingScreen()),
+                                            builder: (context) => VehicleRatingScreen()),
                                       );
                                       SharedPreferences prefs = await SharedPreferences.getInstance();
                                       print('Vehicle id...');

@@ -1,15 +1,9 @@
 
 import 'package:flutter/material.dart';
 import 'ServiceDasboardVC.dart';
-//import 'dart:html' as html;
-// import 'dart:html' as html;
 import 'package:url_launcher/url_launcher.dart';
-
 import 'SupportFiles/AboutUsVC.dart';
 import 'SupportFiles/ContactusVC.dart';
-
-
-
 void main() {
   runApp(settingsScreen());
 }

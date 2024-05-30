@@ -4,13 +4,8 @@ import 'package:tourstravels/Properties.dart';
 import 'package:tourstravels/Vehicles.dart';
 import 'package:tourstravels/Auth/Login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-
 import 'package:tourstravels/flyScreens/Flights.dart';
 import 'package:tourstravels/tabbar.dart';
-
-//import 'package:tourstravels/ApartVC/apartment.dart';
-
 import 'ApartVC/Apartment.dart';
 import 'Auth/Login.dart';
 void main() {
@@ -102,8 +97,6 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               title: const Text('Flights',
                   style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
-
-
               onTap: () {
                 Navigator.pop(context);
               },
@@ -113,10 +106,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 Icons.apartment,
                 color: Colors.green,
               ),
-
               title: const Text('Apartments',
                   style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
-
               onTap: () {
                 Navigator.pop(context);
               },
@@ -126,11 +117,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 Icons.car_rental,
                 color: Colors.green,
               ),
-
-
               title: const Text('Vehicles',
                   style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
-
               onTap: () {
                 Navigator.pop(context);
               },
@@ -178,29 +166,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 Icons.logout,
                 color: Colors.green,
               ),
-              //title: const Text('Sign Out',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w900,fontSize: 20)),
-              // title: const Text('Logout',
-              //     style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
-
-              //onTap: () async {
-    // onTap: ()async{
-    //
-    //
-    //             SharedPreferences prefs = await SharedPreferences.getInstance();
-    //             prefs.setString('logoutkey', ('LogoutDashboard'));
-    // prefs.setString('Property_type', ('Apartment'));
-    //             Navigator.push(
-    //               context,
-    //               MaterialPageRoute(
-    //                   builder: (context) => tabbar()),
-    //             );
-    //
-    //
-    // },
-
-              // onTap: () {
-              //   Navigator.pop(context);
-              // },
             ),
           ],
         ),
@@ -217,7 +182,6 @@ class _MyHomePageState extends State<MyHomePage> {
               AssetImage("images/home_icon.png"),
               //color: Color(0xFF3A5A98),
               color: Colors.green,
-
             ),
             //label: 'Home',
             label: 'Home',
@@ -236,8 +200,6 @@ class _MyHomePageState extends State<MyHomePage> {
               AssetImage("images/house_icon2.png"),
               // color: Color(0xFF3A5A98),
               color: Colors.green,
-
-
             ),
             label: 'Apartments',
           ),
@@ -246,7 +208,6 @@ class _MyHomePageState extends State<MyHomePage> {
               AssetImage("images/car_icon2.png"),
               // color: Color(0xFF3A5A98),
               color: Colors.green,
-
             ),
             label: 'Vehicles',
           ),

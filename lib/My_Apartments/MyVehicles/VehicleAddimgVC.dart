@@ -16,17 +16,7 @@ import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
-
 import 'MyvehicleVC.dart';
-
-// import 'My_AprtmetsVC.dart';
-// import 'ViewApartmentVC.dart';
-//
-
-
-
-
-
 class VehicleAddpicScreen extends StatefulWidget {
 
   @override
@@ -50,7 +40,6 @@ class _LoginState extends State<VehicleAddpicScreen> {
 
     });
   }
-
   final baseDioSingleton = BaseSingleton();
   bool isLoading = false;
   final globalKey = GlobalKey<ScaffoldState>();
@@ -60,23 +49,16 @@ class _LoginState extends State<VehicleAddpicScreen> {
     super.initState();
     _retrieveValues();
   }
-
-
   File? galleryFile;
   final picker = ImagePicker();
-
   Future addProduct() async{
-    print('entered.....');
-    var token = '353|9NBSCUPjPAK54iUIwJgZBdapulScrjumr10pwqeM';
     var header = {
       "Authorization":"Bearer $RetrivedBearertoekn"
     };
-
     final request = await http.MultipartRequest(
       'POST',
       // Uri.parse('https://staging.abisiniya.com/api/v1/vehicle/pictures/add'),
       Uri.parse(baseDioSingleton.AbisiniyaBaseurl + 'vehicle/pictures/add'),
-
     );
     request.headers.addAll(header);
     request.fields['vehicle_id'] = VehicleId.toString();
@@ -90,17 +72,6 @@ class _LoginState extends State<VehicleAddpicScreen> {
       print('img added successfuly in vehicle...');
       var responseData = await response.stream.toBytes();
       var responseToString = String.fromCharCodes(responseData);
-      // final List parsedList = json.decode(responseToString);
-      // final snackBar = SnackBar(
-      //   content: Text('Apartment created successfully'),
-      // );
-      // // ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //       builder: (context) => MyApartmentScreen()
-      //   ),
-      // );
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -109,7 +80,6 @@ class _LoginState extends State<VehicleAddpicScreen> {
       );
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('tokenkey', RetrivedBearertoekn);
-
       var jsonBody = jsonDecode(responseToString);
       setState(() {
         print(jsonBody);
@@ -121,8 +91,6 @@ class _LoginState extends State<VehicleAddpicScreen> {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -135,8 +103,6 @@ class _LoginState extends State<VehicleAddpicScreen> {
               style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
 
         ),
-
-
         body: Column(
           children: <Widget>[
             Container(color: Colors.white, height: 50),
@@ -195,8 +161,6 @@ class _LoginState extends State<VehicleAddpicScreen> {
                                             ? const Center(child: Text('Sorry nothing selected!!',style: TextStyle(color: Colors.red),))
                                             : Center(child: Image.file(galleryFile!)),
                                       ),
-
-
                                       Container(
                                         child:isLoading
                                             ? Center(child: CircularProgressIndicator())
@@ -212,14 +176,10 @@ class _LoginState extends State<VehicleAddpicScreen> {
                                           // child: Text('Book Now'),
 
                                           child: const Text('Save',style: TextStyle(color:Colors.white,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
-
                                           onPressed: () async {
                                             setState(() => isLoading = true);
                                             // addProduct();
                                             addProduct();
-                                            // _postData();
-                                            //login(emailController.text.toString(), passwordController.text.toString());
-
                                             SharedPreferences prefs = await SharedPreferences.getInstance();
                                             prefs.setString('tokenkey', RetrivedBearertoekn);
                                             print(tokenvalue);

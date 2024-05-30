@@ -18,19 +18,11 @@ import 'package:http/http.dart' as http;
 
 import '../My_AprtmetsVC.dart';
 import 'MyvehicleVC.dart';
-
-
-
-
-
-
-
 class VehicleEdit extends StatefulWidget {
 
   @override
   _LoginState createState() => _LoginState();
 }
-
 class _LoginState extends State<VehicleEdit> {
   String RetrivedBearertoekn = '';
   String RetrivedName = '';
@@ -58,10 +50,7 @@ class _LoginState extends State<VehicleEdit> {
       fuel_typeController.text = prefs.getString('fuel_typekey') ?? "";
       weightController.text = prefs.getString('weightkey') ?? "";
       colorController.text = prefs.getString('colorkey') ?? "";
-
       transmissionController.text = prefs.getString('transmissionkey') ?? "";
-
-
       RetrivedPrice = prefs.getInt('pricekey') ?? 0;
       VehicleID = prefs.getInt('userbookingId') ?? 0;
       print('price...');
@@ -75,7 +64,6 @@ class _LoginState extends State<VehicleEdit> {
       print(RetrivedBearertoekn);
     });
   }
-
   final baseDioSingleton = BaseSingleton();
   bool isLoading = false;
   final globalKey = GlobalKey<ScaffoldState>();
@@ -92,12 +80,6 @@ class _LoginState extends State<VehicleEdit> {
   TextEditingController colorController = TextEditingController();
   TextEditingController transmissionController = TextEditingController();
   TextEditingController priceController = TextEditingController();
-  // nameController.text = RetrivedName;
-  // String tokenvalue = '';
-
-
-
-
   String dropdownvalue = 'Active';
 
 // List of items in our dropdown menu
@@ -108,14 +90,11 @@ class _LoginState extends State<VehicleEdit> {
     'Pending',
   ];
 
-
   void initState() {
     // TODO: implement initState
     super.initState();
     _retrieveValues();
   }
-
-
   File? galleryFile;
   final picker = ImagePicker();
   @override
@@ -126,11 +105,6 @@ class _LoginState extends State<VehicleEdit> {
     print(url);
     final response = await http.put(
       Uri.parse(baseDioSingleton.AbisiniyaBaseurl + 'vehicle/update/$VehicleID'),
-      // NB: you don't need to fill headers field
-      // headers: {
-      //   'Content-Type': 'application/json' // 'application/x-www-form-urlencoded' or whatever you need
-      // },
-
       headers: {
         "Authorization":"Bearer $RetrivedBearertoekn",
     //     "Accept": "application/json",
@@ -153,7 +127,6 @@ class _LoginState extends State<VehicleEdit> {
         'status': dropdownvalue,
       },
     );
-
     print('status code...');
     print(response.statusCode);
     if (response.statusCode == 200) {
@@ -166,8 +139,6 @@ class _LoginState extends State<VehicleEdit> {
       return "Error ${response.statusCode}: ${response.body}";
     }
   }
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -178,10 +149,7 @@ class _LoginState extends State<VehicleEdit> {
           ),
           title: Text('ABISINIYA',textAlign: TextAlign.center,
               style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
-
         ),
-
-
         body: Column(
           children: <Widget>[
             Container(color: Colors.white, height: 50),
@@ -231,7 +199,7 @@ class _LoginState extends State<VehicleEdit> {
                                           )
                                       ),
                                       Text(
-                                        "Create Vehicle",
+                                        "Update Vehicle",
                                         textAlign: TextAlign.center ,
                                         style: TextStyle(
                                             color: Colors.black,fontWeight: FontWeight.bold,fontSize: 26),),
@@ -277,8 +245,6 @@ class _LoginState extends State<VehicleEdit> {
                                             new InputDecoration.collapsed(
                                                 hintText: 'address')),
                                       ),
-
-
                                       SizedBox(height: 10,),
                                       Container(
                                         margin: const EdgeInsets.all(00.0),
@@ -488,12 +454,9 @@ class _LoginState extends State<VehicleEdit> {
                                             new InputDecoration.collapsed(
                                                 hintText: 'Price')),
                                       ),
-
                                       SizedBox(
                                         height: 15,
                                       ),
-
-
                                       Container(
                                         height: 50,
                                         width: 300,
@@ -502,9 +465,7 @@ class _LoginState extends State<VehicleEdit> {
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             DropdownButton(
-
                                               isExpanded: true,
-
                                               // Initial Value
                                               value: dropdownvalue,
 
@@ -527,15 +488,11 @@ class _LoginState extends State<VehicleEdit> {
                                               },
                                             ),
                                           ],
-
                                         ),
-
                                       ),
                                       SizedBox(
                                         height: 10,
                                       ),
-
-
                                       Container(
                                         child:isLoading
                                             ? Center(child: CircularProgressIndicator())
@@ -556,14 +513,7 @@ class _LoginState extends State<VehicleEdit> {
                                             setState(() => isLoading = true);
                                             Update();
                                             SharedPreferences prefs = await SharedPreferences.getInstance();
-                                            // print('booking id...');
-                                            // print(snapshot.data['data'][index]['id']);
-                                            // prefs.setString('addresskey', snapshot.data['data'][index]['address']);
-                                            // prefs.setString('citykey', snapshot.data['data'][index]['city']);
-                                            // prefs.setInt('userbookingId', snapshot.data['data'][index]['id']);
                                             prefs.setString('tokenkey', RetrivedBearertoekn);
-
-
                                             print('token value....');
                                             // print(tokenvalue);
                                             // prefs.setString('tokenkey', tokenvalue);

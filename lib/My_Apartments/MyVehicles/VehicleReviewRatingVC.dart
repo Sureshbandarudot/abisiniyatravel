@@ -5,48 +5,39 @@ import 'package:http/http.dart';
 import 'package:tourstravels/Auth/Login.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
-
+import '../ViewApartmentVC.dart';
 import 'VehicleViewVC.dart';
 
-
-//void main() => runApp(RatingScreen());
-
-class RatingScreen extends StatefulWidget {
+class VehicleRatingScreen extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<RatingScreen> {
+class _MyAppState extends State<VehicleRatingScreen> {
   final baseDioSingleton = BaseSingleton();
   String RetrivedBearertoekn = '';
-  int VehicleId = 0;
+  int VehicleID = 0;
   int Picture_Id = 0;
   late final _ratingController;
   late double _rating;
-
   double _userRating = 3.0;
   int _ratingBarMode = 1;
   double _initialRating = 1.0;
   bool _isRTLMode = false;
   bool _isVertical = false;
-
   IconData? _selectedIcon;
-
   _retrieveValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       // RetrivedEmail = prefs.getString('emailkey') ?? "";
       // RetrivedPwd = prefs.getString('passwordkey') ?? "";
       RetrivedBearertoekn = prefs.getString('tokenkey') ?? "";
-      VehicleId = prefs.getInt('userbookingId') ?? 0;
+      VehicleID = prefs.getInt('userbookingId') ?? 0;
       Picture_Id = prefs.getInt('Picturekey') ?? 0;
-
       print('Retrived Ids....');
-      print(VehicleId);
+      print(VehicleID);
       print(Picture_Id);
-
       print('view Apartment... ');
       print(RetrivedBearertoekn);
     });
@@ -54,12 +45,12 @@ class _MyAppState extends State<RatingScreen> {
   Future<void> _postReviewData() async {
     try {
       String apiUrl = '';
+      //apiUrl = baseDioSingleton.AbisiniyaBaseurl + 'booking/vehicle/booking/newuser';
       // apiUrl = 'https://staging.abisiniya.com/api/v1/rating/add';
       apiUrl = baseDioSingleton.AbisiniyaBaseurl + 'rating/add';
-
       print('vehicle url.....1');
       print(apiUrl);
-      print(VehicleId);
+      print(VehicleID);
       print('call rat...');
       print(_rating.toInt());
       print(RetrivedBearertoekn);
@@ -73,8 +64,8 @@ class _MyAppState extends State<RatingScreen> {
           "Authorization": "Bearer $RetrivedBearertoekn",
         },
         body: jsonEncode(<String, dynamic>{
-          'rating_type': 'App/Models/Apartments',
-          'rating_id': VehicleId,
+          'rating_type': 'App\\Models\\Vehicle',
+          'rating_id': VehicleID,
           'score': _rating.toInt(),
           'comment': _ratingController.text,
           // Add any other data you want to send in the body
@@ -88,15 +79,6 @@ class _MyAppState extends State<RatingScreen> {
         final responseData = jsonDecode(response.body);
         print('Vehicle fresh user data successfully posted');
         print(responseData);
-        // var data = jsonDecode(response.body.toString());
-        // print(data['message']);
-        // RetrivedBearertoekn = data['data']['token'];
-        // print('token generated...');
-        // print(RetrivedBearertoekn);
-        // Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-        //   builder: (_) => ViewVehicle(),
-        // ),);
-
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -154,20 +136,6 @@ class _MyAppState extends State<RatingScreen> {
         builder: (context) => Scaffold(
           appBar: AppBar(
             title: Text('Flutter Rating Bar'),
-            // actions: [
-            //   IconButton(
-            //     icon: Icon(Icons.settings),
-            //     color: Colors.white,
-            //     onPressed: () async {
-            //       _selectedIcon = await showDialog<IconData>(
-            //         context: context,
-            //         builder: (context) => IconAlert(),
-            //       );
-            //       _ratingBarMode = 1;
-            //       setState(() {});
-            //     },
-            //   ),
-            // ],
           ),
           body: Directionality(
             textDirection: _isRTLMode ? TextDirection.rtl : TextDirection.ltr,
@@ -202,14 +170,6 @@ class _MyAppState extends State<RatingScreen> {
                               border: OutlineInputBorder(),
                               hintText: 'Enter Review',
                               labelText: 'Review',
-                              // suffixIcon: MaterialButton(
-                              //   onPressed: () {
-                              //     _userRating =
-                              //         double.parse(_ratingController.text ?? '0.0');
-                              //     setState(() {});
-                              //   },
-                              //   child: Text('Rate'),
-                              // ),
                             ),
                           ),
                         ),
@@ -234,34 +194,9 @@ class _MyAppState extends State<RatingScreen> {
                                 elevation: 2,
                                 backgroundColor: Colors.green),
                           ),
-                         ),
+                        ),
                       ],
                     ),
-                    // child: TextFormField(
-                    //   controller: _ratingController,
-                    //   //keyboardType: TextInputType.number,
-                    //   decoration: InputDecoration(
-                    //     border: OutlineInputBorder(),
-                    //     hintText: 'Enter Review',
-                    //     labelText: 'Review',
-                    //     // suffixIcon: MaterialButton(
-                    //     //   onPressed: () {
-                    //     //     _userRating =
-                    //     //         double.parse(_ratingController.text ?? '0.0');
-                    //     //     setState(() {});
-                    //     //   },
-                    //     //   child: Text('Rate'),
-                    //     // ),
-                    //   ),
-                    // ),
-                    // child:TextButton(
-                    //
-                    //   onPressed: () {},
-                    //   style: TextButton.styleFrom(
-                    //       foregroundColor: Colors.red,
-                    //       elevation: 2,
-                    //       backgroundColor: Colors.amber),
-                    // ),
                   ),
                 ],
 
@@ -273,29 +208,6 @@ class _MyAppState extends State<RatingScreen> {
       ),
     );
   }
-
-  // Widget _radio(int value) {
-  //   return Expanded(
-  //     // child: RadioListTile<int>(
-  //     //   value: value,
-  //     //   groupValue: _ratingBarMode,
-  //     //   dense: true,
-  //     //   title: Text(
-  //     //     'Mode $value',
-  //     //     style: TextStyle(
-  //     //       fontWeight: FontWeight.w300,
-  //     //       fontSize: 12.0,
-  //     //     ),
-  //     //   ),
-  //     //   onChanged: (value) {
-  //     //     setState(() {
-  //     //       _ratingBarMode = value!;
-  //     //     });
-  //     //   },
-  //     // ),
-  //   );
-  // }
-
   Widget _ratingBar(int mode) {
     switch (mode) {
       case 1:

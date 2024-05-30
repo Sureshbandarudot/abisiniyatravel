@@ -13,9 +13,13 @@ import 'package:tourstravels/UserDashboard_Screens/PivoteVC.dart';
 import 'package:tourstravels/tabbar.dart';
 import 'package:tourstravels/My_Apartments/My_AprtmetsVC.dart';
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
+import '../Airportshuttlescreens/AirportshuttleVC.dart';
 import '../Auth/profileUpdateVC.dart';
 import '../MyBookings/MybookingVC.dart';
 import '../My_Apartments/MyVehicles/MyvehicleVC.dart';
+import '../Seat Booking/Bus Routes/BusRouteVC.dart';
+import '../Seat Booking/LocationStops/BuslocationsVC.dart';
+import '../Seat Booking/MybusesVC.dart';
 import '../ServiceDasboardVC.dart';
 import '../flyScreens/MyflightRequest.dart';
 import 'Vehicle_PivoteVC.dart';
@@ -77,6 +81,8 @@ class _userDashboardState extends State<newuserDashboard> {
       print('retrived profile...');
       print(Retrivedprofilestr);
       prefs.setString('Property_type', ('Apartment'));
+      prefs.setString('logoutkey', ('LogoutDashboard'));
+
     });
   }
 //@override
@@ -85,6 +91,7 @@ class _userDashboardState extends State<newuserDashboard> {
     super.initState();
     getData();
     VehiclegetData();
+    BusgetData();
 
     Profile();
     _retrieveValues();
@@ -205,6 +212,34 @@ class _userDashboardState extends State<newuserDashboard> {
       throw Exception('Failed to load post');
     }
   }
+
+  Future<dynamic> BusgetData() async {
+    // String url = 'https://staging.abisiniya.com/api/v1/booking/vehicle/withbooking';
+    String url = baseDioSingleton.AbisiniyaBaseurl + 'bus/auth/list';
+
+    var response = await http.get(
+      Uri.parse(
+          url),
+      headers: {
+        "Authorization": "Bearer $RetrivedBearertoekn",
+      },
+    );
+    if (response.statusCode == 200) {
+      print('Bus booking.......');
+      final data1 = jsonDecode(response.body);
+      var getpicsData = [];
+      var picstrr = data1['data'];
+      // for (var record in picstrr) {
+      //   idnum = record['id'];
+      // }
+      return json.decode(response.body);
+    } else {
+      // If that call was not successful, throw an error.
+      throw Exception('Failed to load post');
+    }
+  }
+
+
   //Alert Dialog box
   DeclinedshowAlertDialog(BuildContext context) {
     // set up the buttons
@@ -426,6 +461,7 @@ class _userDashboardState extends State<newuserDashboard> {
                       ],
                     ),
                   ),
+
                     ListTile(
                     trailing: Icon(
                       Icons.login,
@@ -495,6 +531,9 @@ class _userDashboardState extends State<newuserDashboard> {
                       prefs.setString('logoutkey', ('LogoutDashboard'));
                       prefs.setString('Property_type', ('Apartment'));
                       prefs.setString('tokenkey',RetrivedBearertoekn );
+
+                      prefs.setString('Profilenamekey', profileNamestr);
+                      prefs.setString('Profileemailkey', profileEmailstr);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -510,39 +549,189 @@ class _userDashboardState extends State<newuserDashboard> {
                     title: const Text('My Vehicles',
                         style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
                     //title: const Text('Airport Shuttle',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w400,fontSize: 18)),
-                    onTap: () {
+                    onTap: () async{
                       //Navigator.pop(context);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => MyVehicleScreen()),
                       );
-                    },
-                  ),
-                  ListTile(
-                    trailing: Icon(
-                      Icons.bus_alert_sharp,
-                      color: Colors.green,
-                    ),
-                    //title: const Text('List Property and Car',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w400,fontSize: 18)),
-                    title: const Text('My Buses',
-                        style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
+                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                      prefs.setString('Profilenamekey', profileNamestr);
+                      prefs.setString('Profileemailkey', profileEmailstr);
 
-                    onTap: () {
-                      Navigator.pop(context);
+
                     },
                   ),
+                  ExpansionTile(
+                    //title: Text("Buses"),
+                    collapsedIconColor: Colors.green,
+                    // sets the color of the arrow when expanded
+                    iconColor: Colors.green,
+                    title: const Text('Buses',
+                        style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
+                    //leading: Icon(Icons.person),
+                    // leading: Icon(
+                    //   Icons.bus_alert_sharp,
+                    //   color: Colors.green,
+                    // ),//add icon
+                    childrenPadding: EdgeInsets.only(left:30), //children padding
+                    children: [
+                      ListTile(
+                        trailing: Icon(
+                          Icons.bus_alert_sharp,
+                          color: Colors.green,
+                        ),
+                        //title: const Text('List Property and Car',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w400,fontSize: 18)),
+                        title: const Text('My Buses',
+                            style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
+
+                        onTap: () async {
+                          //Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MyBusesScreen()),
+                          );
+                          SharedPreferences prefs = await SharedPreferences.getInstance();
+                          prefs.setString('Profilenamekey', profileNamestr);
+                          prefs.setString('Profileemailkey', profileEmailstr);
+
+                        },
+                      ),
+                      ListTile(
+                        // trailing: Icon(
+                        //   Icons.bus_alert_sharp,
+                        //   color: Colors.green,
+                        // ),
+                        //title: const Text('List Property and Car',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w400,fontSize: 18)),
+                        title: const Text('Bus Stops/Locations',
+                            style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
+
+                        onTap: () async {
+                          //Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MybusLocationStopscreen()),
+                          );
+                          SharedPreferences prefs = await SharedPreferences.getInstance();
+                          prefs.setString('Profilenamekey', profileNamestr);
+                          prefs.setString('Profileemailkey', profileEmailstr);
+
+                        },
+                      ),
+                      ListTile(
+                        // trailing: Icon(
+                        //   Icons.bus_alert_sharp,
+                        //   color: Colors.green,
+                        // ),
+                        //title: const Text('List Property and Car',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w400,fontSize: 18)),
+                        title: const Text('Bus Routes',
+                            style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
+                        onTap: () async {
+                          //Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MyBusRoutescreen()),
+                          );
+                          SharedPreferences prefs = await SharedPreferences.getInstance();
+                          prefs.setString('Profilenamekey', profileNamestr);
+                          prefs.setString('Profileemailkey', profileEmailstr);
+
+                        },
+                      ),
+                      ListTile(
+                        // trailing: Icon(
+                        //   Icons.bus_alert_sharp,
+                        //   color: Colors.green,
+                        // ),
+                        //title: const Text('List Property and Car',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w400,fontSize: 18)),
+                        title: const Text('Rides',
+                            style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
+
+                        onTap: () async {
+                          //Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MyBusesScreen()),
+                          );
+                          SharedPreferences prefs = await SharedPreferences.getInstance();
+                          prefs.setString('Profilenamekey', profileNamestr);
+                          prefs.setString('Profileemailkey', profileEmailstr);
+
+                        },
+                      ),
+                      ListTile(
+                        // trailing: Icon(
+                        //   Icons.bus_alert_sharp,
+                        //   color: Colors.green,
+                        // ),
+                        //title: const Text('List Property and Car',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w400,fontSize: 18)),
+                        title: const Text('Booking',
+                            style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
+
+                        onTap: () async {
+                          //Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MyBusesScreen()),
+                          );
+                          SharedPreferences prefs = await SharedPreferences.getInstance();
+                          prefs.setString('Profilenamekey', profileNamestr);
+                          prefs.setString('Profileemailkey', profileEmailstr);
+
+                        },
+                      ),
+                    ],
+                  ),
+                  // ListTile(
+                  //   trailing: Icon(
+                  //     Icons.bus_alert_sharp,
+                  //     color: Colors.green,
+                  //   ),
+                  //   //title: const Text('List Property and Car',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w400,fontSize: 18)),
+                  //   title: const Text('My Buses',
+                  //       style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
+                  //
+                  //   onTap: () async {
+                  //     //Navigator.pop(context);
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //           builder: (context) => MyBusesScreen()),
+                  //     );
+                  //     SharedPreferences prefs = await SharedPreferences.getInstance();
+                  //     prefs.setString('Profilenamekey', profileNamestr);
+                  //     prefs.setString('Profileemailkey', profileEmailstr);
+                  //
+                  //   },
+                  // ),
+
+
+
                   ListTile(
                     trailing: Icon(
                       Icons.airport_shuttle,
                       color: Colors.green,
                     ),
                     //title: const Text('Contact Us',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w400,fontSize: 18)),
-                    title: const Text('My Shuttle',
+                    title: const Text('Airport Shuttle',
                         style: TextStyle(color:Colors.green,fontFamily: 'Baloo', fontWeight: FontWeight.w500,fontSize: 18)),
 
-                    onTap: () {
-                      Navigator.pop(context);
+                    onTap: () async {
+                      //Navigator.pop(context);
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                      builder: (context) => MyAirportshuttleScreen()),
+              );
+                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                      prefs.setString('Profilenamekey', profileNamestr);
+                      prefs.setString('Profileemailkey', profileEmailstr);
                     },
                   ),
                   ListTile(
@@ -1723,7 +1912,562 @@ class _userDashboardState extends State<newuserDashboard> {
     }
                 )
             ],
-            )
+            ),
+
+
+              Column(
+                children:<Widget>[
+                  FutureBuilder<dynamic>(
+                      future: BusgetData(),
+                      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                        switch (snapshot.connectionState) {
+                          case ConnectionState.none:
+                            return Text('');
+                          case ConnectionState.waiting:
+                            // return Center(child: CircularProgressIndicator());
+                            return Center();
+
+                          case ConnectionState.active:
+                            print('imagename......');
+                            return Text('');
+                          case ConnectionState.done:
+                            if (snapshot.hasError) {
+                              return Text(
+                                '${snapshot.error}',
+                                style: TextStyle(color: Colors.white),
+                              );
+                            } else {
+                              //return SingleChildScrollView(
+                              //scrollDirection: Axis.horizontal,
+                              //physics: ScrollPhysics(),
+
+                              return Column(
+                                children: [
+                                  SizedBox(height: 30,),
+                                  Text('Your Buses',style: TextStyle(fontSize: 22,fontWeight:FontWeight.w600),),
+
+                                  Container(
+                                    // color: Colors.blueGrey,
+                                    // child:Text(snapshot.data?['data'].isEmpty ? 'Vehicles not available' : ''),
+                                    child:Text(snapshot.data?['data'].isEmpty ? 'Buses not available' : '',style: TextStyle(fontSize: 22,fontWeight: FontWeight.w600,color: Colors.red),),
+
+                                    // : snapshot.data?["data"]?.toString() ?? 'empty',style: (TextStyle(fontWeight: FontWeight.w300,fontSize: 18,color: Colors.black)))
+                                  ),
+                                  ListView.separated(
+                                      physics: NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      //itemCount:50,
+                                      itemCount: snapshot.data['data'].length ?? '',
+                                      //itemCount: snapshot.data?['data']['bookings'].length ?? "" ,
+                                      //itemCount: snapshot.data!['data'][0]['bookings'][0].length ?? 0,
+                                      //itemCount: snapshot.data?.length ?? 0,
+                                      separatorBuilder: (BuildContext context, int index) => const Divider(),
+                                      itemBuilder: (BuildContext context, int index) {
+                                       // bookingID = snapshot.data['data'][index]['id'];
+//    itemBuilder: (context,index){
+
+                                        return Container(
+                                          height: 320,
+                                          width: 100,
+                                          alignment: Alignment.center,
+                                          color: Colors.white,
+                                          child: InkWell(
+                                            child: Column(
+                                              children: [
+                                                Container(
+                                                  height: 120,
+                                                  width: 340,
+                                                  color: Colors.black12,
+                                                  child: Column(
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Container(
+                                                            height: 30,
+                                                            width: 140,
+                                                            color: Colors.black12,
+                                                            child: Text('Make:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                          ),
+                                                          Container(
+                                                            height: 30,
+                                                            width: 200,
+                                                            color: Colors.black12,
+                                                            //child:Text(snapshot.data['data'][index]['name'],textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w500,fontSize: 18,color: Colors.green)),),
+
+                                                            child:Text(snapshot.data?['data'].isEmpty ? 'Empty name'
+                                                                : snapshot.data?["data"][index]?['make']?.toString() ?? 'empty',style: (TextStyle(fontWeight: FontWeight.w300,fontSize: 18,color: Colors.black))),
+                                                          )
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          Container(
+                                                            height: 30,
+                                                            width: 140,
+                                                            color: Colors.black12,
+                                                            child: Text('Model:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                          ),
+                                                          Container(
+                                                            height: 30,
+                                                            width: 200,
+                                                            color: Colors.black12,
+                                                            //child: Text('suresh',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                            child:Text(snapshot.data['data'][index]['model'],textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w300,fontSize: 18,color: Colors.black)),),
+                                                          )
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          Container(
+                                                            height: 30,
+                                                            width: 140,
+                                                            color: Colors.black12,
+                                                            child: Text('Address:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                          ),
+                                                          Container(
+                                                            height: 30,
+                                                            width: 200,
+                                                            color: Colors.black12,
+                                                            child:Text(snapshot.data['data'][index]['address'],textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w300,fontSize: 18,color: Colors.black)),),
+                                                            // child: Text('suresh',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                          )
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          Container(
+                                                            height: 30,
+                                                            width: 140,
+                                                            color: Colors.black12,
+                                                            child: Text('City:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                          ),
+                                                          Container(
+                                                            height: 30,
+                                                            width: 200,
+                                                            color: Colors.black12,
+                                                            //child:Text(snapshot.data['data'][index]['name'],textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w500,fontSize: 18,color: Colors.green)),),
+
+                                                            child:Text(snapshot.data?['data'].isEmpty ? 'Empty name'
+                                                                : snapshot.data?["data"][index]?['city']?.toString() ?? 'empty',style: (TextStyle(fontWeight: FontWeight.w300,fontSize: 18,color: Colors.black))),
+                                                          )
+                                                        ],
+                                                      ),
+
+                                                    ],
+                                                  ),
+                                                ),
+                                                // Container(
+                                                //   height: 150,
+                                                //   width: 340,
+                                                //   color: Colors.white10,
+                                                //   child: Column(
+                                                //     // crossAxisAlignment: CrossAxisAlignment.start,
+                                                //     // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                //     children: [
+                                                //       Row(
+                                                //         children: [
+                                                //           Container(
+                                                //             height: 35,
+                                                //             width: 140,
+                                                //             color: Colors.white10,
+                                                //             child: Text('check-in:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                //           ),
+                                                //           Container(
+                                                //             height: 35,
+                                                //             width: 200,
+                                                //             color: Colors.white,
+                                                //             child:Text(snapshot.data?['data'][index]['bookings'].isEmpty ? Bookingsts
+                                                //                 : snapshot.data?["data"][index]?['bookings']?[0]['pivot']['start_date'].toString() ?? 'empty'),
+                                                //             // child: Text((snapshot.data["data"][index]['bookings'][0]['start_date'].toString() ?? 'empty'),style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                //           )
+                                                //         ],
+                                                //       ),
+                                                //       Row(
+                                                //         children: [
+                                                //           Container(
+                                                //             height: 35,
+                                                //             width: 140,
+                                                //             color: Colors.white,
+                                                //             child: Text('check-out:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                //           ),
+                                                //           Container(
+                                                //             height: 35,
+                                                //             width: 200,
+                                                //             color: Colors.white,
+                                                //             child:Text(snapshot.data?['data'][index]['bookings'].isEmpty ? Bookingsts
+                                                //                 : snapshot.data?["data"][index]?['bookings']?[0]['pivot']['end_date'].toString() ?? 'empty'),
+                                                //             //child: Text('check-out date:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                //           )
+                                                //         ],
+                                                //       ),
+                                                //       Row(
+                                                //         children: [
+                                                //           Container(
+                                                //             height: 35,
+                                                //             width: 140,
+                                                //             color: Colors.white,
+                                                //             child: Text('Status:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                //           ),
+                                                //           Container(
+                                                //             height: 35,
+                                                //             width: 200,
+                                                //             color: Colors.white,
+                                                //             child:Text(snapshot.data?['data'][index]['bookings'].isEmpty ? Bookingsts
+                                                //                 : snapshot.data?["data"][index]?['bookings']?[0]['pivot']['status'].toString() ?? 'empty'),
+                                                //             //child: Text('check-out date:',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                                                //           )
+                                                //         ],
+                                                //       ),
+                                                //
+                                                //       Row(
+                                                //         children: [
+                                                //           InkWell(
+                                                //             // onTap: doSomething,
+                                                //             onTap: () { print("Container was tapped2...."); },
+                                                //             child: SizedBox(
+                                                //               height: 35,
+                                                //               width: 100,
+                                                //               child: Container(
+                                                //                 decoration: BoxDecoration(
+                                                //                     border: Border.all(color: Colors.white)),
+                                                //                 child: Text(
+                                                //                   'Action',
+                                                //                   textAlign: TextAlign.left,
+                                                //                   style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.black),
+                                                //                 ),
+                                                //               ),
+                                                //             ),
+                                                //           ),
+                                                //           InkWell(
+                                                //             // onTap: doSomething,
+                                                //             onTap: () async {
+                                                //               //  UpdatedstatusshowAlertDialog(context);
+                                                //               if ((snapshot.data?['data'][index]['bookings'].isEmpty ? Bookingsts
+                                                //                   : snapshot.data?["data"][index]['bookings'][0]['pivot']['status'].toString() ?? 'empty') == 'Awaiting Approval'){
+                                                //                 // stsbaseurl = 'https://staging.abisiniya.com/api/v1/booking/apartment/';
+                                                //                 stsbaseurl = baseDioSingleton.AbisiniyaBaseurl + 'booking/apartment/';
+                                                //
+                                                //                 // stsId = snapshot.data['data'][index]['id'].toString();
+                                                //                 stsId = (snapshot.data?['data'][index]['bookings'].isEmpty ? Bookingsts
+                                                //                     : snapshot.data?["data"][index]['bookings'][0]['pivot']['booking_id'].toString() ?? 'empty');
+                                                //                 String ApproveStr = '/Approved';
+                                                //                 String Apprvoedurl = '$stsbaseurl$stsId$ApproveStr';
+                                                //                 var response = await http.get(
+                                                //                   Uri.parse(
+                                                //                       Apprvoedurl),
+                                                //                   headers: {
+                                                //                     // 'Authorization':
+                                                //                     // 'Bearer <--your-token-here-->',
+                                                //                     "Authorization": "Bearer $RetrivedBearertoekn",
+                                                //                   },
+                                                //                 );
+                                                //                 if (response.statusCode == 200) {
+                                                //                   final data1 = jsonDecode(response.body);
+                                                //                   var getpicsData = [];
+                                                //                   var picstrr = data1['data'];
+                                                //                   print('successfully Approved....');
+                                                //                   final snackBar = SnackBar(
+                                                //                     content: Text('Successfully Approved'),
+                                                //                   );
+                                                //                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                                //                   return json.decode(response.body);
+                                                //                 } else {
+                                                //                   // If that call was not successful, throw an error.
+                                                //                   throw Exception('Failed to load post');
+                                                //                 }
+                                                //               }  else if ((snapshot.data?['data'][index]['bookings'].isEmpty ? Bookingsts
+                                                //                   : snapshot.data?["data"][index]['bookings'][0]['pivot']['status'].toString() ?? 'empty') == 'Approved'){
+                                                //
+                                                //                 // stsbaseurl = 'https://staging.abisiniya.com/api/v1/booking/apartment/';
+                                                //                 stsbaseurl = baseDioSingleton.AbisiniyaBaseurl + 'booking/apartment/';
+                                                //
+                                                //                 // stsId = snapshot.data['data'][index]['id'].toString();
+                                                //                 stsId = (snapshot.data?['data'][index]['bookings'].isEmpty ? Bookingsts
+                                                //                     : snapshot.data?["data"][index]['bookings'][0]['pivot']['booking_id'].toString() ?? 'empty');
+                                                //                 String ApproveStr = '/Checked In';
+                                                //                 String Apprvoedurl = '$stsbaseurl$stsId$ApproveStr';
+                                                //                 var response = await http.get(
+                                                //                   Uri.parse(
+                                                //                       Apprvoedurl),
+                                                //                   headers: {
+                                                //                     "Authorization": "Bearer $RetrivedBearertoekn",
+                                                //                   },
+                                                //                 );
+                                                //                 if (response.statusCode == 200) {
+                                                //                   final data1 = jsonDecode(response.body);
+                                                //                   var getpicsData = [];
+                                                //                   var picstrr = data1['data'];
+                                                //                   print('successfully checked In....');
+                                                //                   final snackBar = SnackBar(
+                                                //                     content: Text('Successfully Checked In'),
+                                                //                   );
+                                                //                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                                //                   return json.decode(response.body);
+                                                //                 } else {
+                                                //                   // If that call was not successful, throw an error.
+                                                //                   throw Exception('Failed to load post');
+                                                //                 }
+                                                //
+                                                //               } else if ((snapshot.data?['data'][index]['bookings'].isEmpty ? Bookingsts
+                                                //                   : snapshot.data?["data"][index]['bookings'][0]['pivot']['status'].toString() ?? 'empty') == 'Checked In'){
+                                                //                 // stsbaseurl = 'https://staging.abisiniya.com/api/v1/booking/apartment/';
+                                                //                 stsbaseurl = baseDioSingleton.AbisiniyaBaseurl + 'booking/apartment/';
+                                                //
+                                                //                 // stsId = snapshot.data['data'][index]['id'].toString();
+                                                //                 stsId = (snapshot.data?['data'][index]['bookings'].isEmpty ? Bookingsts
+                                                //                     : snapshot.data?["data"][index]['bookings'][0]['pivot']['booking_id'].toString() ?? 'empty');
+                                                //                 String ApproveStr = '/Checked Out';
+                                                //                 String Apprvoedurl = '$stsbaseurl$stsId$ApproveStr';
+                                                //                 var response = await http.get(
+                                                //                   Uri.parse(
+                                                //                       Apprvoedurl),
+                                                //                   headers: {
+                                                //                     // 'Authorization':
+                                                //                     // 'Bearer <--your-token-here-->',
+                                                //                     "Authorization": "Bearer $RetrivedBearertoekn",
+                                                //                   },
+                                                //                 );
+                                                //                 if (response.statusCode == 200) {
+                                                //                   final data1 = jsonDecode(response.body);
+                                                //                   var getpicsData = [];
+                                                //                   var picstrr = data1['data'];
+                                                //                   print('successfully checked out....');
+                                                //                   final snackBar = SnackBar(
+                                                //                     content: Text('Successfully Checked Out'),
+                                                //                   );
+                                                //                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                                //                   return json.decode(response.body);
+                                                //                 } else {
+                                                //                   // If that call was not successful, throw an error.
+                                                //                   throw Exception('Failed to load post');
+                                                //                 }
+                                                //
+                                                //               } else if ((snapshot.data?['data'][index]['bookings'].isEmpty ? Bookingsts
+                                                //                   : snapshot.data?["data"][index]['bookings'][0]['pivot']['status'].toString() ?? 'empty') == 'Checked Out'){
+                                                //               }
+                                                //               print("Approve Container was tapped....."); },
+                                                //             child: SizedBox(
+                                                //               height: 35,
+                                                //               width: 100,
+                                                //               child: Container(
+                                                //                   decoration: BoxDecoration(
+                                                //                       border: Border.all(color: Colors.white)),
+                                                //                   child: Column(children:[  if (((snapshot.data?['data'][index]['bookings'].isEmpty ? Bookingsts
+                                                //                       : snapshot.data?["data"][index]['bookings'][0]['pivot']['status'].toString() ?? 'empty') == 'Awaiting Approval'))
+                                                //                     Text(
+                                                //                       'Approve',
+                                                //                       textAlign: TextAlign.right,
+                                                //                       style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.green),
+                                                //                     ),
+                                                //                     if (((snapshot.data?['data'][index]['bookings'].isEmpty ? Bookingsts
+                                                //                         : snapshot.data?["data"][index]['bookings'][0]['pivot']['status'].toString() ?? 'empty') == 'Approved'))
+                                                //                       Text(
+                                                //                         'Check In',
+                                                //                         textAlign: TextAlign.right,
+                                                //                         style: TextStyle(fontSize: 18,fontWeight: FontWeight.w500,color: Colors.green),
+                                                //                       ),
+                                                //                     if (((snapshot.data?['data'][index]['bookings'].isEmpty ? Bookingsts
+                                                //                         : snapshot.data?["data"][index]['bookings'][0]['pivot']['status'].toString() ?? 'empty') == 'Checked In'))
+                                                //                       Text(
+                                                //                         'Check Out',
+                                                //                         textAlign: TextAlign.right,
+                                                //                         style: TextStyle(fontSize: 18,fontWeight: FontWeight.w500,color: Colors.green),
+                                                //                       ),
+                                                //                   ])
+                                                //               ),
+                                                //             ),
+                                                //           ),
+                                                //
+                                                //           InkWell(
+                                                //             // onTap: doSomething,
+                                                //             onTap: () async {
+                                                //               print('clicked on declined btn...');
+                                                //               // DeclinedshowAlertDialog(context);
+                                                //               if ((snapshot.data?['data'][index]['bookings'].isEmpty ? Bookingsts
+                                                //                   : snapshot.data?["data"][index]['bookings'][0]['pivot']['status'].toString() ?? 'empty') == 'Awaiting Approval'){
+                                                //                 // stsbaseurl = 'https://staging.abisiniya.com/api/v1/booking/apartment/';
+                                                //                 stsbaseurl = baseDioSingleton.AbisiniyaBaseurl + 'booking/apartment/';
+                                                //
+                                                //                 // stsId = snapshot.data['data'][index]['id'].toString();
+                                                //                 stsId = (snapshot.data?['data'][index]['bookings'].isEmpty ? Bookingsts
+                                                //                     : snapshot.data?["data"][index]['bookings'][0]['pivot']['booking_id'].toString() ?? 'empty');
+                                                //                 String ApproveStr = '/Declined';
+                                                //                 String Apprvoedurl = '$stsbaseurl$stsId$ApproveStr';
+                                                //                 var response = await http.get(
+                                                //                   Uri.parse(
+                                                //                       Apprvoedurl),
+                                                //                   headers: {
+                                                //                     // 'Authorization':
+                                                //                     // 'Bearer <--your-token-here-->',
+                                                //                     "Authorization": "Bearer $RetrivedBearertoekn",
+                                                //                   },
+                                                //                 );
+                                                //                 if (response.statusCode == 200) {
+                                                //                   final data1 = jsonDecode(response.body);
+                                                //                   var getpicsData = [];
+                                                //                   var picstrr = data1['data'];
+                                                //                   await showDialog(
+                                                //                     context: context,
+                                                //                     builder: (context) => new AlertDialog(
+                                                //                       title: new Text('Message'),
+                                                //                       content: Text(
+                                                //                           'Successfully Declined'),
+                                                //                       actions: <Widget>[
+                                                //                         new TextButton(
+                                                //                           onPressed: () {
+                                                //                             Navigator.of(context, rootNavigator: true)
+                                                //                                 .pop(); // dismisses only the dialog and returns nothing
+                                                //                           },
+                                                //                           child: new Text('OK'),
+                                                //                         ),
+                                                //                       ],
+                                                //                     ),
+                                                //                   );
+                                                //                   return json.decode(response.body);
+                                                //                 } else {
+                                                //                   // If that call was not successful, throw an error.
+                                                //                   throw Exception('Failed to load post');
+                                                //                 }
+                                                //               } else if ((snapshot.data?['data'][index]['bookings'].isEmpty ? Bookingsts
+                                                //                   : snapshot.data?["data"][index]['bookings'][0]['pivot']['status'].toString() ?? 'empty') == 'Approved'){
+                                                //                 // stsbaseurl = 'https://staging.abisiniya.com/api/v1/booking/apartment/';
+                                                //                 stsbaseurl = baseDioSingleton.AbisiniyaBaseurl + 'booking/apartment/';
+                                                //
+                                                //                 // stsId = snapshot.data['data'][index]['id'].toString();
+                                                //                 stsId = (snapshot.data?['data'][index]['bookings'].isEmpty ? Bookingsts
+                                                //                     : snapshot.data?["data"][index]['bookings'][0]['pivot']['booking_id'].toString() ?? 'empty');
+                                                //                 String ApproveStr = '/Declined';
+                                                //                 String Apprvoedurl = '$stsbaseurl$stsId$ApproveStr';
+                                                //                 var response = await http.get(
+                                                //                   Uri.parse(
+                                                //                       Apprvoedurl),
+                                                //                   headers: {
+                                                //                     // 'Authorization':
+                                                //                     // 'Bearer <--your-token-here-->',
+                                                //                     "Authorization": "Bearer $RetrivedBearertoekn",
+                                                //                   },
+                                                //                 );
+                                                //                 if (response.statusCode == 200) {
+                                                //                   final data1 = jsonDecode(response.body);
+                                                //                   var getpicsData = [];
+                                                //                   var picstrr = data1['data'];
+                                                //                   print('successfully Declined....');
+                                                //                   await showDialog(
+                                                //                     context: context,
+                                                //                     builder: (context) => new AlertDialog(
+                                                //                       title: new Text('Message'),
+                                                //                       content: Text(
+                                                //                           'Successfully Declined'),
+                                                //                       actions: <Widget>[
+                                                //                         new TextButton(
+                                                //                           onPressed: () {
+                                                //                             Navigator.of(context, rootNavigator: true)
+                                                //                                 .pop(); // dismisses only the dialog and returns nothing
+                                                //                           },
+                                                //                           child: new Text('OK'),
+                                                //                         ),
+                                                //                       ],
+                                                //                     ),
+                                                //                   );
+                                                //                   return json.decode(response.body);
+                                                //                 } else {
+                                                //                   // If that call was not successful, throw an error.
+                                                //                   throw Exception('Failed to load post');
+                                                //                 }
+                                                //               }
+                                                //
+                                                //               print("Approve Container was tapped....."); },
+                                                //             child: SizedBox(
+                                                //               height: 35,
+                                                //               width: 100,
+                                                //               child: Container(
+                                                //                   decoration: BoxDecoration(
+                                                //                       border: Border.all(color: Colors.white)),
+                                                //
+                                                //                   child: Column(children:[  if (((snapshot.data?['data'][index]['bookings'].isEmpty ? Bookingsts
+                                                //                       : snapshot.data?["data"][index]['bookings'][0]['pivot']['status'].toString() ?? 'empty') == 'Awaiting Approval'))
+                                                //                     Text(
+                                                //                       'Decline',
+                                                //                       textAlign: TextAlign.right,
+                                                //                       style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.red),
+                                                //                     ),
+                                                //                     if (((snapshot.data?['data'][index]['bookings'].isEmpty ? Bookingsts
+                                                //                         : snapshot.data?["data"][index]['bookings'][0]['pivot']['status'].toString() ?? 'empty') == 'Approved'))
+                                                //                       Text(
+                                                //                         'Unbook',
+                                                //                         textAlign: TextAlign.right,
+                                                //                         style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.red),
+                                                //                       ),
+                                                //
+                                                //                   ])
+                                                //
+                                                //
+                                                //               ),
+                                                //             ),
+                                                //           )
+                                                //         ],
+                                                //       ),
+                                                //     ],
+                                                //   ),
+                                                // ),
+                                                Container(
+                                                  height: 50,
+                                                  width: 340,
+                                                  color: Colors.green,
+                                                  child: const Align(
+                                                    alignment: Alignment.center,
+                                                    child: Text('View More',
+                                                        style: TextStyle(color: Colors.white, fontSize: 20,fontWeight: FontWeight.w800
+                                                        ),
+                                                        textAlign: TextAlign.center),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            onTap: () async{
+
+                                              if ((snapshot.data?['data'][index]['bookings'].isEmpty ? Bookingsts
+                                                  : snapshot.data?["data"][index]['bookings'][0]['pivot']['status'].toString() ?? 'empty') == 'Awaiting Approval' || (snapshot.data?['data'][index]['bookings'].isEmpty ? Bookingsts
+                                                  : snapshot.data?["data"][index]['bookings'][0]['pivot']['status'].toString() ?? 'empty') == 'Approved' || (snapshot.data?['data'][index]['bookings'].isEmpty ? Bookingsts
+                                                  : snapshot.data?["data"][index]['bookings'][0]['pivot']['status'].toString() ?? 'empty') == 'Checked In' || (snapshot.data?['data'][index]['bookings'].isEmpty ? Bookingsts
+                                                  : snapshot.data?["data"][index]['bookings'][0]['pivot']['status'].toString() ?? 'empty') == 'Checked Out'){
+                                                SharedPreferences prefs = await SharedPreferences.getInstance();
+                                                print('booking id...');
+                                                print(snapshot.data['data'][index]['id']);
+                                                prefs.setString('makekey', snapshot.data['data'][index]['make']);
+                                                prefs.setString('modelkey', snapshot.data['data'][index]['model']);
+                                                prefs.setString('addresskey', snapshot.data['data'][index]['address']);
+                                                prefs.setString('citykey', snapshot.data['data'][index]['city']);
+                                                prefs.setInt('userbookingId', snapshot.data['data'][index]['id']);
+                                                prefs.setString('tokenkey', RetrivedBearertoekn);
+                                                Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+                                                  builder: (_) => Vehicle_PivoteDashboard(),
+                                                ),);
+
+                                              } else {
+                                                print('failure....');
+                                                final snackBar = SnackBar(
+                                                  content: Text('Not booked yet!'),
+                                                );
+                                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                              }
+                                            },
+                                          ),
+                                        );
+                                        //return  Text('Some text');
+                                      })
+                                ],
+                              );
+                            }
+                        }
+                      }
+                  )
+                ],
+              )
+
+
+
+
             ],
 
             ),

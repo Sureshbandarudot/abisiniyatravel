@@ -11,28 +11,22 @@ import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tourstravels/UserDashboard_Screens/newDashboard.dart';
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
-
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 import 'MybookingVC.dart';
 class AddReplyscreen extends StatefulWidget {
-
   @override
   _LoginState createState() => _LoginState();
 }
 
 class _LoginState extends State<AddReplyscreen> {
-
   final baseDioSingleton = BaseSingleton();
   String RetrivedBearertoekn = '';
   int bookingID = 0;
 
   TextEditingController ReplyController = TextEditingController();
-
-
-
   _retrieveValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -52,15 +46,10 @@ class _LoginState extends State<AddReplyscreen> {
     super.initState();
     _retrieveValues();
   }
-
-
   File? galleryFile;
   final picker = ImagePicker();
-
   Future addProduct() async{
-    print('entered.....');
-    var token = '353|9NBSCUPjPAK54iUIwJgZBdapulScrjumr10pwqeM';
-    var header = {
+       var header = {
       "Authorization":"Bearer $RetrivedBearertoekn"
     };
     final request = await http.MultipartRequest(
@@ -83,17 +72,6 @@ class _LoginState extends State<AddReplyscreen> {
       print('success Add reply');
       var responseData = await response.stream.toBytes();
       var responseToString = String.fromCharCodes(responseData);
-      // final List parsedList = json.decode(responseToString);
-      // final snackBar = SnackBar(
-      //   content: Text('Apartment created successfully'),
-      // );
-      // // ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //       builder: (context) => MyApartmentScreen()
-      //   ),
-      // );
       Navigator.push(
         context,
         MaterialPageRoute(

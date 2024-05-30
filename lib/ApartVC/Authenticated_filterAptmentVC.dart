@@ -8,7 +8,6 @@ import 'dart:convert';
 import 'package:tourstravels/ApartVC/Addaprtment.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
-
 import '../ServiceDasboardVC.dart';
 import 'Authenticated_Userbookingscreen.dart';
 import 'FilterApartmentVC.dart';
@@ -35,8 +34,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   TextEditingController searchController = TextEditingController();
   String RetrivedCitylocation = '';
-
-
   final baseDioSingleton = BaseSingleton();
   final borderRadius = BorderRadius.circular(20); // Image border
   int _counter = 0;
@@ -47,7 +44,6 @@ class _MyHomePageState extends State<MyHomePage> {
   String RetrivedEmail = '';
   String Logoutstr = '';
   String RetrivedBearertoekn = '';
-
   _retrieveValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -75,27 +71,16 @@ class _MyHomePageState extends State<MyHomePage> {
             'type' : 'apartment',
             'keyword' : RetrivedCitylocation
           }
-
       );
       //isLoading = true;
       if(response.statusCode == 200){
         //isLoading = false;
         print('success search api response');
-        // var data = jsonDecode(response.body.toString());
-        // var data1 = jsonDecode(response.body.toString());
-        // print(data1['data']);
+
         print('success.....');
         final data = jsonDecode(response.body);
         print(data);
         return json.decode(response.body);
-        // print(data1['data']['token']);
-        // tokenvalue = (data1['data']['token']);
-        // String namestr = (data1['data']['name']);
-        // print('token value....');
-        // print(tokenvalue);
-        // SharedPreferences prefs = await SharedPreferences.getInstance();
-        // prefs.setString('tokenkey', tokenvalue);
-
       }else {
         print('failed');
         //final snackBar = SnackBar(
@@ -160,10 +145,7 @@ class _MyHomePageState extends State<MyHomePage> {
     //String url = (baseDioSingleton.AbisiniyaBaseurl + 'apartment/show/$RetrivedId');
     print('token value for authenticated user....');
     print(RetrivedBearertoekn);
-
     String url = baseDioSingleton.AbisiniyaBaseurl + 'apartment/list';
-    //final response = await http.get(Uri.parse(url));
-
     var response = await http.get(
       Uri.parse(
           url),
@@ -181,7 +163,6 @@ class _MyHomePageState extends State<MyHomePage> {
       throw Exception('Failed to load post');
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -199,9 +180,6 @@ class _MyHomePageState extends State<MyHomePage> {
           leading: BackButton(
             onPressed: () async{
               print("back Pressed");
-              // SharedPreferences prefs = await SharedPreferences.getInstance();
-              // prefs.setString('logoutkey', ('LogoutDashboard'));
-              // prefs.setString('Property_type', ('Apartment'));
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -242,8 +220,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
                                 child: LayoutBuilder(
                                     builder: (context, constraint) {
-
-
                                       return SingleChildScrollView(
                                         child: Column(
                                           // mainAxisSize: MainAxisSize.min,
@@ -252,63 +228,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                             SizedBox(
                                               height: 20,
                                             ),
-                                            // Container(
-                                            //   height: 50,
-                                            //   width: 330,
-                                            //   //color: Colors.lightGreen,
-                                            //   decoration: const BoxDecoration(
-                                            //       gradient: LinearGradient(
-                                            //           begin: Alignment.topCenter,
-                                            //           end: Alignment.bottomCenter,
-                                            //           colors: <Color>[Colors.blueGrey, Colors.green]),
-                                            //       borderRadius: BorderRadius.all(Radius.circular(30))
-                                            //
-                                            //   ),
-                                            //
-                                            //   child: Row(
-                                            //     children: [
-                                            //       Container(
-                                            //           margin: const EdgeInsets.only(left: 20.0),
-                                            //
-                                            //           child: SizedBox(
-                                            //             width: 220.0,
-                                            //             height: 50,
-                                            //             child: TextField(
-                                            //               decoration: InputDecoration(
-                                            //                 //border: OutlineInputBorder(),
-                                            //                 border: InputBorder.none,
-                                            //                 hintText: 'Search',
-                                            //               ),
-                                            //               controller: searchController,
-                                            //               style: TextStyle(fontSize: 18.0, height: 0.0, color: Colors.black),
-                                            //             ),
-                                            //           )
-                                            //       ),
-                                            //       Container(
-                                            //           margin: const EdgeInsets.only(left: 20.0),                                         child: IconButton(
-                                            //         onPressed: () async{
-                                            //           print('search btn clicked...');
-                                            //           Navigator.push(
-                                            //             context,
-                                            //             MaterialPageRoute(
-                                            //                 builder: (context) => ApartmentSearchResultscreen()
-                                            //             ),
-                                            //           );
-                                            //           final prefs = await SharedPreferences.getInstance();
-                                            //           await prefs.setString('locationkey', searchController.text);
-                                            //
-                                            //
-                                            //         },
-                                            //         icon: const Icon(Icons.search),
-                                            //       )
-                                            //       )
-                                            //     ],
-                                            //
-                                            //   ),
-                                            //
-                                            // ),
                                             SizedBox(height: 20,),
-
                                             SizedBox(
                                                 height: 510, // <-- you should put some value here
                                                 child: ListView.separated(
@@ -472,28 +392,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                                                                           builder: (context) => AddApartment()
                                                                                       ),
                                                                                     );
-
-                                                                                    // if(Logoutstr == 'LogoutDashboard') {
-                                                                                    //   print('fail dash...');
-                                                                                    //   Navigator.push(
-                                                                                    //     context,
-                                                                                    //     MaterialPageRoute(
-                                                                                    //         builder: (context) => AddApartment()
-                                                                                    //     ),
-                                                                                    //   );
-                                                                                    // } else{
-                                                                                    //   Navigator.push(
-                                                                                    //     context,
-                                                                                    //     MaterialPageRoute(
-                                                                                    //         builder: (context) => UserBooking()
-                                                                                    //     ),
-                                                                                    //   );
-                                                                                    //   // login(RetrivedEmail, RetrivedPwd);
-                                                                                    // }
                                                                                   },
                                                                                   //child: const Text('BookNow'),
                                                                                   child: const Text('BookNow',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600,color: Colors.white),),
-
                                                                                 ),
                                                                               )
                                                                             ],
@@ -502,13 +403,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                                                         SizedBox(
                                                                           width: 10,
                                                                         ),
-
                                                                         Container(
                                                                           height: 50,
                                                                           width: 280,
                                                                           color: Colors.white,
                                                                           child:Text(snapshot.data['data'][index]['address'],textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w900,fontSize: 22,color: Colors.green)),),
-
                                                                         ),
                                                                       ],
                                                                     ),
@@ -522,7 +421,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                                                     color: Colors.green,
                                                                     child: Row(
                                                                       children: [
-
                                                                         Container(
                                                                           height: 40,
                                                                           width: 140,
@@ -563,29 +461,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                                           print(RetrivedPwd);
                                                           print('logout......');
                                                           print(Logoutstr);
-                                                          // if(Logoutstr == 'LogoutDashboard') {
-                                                          //   print('fail dash...');
-                                                          //   Navigator.push(
-                                                          //     context,
-                                                          //     MaterialPageRoute(
-                                                          //         builder: (context) => AddApartment()
-                                                          //     ),
-                                                          //   );
-                                                          // } else{
-                                                          //   Navigator.push(
-                                                          //     context,
-                                                          //     MaterialPageRoute(
-                                                          //         builder: (context) => UserBooking()
-                                                          //     ),
-                                                          //   );
-                                                          //   // login(RetrivedEmail, RetrivedPwd);
-                                                          // }
                                                           print([index]);
                                                         },
                                                       ),
                                                     );},
                                                 )
-
                                             ),
                                             Column(
                                               children: [

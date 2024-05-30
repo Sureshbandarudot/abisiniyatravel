@@ -24,9 +24,7 @@ class profileUpdatescreen extends StatefulWidget {
   @override
   _RegisterState createState() => _RegisterState();
 }
-
 class _RegisterState extends State<profileUpdatescreen> {
-
   final baseDioSingleton = BaseSingleton();
   bool isLoading = false;
   String profileNamestr = '';
@@ -78,7 +76,6 @@ class _RegisterState extends State<profileUpdatescreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     RetrivedBearertoekn = prefs.getString('tokenkey') ?? "";
     print('profile token...');
-
     print(RetrivedBearertoekn);
     var response = await http.get(
       Uri.parse(
@@ -102,8 +99,6 @@ class _RegisterState extends State<profileUpdatescreen> {
     try{
       SharedPreferences prefs = await SharedPreferences.getInstance();
       RetrivedBearertoekn = prefs.getString('tokenkey') ?? "";
-      print('pst profile token...');
-
       print(RetrivedBearertoekn);
       String apiUrl = baseDioSingleton.AbisiniyaBaseurl + 'profileupdate';
       final response = await http.post(
@@ -124,14 +119,12 @@ class _RegisterState extends State<profileUpdatescreen> {
           // Add any other data you want to send in the body
         }),
       );
-
       print('status...');
       print(response.statusCode);
       print(nameController.text.toString());
       print(countryController.text.toString());
       print(addressController.text);
       print(phoneController.text);
-
       if(response.statusCode == 200){
         var data = jsonDecode(response.body.toString());
         print('response data');
@@ -204,15 +197,6 @@ class _RegisterState extends State<profileUpdatescreen> {
 
       }
       else {
-        print('failed');
-        print('validations123....');
-        // var data = jsonDecode(response.body.toString());
-        // print('response data');
-        // print(data);
-        // var data2 = jsonDecode(response.body);
-        // print('response data2');
-        // print(data2);
-
         final snackBar = SnackBar(
           content: Text('Please Fill All Fields or Make sure enter new details and please try again...'),
         );
@@ -224,15 +208,6 @@ class _RegisterState extends State<profileUpdatescreen> {
   }
   Widget build(BuildContext context) {
     return Scaffold(
-      //appBar: AppBar(
-      //   backgroundColor: PrimaryColor,
-      //
-      //   centerTitle: true,
-      //   title: Text('Login',
-      //     textAlign: TextAlign.center,
-      //     style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18,),),
-      // ),
-
         appBar: AppBar(
           backgroundColor: Colors.lightGreen,
           flexibleSpace: Container(
@@ -251,14 +226,7 @@ class _RegisterState extends State<profileUpdatescreen> {
           title: const Text('Profile',
               textAlign: TextAlign.center,
               style: TextStyle(color:Colors.white,fontFamily: 'Baloo', fontWeight: FontWeight.w900,fontSize: 20)),
-
-
-
-          // title: const Text('Registration',
-          //     textAlign: TextAlign.center,
-          //     style: TextStyle(
-          //         color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20)),
-          // backgroundColor: Colors.grey,
+    // backgroundColor: Colors.grey,
         ),
         body: Column(
           children: <Widget>[
@@ -354,8 +322,6 @@ class _RegisterState extends State<profileUpdatescreen> {
                                             new InputDecoration.collapsed(
                                                 hintText: 'Lastname')),
                                       ),
-
-
                                       SizedBox(
                                         height: 10,
                                       ),
@@ -370,7 +336,6 @@ class _RegisterState extends State<profileUpdatescreen> {
                                         height: 40.0,
                                         child: TextField(
                                             keyboardType: TextInputType.number,
-
                                             controller: phoneController,
                                             textAlign: TextAlign.left,
                                             autocorrect: false,

@@ -9,11 +9,9 @@ import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
 import 'package:tourstravels/userDashboardvc.dart';
 import 'package:tourstravels/UserDashboard_Screens/newDashboard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../MyBookings/MybookingVC.dart';
 import '../ServiceDasboardVC.dart';
 import 'Authenticated_Userbookingscreen.dart';
-//import 'models/user.dart';
 class AddApartment extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -31,7 +29,6 @@ class HomeState extends State<AddApartment> {
   //Future? listUsers;;
   int RetrivedId = 0;
   String newBookingUser = '';
-
   int idnum = 0;
   int aptId = 0;
   int Bookable_iD = 0;
@@ -65,8 +62,6 @@ class HomeState extends State<AddApartment> {
       RetrivedPrice = prefs.getString('pricekey') ?? "";
       RetrivedBearertoekn = prefs.getString('tokenkey') ?? "";
       Bookable_type = prefs.getString('Property_type') ?? "";
-
-
     });
   }
 
@@ -80,10 +75,7 @@ class HomeState extends State<AddApartment> {
     listUsers = fetchUsers();
     pics = fetchpics();
   }
-  //String url = 'https://staging.abisiniya.com/api/v1/apartment/list';
-
-//String url = baseDioSingleton.AbisiniyaBaseurl;
-  Future<List<Apart>> fetchUsers() async {
+    Future<List<Apart>> fetchUsers() async {
     //String url = baseDioSingleton.AbisiniyaBaseurl + 'apartment/list';
     SharedPreferences prefs = await SharedPreferences.getInstance();
     RetrivedId = prefs.getInt('imgkeyId') ?? 0;
@@ -105,20 +97,6 @@ class HomeState extends State<AddApartment> {
       // print('list.....');
       // print(listUsers);
       return listUsers;
-      //var recordsList = data["records"];
-      // for (var record in tagsJson) {
-      //   //var apartmentlists = record['name'];
-      //   print('name...');
-      //   //print(name);
-      //   var pictures = record['pictures'];
-      //   for(var pics in pictures) {
-      //     var picname = pics['imageUrl'];
-      //     print('pictures...');
-      //     print(picname);
-      //   }
-      // }
-      //List<Apart> list = parseAgents(response.body);
-      //return list;
     } else {
       throw Exception('Error');
     }
@@ -167,8 +145,6 @@ class HomeState extends State<AddApartment> {
       throw Exception('Error');
     }
   }
-
-
   //Apartment data post to server
   Future<void> _postData() async {
     try {
@@ -206,14 +182,6 @@ class HomeState extends State<AddApartment> {
         var data = jsonDecode(response.body.toString());
         print('message......k');
         print(data['message']);
-        // RetrivedBearertoekn = data['data']['token'];
-        // print('token generated...');
-        // print(RetrivedBearertoekn);
-        // // String datestr = '';
-        // // datestr = data['message'].toString();
-        // print('date status...');
-        // print(datestr);
-
         if (data['message'] == 'Thank you for booking request')
         {
           print('not calling....');
@@ -244,7 +212,44 @@ class HomeState extends State<AddApartment> {
 
         }
       }
-      if (response.statusCode == 404) {
+      if (response.statusCode == 422) {
+        print('already entered existing data1...');
+        var data = jsonDecode(response.body);
+        print('email...');
+        print(data['message']['email']);
+        //String emailstr = (data['message']['email']);
+        //print(emailstr);
+        print(data['message']['phone']);
+        print(data['message']['password']);
+        print(data['message']['end_date']);
+        if (FromdateInputController.text.isEmpty) {
+          final snackBar = SnackBar(
+            content: Text('Please select start date'),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        } else if (TodateInputController.text.isEmpty) {
+          final snackBar = SnackBar(
+            content: Text('Please select end date'),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+        else if ((data['message']['password']) != null) {
+          final snackBar = SnackBar(
+            content: Text('The password confirmation does not match.'),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+        else if ((data['message']['end_date']) != null) {
+          print('date....');
+          final snackBar = SnackBar(
+            content: Text('The end date must be a date after start date.'),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        } else {
+          print('nullll.....');
+        }
+      }
+      else if (response.statusCode == 404) {
         final snackBar = SnackBar(
                 content: Text('You cant book your own apartment'),
               );
@@ -284,28 +289,6 @@ class HomeState extends State<AddApartment> {
         } else {
           print('nullll.....');
         }
-        // if ((data['message']['email']) != '[The email has already been taken.]' && (data['message']['phone']) != '[The phone has already been taken.]'){
-        //   final snackBar = SnackBar(
-        //     content: Text('The email and phone has already been taken.'),
-        //   );
-        //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        //
-        // }  else if ((data['message']['email']) != '[The email has already been taken.]') {
-        //   final snackBar = SnackBar(
-        //     content: Text('The email  has already been taken.'),
-        //   );
-        //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        // } else if ((data['message']['phone']) != '[The phone has already been taken.]'){
-        //   final snackBar = SnackBar(
-        //     content: Text('The  phone has already been taken.'),
-        //   );
-        //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        // } else if ((data['message']['end_date']) != '[The end date must be a date after start date.]') {
-        //   final snackBar = SnackBar(
-        //     content: Text('The end date must be a date after start date.'),
-        //   );
-        //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        // }
       }  else {
         // If the server returns an error response, throw an exception
         throw Exception('Failed to post data');
@@ -316,69 +299,6 @@ class HomeState extends State<AddApartment> {
       });
     }
   }
-
-
-  //     if (response.statusCode == 200) {
-  //       // Successful POST request, handle the response here
-  //       final responseData = jsonDecode(response.body);
-  //       print('Apartment data successfully posted');
-  //       print(responseData);
-  //       var data = jsonDecode(response.body.toString());
-  //       print(data['message']);
-  //       if (data['message'] == 'Thank you for booking request')
-  //       {
-  //         print('not calling....');
-  //         final snackBar = SnackBar(
-  //           content: Text(data['message']),
-  //         );
-  //         ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  //         // print('calling....');
-  //         // Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-  //         //   builder: (_) => newuserDashboard(),
-  //         // ),);
-  //       } else {
-  //         print('calling....');
-  //         Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-  //           builder: (_) => newuserDashboard(),
-  //         ),);
-  //         print('calling token....');
-  //         print(RetrivedBearertoekn);
-  //         SharedPreferences prefs = await SharedPreferences.getInstance();
-  //         prefs.setString('tokenkey', RetrivedBearertoekn);
-  //         newBookingUser = 'NewBookingUser';
-  //         prefs.setString('tokenkey', RetrivedBearertoekn);
-  //         prefs.setString('newBookingUserkey', newBookingUser);
-  //       }
-  //       setState(() {
-  //         //result = 'ID: ${responseData['id']}\nName: ${responseData['name']}\nEmail: ${responseData['email']}';
-  //       });
-  //     } else if(response.statusCode == 404){
-  //
-  //
-  //       final responseData = jsonDecode(response.body);
-  //       print(responseData);
-  //       var data = jsonDecode(response.body.toString());
-  //       print(data['message']);
-  //
-  //       final snackBar = SnackBar(
-  //
-  //         content: Text(data['message']),
-  //       );
-  //       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  //     } else {
-  //
-  //       // final snackBar = SnackBar(
-  //       //   content: Text('You cant book your own apartment'),
-  //       // );
-  //       // ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  //       throw Exception('Failed to post data');
-  //     }
-  //   } catch (e) {
-  //     setState(() {
-  //       result = 'Error: $e';
-  //     });
-  //   }
-  // }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -568,7 +488,6 @@ class HomeState extends State<AddApartment> {
                                                               width: 175,
                                                               color: Colors.white,
                                                               child: Text(Retrivedcityvalue,style: (TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.black)),),
-
                                                             )
                                                           ],
                                                         ),
@@ -652,9 +571,7 @@ class HomeState extends State<AddApartment> {
 
                                                                       FromdateInputController.text = fromDate;
                                                                     }
-
                                                                   }
-
                                                               ),),
                                                             SizedBox(
                                                               height: 10,
@@ -676,7 +593,6 @@ class HomeState extends State<AddApartment> {
                                                                   controller: TodateInputController,
                                                                   readOnly: true,
                                                                   onTap: () async {
-
                                                                     DateTime? pickedDate = await showDatePicker(
                                                                         context: context,
                                                                         initialDate: DateTime.now(),
@@ -685,12 +601,9 @@ class HomeState extends State<AddApartment> {
                                                                     if (pickedDate != null) {
                                                                       //TodateInputController.text =pickedDate.toString();
                                                                       toDatestr = DateFormat('yyyy-MM-dd').format(pickedDate); // format date in required form here we use yyyy-MM-dd that means time is removed
-
                                                                       TodateInputController.text = toDatestr;
                                                                     }
-
                                                                   }
-
                                                               ),),
                                                             SizedBox(
                                                               height: 20,

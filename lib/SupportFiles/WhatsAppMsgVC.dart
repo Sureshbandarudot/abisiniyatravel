@@ -30,13 +30,21 @@ class _LoginState extends State<WhatsAppScreen> {
 
   // final baseDioSingleton = BaseSingleton();
   bool isLoading = false;
+  String dropdownvalue = 'Please select Country';
+
+// List of items in our dropdown menu
+  var items = [
+    'Please select Country',
+    'Zimbabwe',
+    'South Africa',
+  ];
   final globalKey = GlobalKey<ScaffoldState>();
   String tokenvalue = '';
   void initState() {
     // TODO: implement initState
     super.initState();
     _retrieveValues();
-    _phoneController.text = '27 65 532 6408';
+    //_phoneController.text = '27 65 532 6408';
 
   }
 
@@ -106,6 +114,52 @@ class _LoginState extends State<WhatsAppScreen> {
                                   SizedBox(
                                     height: 30,
                                   ),
+                                    SizedBox(
+                                        width: 310,
+                                        height: 45,
+
+                                      child:DropdownButton(
+
+                                        isExpanded: true,
+
+                                        // Initial Value
+                                        value: dropdownvalue,
+
+                                        // Down Arrow Icon
+                                        icon: const Icon(Icons.keyboard_arrow_down),
+
+                                        // Array list of items
+                                        items: items.map((String items) {
+                                          return DropdownMenuItem(
+                                            value: items,
+                                            child: Text(items),
+                                          );
+                                        }).toList(),
+                                        // After selecting the desired option,it will
+                                        // change button value to selected value
+                                        onChanged: (String? newValue) {
+                                          setState(() {
+                                            dropdownvalue = newValue!;
+                                            print('new value...');
+                                            print(newValue);
+                                            if(newValue == 'Zimbabwe') {
+                                              print('zim num..');
+                                              //263 777 223 158
+                                              _phoneController.text = '263 777 223 158';
+
+                                            } else {
+
+                                              _phoneController.text = '27 65 532 6408';
+
+                                            }
+                                          });
+                                        },
+                                      ),
+                                    ),
+
+                                    SizedBox(
+                                      height: 10,
+                                    ),
                                     SizedBox(
                                       width: 310,
                                       height: 45,

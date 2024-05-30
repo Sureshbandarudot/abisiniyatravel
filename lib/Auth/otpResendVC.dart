@@ -4,15 +4,11 @@ import 'package:http/http.dart';
 import 'package:tourstravels/Auth/Login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
-
 import 'OtpEmailverified.dart';
-
-
 class ResendOTPScreen extends StatefulWidget {
   @override
   _ForgotState createState() => _ForgotState();
 }
-
 class _ForgotState extends State<ResendOTPScreen> {
   final baseDioSingleton = BaseSingleton();
   bool isLoading = false;
@@ -21,15 +17,10 @@ class _ForgotState extends State<ResendOTPScreen> {
   TextEditingController otpController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmpasswordController = TextEditingController();
-
-
   void forgot(String email) async {
-
     try{
-
       Response response = await post(
         //Uri.parse('https://staging.abisiniya.com/api/v1/forgotpass/resetpassword'),
-
           Uri.parse(baseDioSingleton.AbisiniyaBaseurl + 'otpresend'),
           body: {
             'email' : emailController.text.toString(),
@@ -38,18 +29,6 @@ class _ForgotState extends State<ResendOTPScreen> {
 
       if(response.statusCode == 200){
         var data = jsonDecode(response.body.toString());
-        //
-        //
-        // var datar = jsonDecode(response.body['data']['token']);
-        //
-        // json.encode(response.body['data'['token']]);
-        //
-        // //SharedPreferences localStorage = await SharedPreferences.getInstance();
-        // //localStorage.setString('token', json.encode(body['data']['token']));
-        //
-        // //localStorage.setString('data', json.encode(body['data']));
-
-
         print(data);
         print(data['token']);
         print('Login successfully');
@@ -90,15 +69,6 @@ class _ForgotState extends State<ResendOTPScreen> {
   }
   Widget build(BuildContext context) {
     return Scaffold(
-      //appBar: AppBar(
-      //   backgroundColor: PrimaryColor,
-      //
-      //   centerTitle: true,
-      //   title: Text('Login',
-      //     textAlign: TextAlign.center,
-      //     style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18,),),
-      // ),
-
         appBar: AppBar(
           centerTitle: true,
           leading: BackButton(
@@ -155,18 +125,6 @@ class _ForgotState extends State<ResendOTPScreen> {
                                   ),
                                   child: Column(
                                     children: [
-                                      // Container(
-                                      //     width: 125,
-                                      //     child: CircleAvatar(
-                                      //       backgroundColor: Colors.transparent,
-                                      //       radius: 60.0,
-                                      //       child: Image.asset(
-                                      //           "images/logo.jpg",
-                                      //           height: 100.0,
-                                      //           width: 125.0,
-                                      //           fit: BoxFit.fill
-                                      //       ),
-                                      //     )
                                       // ),
                                       Container(
                                         padding: EdgeInsets.all(10),
@@ -179,13 +137,10 @@ class _ForgotState extends State<ResendOTPScreen> {
                                           textAlign: TextAlign.left ,
                                           style: TextStyle(
                                               color: Colors.black87,fontWeight: FontWeight.bold,fontSize: 22),),
-
-
                                       ),
                                       SizedBox(
                                         height: 15,
                                       ),
-
                                       Container(
                                         padding: EdgeInsets.all(20),
                                         width: 325,
@@ -217,44 +172,6 @@ class _ForgotState extends State<ResendOTPScreen> {
                                                   hintText: 'Email'
                                               ),
                                             ),
-                                            // SizedBox(
-                                            //   height: 10,
-                                            // ),
-                                            // TextField (
-                                            //   controller: otpController,
-                                            //   obscureText: true,
-                                            //   decoration: InputDecoration(
-                                            //       border:OutlineInputBorder(),
-                                            //       labelText: 'otp',
-                                            //       hintText: 'otp'
-                                            //   ),
-                                            // ),
-                                            //
-                                            // SizedBox(
-                                            //   height: 10,
-                                            // ),
-                                            // TextField (
-                                            //   obscureText: true,
-                                            //   controller: passwordController,
-                                            //   decoration: InputDecoration(
-                                            //       border:OutlineInputBorder(),
-                                            //       labelText: 'Password',
-                                            //       hintText: 'Password'
-                                            //   ),
-                                            // ),
-                                            // SizedBox(
-                                            //   height: 10,
-                                            // ),
-                                            // TextField (
-                                            //   obscureText: true,
-                                            //   controller: confirmpasswordController,
-                                            //   decoration: InputDecoration(
-                                            //       border:OutlineInputBorder(),
-                                            //       labelText: 'Confirm Password',
-                                            //       hintText: 'Confirm Password'
-                                            //   ),
-                                            // ),
-
                                             SizedBox(
                                               height: 15,
                                             ),
@@ -268,16 +185,12 @@ class _ForgotState extends State<ResendOTPScreen> {
                                                   ),
                                                   textStyle: const TextStyle(fontSize: 20)),
                                               onPressed: () async {
-
                                                 setState(() => isLoading = true);
-
                                                 SharedPreferences prefs = await SharedPreferences.getInstance();
                                                 prefs.setString('emailkey', emailController.text);
                                                 print('forgot password...');
                                                 print(emailController.text);
-
                                                 forgot(emailController.text.toString());
-
                                                 await Future.delayed(Duration(seconds: 2), () => () {});
                                                 setState(() => isLoading = false);
                                               },
@@ -287,82 +200,9 @@ class _ForgotState extends State<ResendOTPScreen> {
                                           ],
                                         ),
                                       ),
-
-
-
-
-
-                                      // Container(
-                                      //   margin: const EdgeInsets.all(00.0),
-                                      //   padding: EdgeInsets.only(top: 05.0,
-                                      //       left: 15.0,
-                                      //       right: 05.0),
-                                      //   //color: Colors.white30,
-                                      //   color: Colors.white,
-                                      //   width: 300.0,
-                                      //   height: 40.0,
-                                      //   child: TextField(
-                                      //       textAlign: TextAlign.left,
-                                      //       autocorrect: false,
-                                      //       decoration:
-                                      //       //disable single line border below the text field
-                                      //       new InputDecoration.collapsed(
-                                      //           hintText: 'Email/Phone number')),
-                                      // ),
-                                      //
-                                      // SizedBox(height: 10,),
-                                      // Container(
-                                      //   margin: const EdgeInsets.all(00.0),
-                                      //   padding: EdgeInsets.only(top: 05.0,
-                                      //       left: 15.0,
-                                      //       right: 05.0),
-                                      //   //color: Colors.white30,
-                                      //   color: Colors.white,
-                                      //   width: 300.0,
-                                      //   height: 40.0,
-                                      //   child: TextField(
-                                      //       textAlign: TextAlign.left,
-                                      //       autocorrect: false,
-                                      //       decoration:
-                                      //       //disable single line border below the text field
-                                      //       new InputDecoration.collapsed(
-                                      //           hintText: 'Password')),
-                                      // ),
-                                      //
-
-
-
-
-
-
                                     ],
                                   )
                               ),
-                              // Container(
-                              //   width: 320,
-                              //   height: 400,
-                              //   color: Colors.white,
-                              //
-                              //   child: Column(
-                              //     children: [
-                              //       Container(
-                              //           width: 125,
-                              //           child: CircleAvatar(
-                              //             backgroundColor: Colors.transparent,
-                              //             radius: 70.0,
-                              //             child: Image.asset(
-                              //                 "images/logo.jpg",
-                              //                 height: 100.0,
-                              //                 width: 125.0,
-                              //                 fit: BoxFit.fill
-                              //             ),
-                              //           )
-                              //       )
-                              //     ],
-                              //   ),
-                              // ),
-
-
                               // middle widget goes here
                               Expanded(
                                 child: Container(),

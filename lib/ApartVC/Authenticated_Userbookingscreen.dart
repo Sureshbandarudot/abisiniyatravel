@@ -8,7 +8,6 @@ import 'dart:convert';
 import 'package:tourstravels/ApartVC/Addaprtment.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tourstravels/Singleton/SingletonAbisiniya.dart';
-
 import '../ServiceDasboardVC.dart';
 import 'Authenticated_filterAptmentVC.dart';
 import 'FilterApartmentVC.dart';
@@ -20,7 +19,6 @@ class AuthenticatedUserScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-
       home: MyHomePage(),
     );
   }
@@ -35,7 +33,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   TextEditingController searchController = TextEditingController();
   String LoggedInUser = 'LoggedUser';
-
   String Aptsstr = '';
   final baseDioSingleton = BaseSingleton();
   final borderRadius = BorderRadius.circular(20); // Image border
@@ -47,7 +44,6 @@ class _MyHomePageState extends State<MyHomePage> {
   String RetrivedEmail = '';
   String Logoutstr = '';
   String RetrivedBearertoekn = '';
-
   _retrieveValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -81,7 +77,6 @@ class _MyHomePageState extends State<MyHomePage> {
               builder: (context) => AddApartment()
           ),
         );
-
       }else {
         print('failed');
         Navigator.push(
@@ -91,7 +86,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         );
         print('User Login not Authentication  successfully');
-
       }
     }catch(e){
       print(e.toString());
@@ -103,7 +97,6 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     _retrieveValues();
     getData();
-
   }
   Future<dynamic> getData() async {
     //String url = 'https://staging.abisiniya.com/api/v1/apartment/list';
@@ -116,9 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
 //apartment/list
 //     String url = baseDioSingleton.AbisiniyaBaseurl + 'apartment/auth/list';
     String url = baseDioSingleton.AbisiniyaBaseurl + 'apartment/list';
-
     //final response = await http.get(Uri.parse(url));
-
     var response = await http.get(
       Uri.parse(
           url),
@@ -133,7 +124,6 @@ class _MyHomePageState extends State<MyHomePage> {
       print(data1['data']);
       print(data1);
       print(data1['data']);
-      //items['Items'] = [];
       var listA = [];
       listA.add(data1['data']);
       print('length...');
@@ -142,20 +132,10 @@ class _MyHomePageState extends State<MyHomePage> {
       if (data1['data'] == null){
         Aptsstr = 'Not available';
         print(' empty...');
-
-
         print(Aptsstr);
       } else{
         Aptsstr = 'Not available';
       }
-
-      //print(data1[['data'].isEmpty)]);
-
-
-
-      //  print('apt empty....');
-      // print((snapshot.data?['data'].isEmpty));
-
       return json.decode(response.body);
     } else {
       // If that call was not successful, throw an error.
@@ -183,14 +163,12 @@ class _MyHomePageState extends State<MyHomePage> {
               SharedPreferences prefs = await SharedPreferences.getInstance();
               //.setString('logoutkey', ('LogoutDashboard'));
               prefs.setString('Property_type', ('Apartment'));
-
               Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => ServiceDashboardScreen()),
               );
               prefs.setString('LoggedinUserkey', LoggedInUser);
-
             },
           ),
           title: Text('APARTMENT',textAlign: TextAlign.center,
@@ -223,11 +201,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         return Column(
                           children: [
                             Expanded(child: Container(
-
                                 child: LayoutBuilder(
                                     builder: (context, constraint) {
-
-
                                       return SingleChildScrollView(
                                         child: Column(
                                           // mainAxisSize: MainAxisSize.min,
@@ -246,14 +221,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                                       end: Alignment.bottomCenter,
                                                       colors: <Color>[Colors.blueGrey, Colors.green]),
                                                   borderRadius: BorderRadius.all(Radius.circular(30))
-
                                               ),
-
                                               child: Row(
                                                 children: [
                                                   Container(
                                                       margin: const EdgeInsets.only(left: 20.0),
-
                                                       child: SizedBox(
                                                         width: 220.0,
                                                         height: 50,
@@ -274,7 +246,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                                     onPressed: () async{
     if (searchController.text == ''){
     print('empty....');
-
     final snackBar = SnackBar(
     content: Text('Please search with keyword'),
     );
@@ -293,7 +264,6 @@ class _MyHomePageState extends State<MyHomePage> {
       //String url = (baseDioSingleton.AbisiniyaBaseurl + 'apartment/show/$RetrivedId');
       print('search token value for authenticated user....');
       print(RetrivedBearertoekn);
-
     }
                                                     },
                                                     icon: const Icon(Icons.search),
@@ -308,11 +278,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                                 child:Text(snapshot.data?['data'].isEmpty ? 'Apartments not available' : ''),
                                                    // : snapshot.data?["data"]?.toString() ?? 'empty',style: (TextStyle(fontWeight: FontWeight.w300,fontSize: 18,color: Colors.black)))
                                             ),
-
                                             SizedBox(height: 20,),
-
-
-
                                             SizedBox(
                                                 height: 510, // <-- you should put some value here
                                                 child: ListView.separated(
@@ -417,11 +383,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                                                           width: 280,
                                                                           height: 40,
                                                                           color: Colors.white,
-                                                                         // child:Text(snapshot.data['data'][index]['city'],textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w900,fontSize: 22,color: Colors.green)),),
-
                                                                           child:Text(snapshot.data?['data'].isEmpty ? 'Empty'
                                                                               : snapshot.data?["data"][index]?['city'].toString() ?? 'empty'),
-                                                                          //child: Text(
                                                                         ),
                                                                         SizedBox(
                                                                           width: 5,
@@ -430,7 +393,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                                                           width: 280,
                                                                           height: 70,
                                                                           color: Colors.white,
-                                                                          //child: (Text(snapshot.data['data']['price'] as int)),
                                                                           child:Row(
                                                                             children: [
                                                                               Container(
@@ -461,7 +423,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                                                                 child: TextButton(
                                                                                   style: TextButton.styleFrom(backgroundColor:Colors.green),
                                                                                   onPressed: () async {
-
                                                                                     print('pressed...');
                                                                                     SharedPreferences prefs = await SharedPreferences.getInstance();
                                                                                     prefs.setString('citykey', snapshot.data['data'][index]['city']);
@@ -487,24 +448,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                                                                           builder: (context) => AddApartment()
                                                                                       ),
                                                                                     );
-
-                                                                                    // if(Logoutstr == 'LogoutDashboard') {
-                                                                                    //   print('fail dash...');
-                                                                                    //   Navigator.push(
-                                                                                    //     context,
-                                                                                    //     MaterialPageRoute(
-                                                                                    //         builder: (context) => AddApartment()
-                                                                                    //     ),
-                                                                                    //   );
-                                                                                    // } else{
-                                                                                    //   Navigator.push(
-                                                                                    //     context,
-                                                                                    //     MaterialPageRoute(
-                                                                                    //         builder: (context) => UserBooking()
-                                                                                    //     ),
-                                                                                    //   );
-                                                                                    //   // login(RetrivedEmail, RetrivedPwd);
-                                                                                    // }
                                                                                   },
                                                                                   child: const Text('BookNow',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600,color: Colors.white),),
                                                                                 ),
@@ -515,13 +458,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                                                         SizedBox(
                                                                           width: 10,
                                                                         ),
-
                                                                         Container(
                                                                           height: 50,
                                                                           width: 280,
                                                                           color: Colors.white,
                                                                           child:Text(snapshot.data['data'][index]['address'],textAlign: TextAlign.left,style: (TextStyle(fontWeight: FontWeight.w900,fontSize: 22,color: Colors.green)),),
-
                                                                         ),
                                                                       ],
                                                                     ),
@@ -535,7 +476,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                                                     color: Colors.green,
                                                                     child: Row(
                                                                       children: [
-
                                                                         Container(
                                                                           height: 40,
                                                                           width: 140,
@@ -576,23 +516,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                                           print(RetrivedPwd);
                                                           print('logout......');
                                                           print(Logoutstr);
-                                                          // if(Logoutstr == 'LogoutDashboard') {
-                                                          //   print('fail dash...');
-                                                          //   Navigator.push(
-                                                          //     context,
-                                                          //     MaterialPageRoute(
-                                                          //         builder: (context) => AddApartment()
-                                                          //     ),
-                                                          //   );
-                                                          // } else{
-                                                          //   Navigator.push(
-                                                          //     context,
-                                                          //     MaterialPageRoute(
-                                                          //         builder: (context) => UserBooking()
-                                                          //     ),
-                                                          //   );
-                                                          //   // login(RetrivedEmail, RetrivedPwd);
-                                                          // }
                                                           print([index]);
                                                         },
                                                       ),
@@ -616,9 +539,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   }
                 }
             )
-
         )
-
     );
   }
 }
